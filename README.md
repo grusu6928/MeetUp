@@ -17,7 +17,7 @@ Strengths: Databases (SQL), working with large datasets, functionality testing, 
 Weaknesses: Front end development
 
 
-**Project Idea(s):** _Fill this in with three unique ideas! (Due by March 1)_
+**Project Idea(s):**
 ### Idea 1
 With everyone’s busy schedules, coordinating spontaneous meet-ups with friends on campus can be difficult. Our idea is to create a service to automate the process: it will match friends together considering their preferences (e.g. what activity to meet up for, distance willing to travel, time willing to spend, etc) as well as their location. The core algorithmic complexity comes from using these preferences and location constraints to form meet-up groups via a graph-based matching algorithm. For the sake of this project, we will limit our scope to Brown University students and the Brown University campus. 
 
