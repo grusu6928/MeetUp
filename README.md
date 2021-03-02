@@ -3,16 +3,16 @@
 **Team Members:** Amin Hijaz, Ermias Genet, George Rusu, Hamzah Shah
 
 **Team Strengths and Weaknesses:**
-George Rusu
+### George Rusu
 Strengths: Extensive experience working with frontend and backend frameworks like React and Django. Experience with deployment, databases, and user login/authentication. 
 Weaknesses: Django is python not Java. Not too comfortable with frontend development - more comfortable with setting up routing, endpoints, and testing for the frontend.
-Ermias Genet
+### Ermias Genet
 Strengths: Front end development ( familiar with React,  Js, bootstrap, good experience with Html/css), connecting APIs
 Weaknesses: little SQL experience, not strong with java 
-Amin Hijaz
+### Amin Hijaz
 Strengths: have some experience working with React(a long time ago), know some Js, html, and Css. Love Learning new stuff
 Weaknesses: new to Java, databases(I used google firebase with React before but not SQL).
-Hamzah Shah
+### Hamzah Shah
 Strengths: Databases (SQL), working with large datasets, functionality testing, Python, communication 
 Weaknesses: Front end development
 
