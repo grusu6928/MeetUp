@@ -18,14 +18,15 @@ Weaknesses: Front end development
 
 
 **Project Idea(s):**
-### Idea 1
+### Idea 1 [This is the idea detailed in the PDF in our repo]
 With everyone’s busy schedules, coordinating spontaneous meet-ups with friends on campus can be difficult. Our idea is to create a service to automate the process: it will match friends together considering their preferences (e.g. what activity to meet up for, distance willing to travel, time willing to spend, etc) as well as their location. The core algorithmic complexity comes from using these preferences and location constraints to form meet-up groups via a graph-based matching algorithm. For the sake of this project, we will limit our scope to Brown University students and the Brown University campus. 
 
-[This is the idea detailed in the PDF in our repo]
 
 ### Idea 2
+A service that allows people to participate in online clothing exchange. You create an account, which takes in your name, location, lets you write a bio, and has you ticking off boxes that indicate what kind of clothes you are most passionate about (ie sneakerhead vs skirts vs pants vs tops only). You then post pictures of apparel you are willing to part with. For each listing you can note if you are interested in having this item be listed for purchase, and/or if you are open to the idea of clothing exchange. Your listing and your profile are then put on a stack that is shown to other app users in the area with similar interests. The app lets you link your own website, letting other people visit your online store, poshmark, or mercari store if you have any
 
 ### Idea 3
+VoiceFinder: a browser extension that transcribes videos and allows for a Ctrl/Cmd find feature. Often times we skim through videos trying to find the content we want. With this extension, you would be able to search and see if any key words/phrases have been detected in the video. This would save users a lot of time in searching for specific content in videos.
 
 **Mentor TA:** _Put your mentor TA's name and email here once you're assigned one!_
 
