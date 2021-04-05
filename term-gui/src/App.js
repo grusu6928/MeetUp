@@ -1,12 +1,13 @@
 import './App.css';
+import Starter from './Starter';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
+      <header>
         <title> MeetUp </title>
       </header>
-      
+      <Starter/>
     </div>
   );
 }
