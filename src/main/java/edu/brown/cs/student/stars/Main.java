@@ -55,8 +55,11 @@ public final class Main {
     if (options.has("gui")) {
       runSparkServer((int) options.valueOf("port"));
     }
-
-    // TODO: Process commands in a REPL
+    DataBase.connect();
+    SignUp s = new SignUp();
+    Login in = new Login();
+    s.newUser("amin1", "amin1", "amin_hijaz@brow.edu");
+    in.log("amin1", "amin1");
   }
 
   private static FreeMarkerEngine createEngine() {
@@ -113,5 +116,4 @@ public final class Main {
       res.body(stacktrace.toString());
     }
   }
-
 }
