@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import './index.css';
 
-class Starter extends Component {
+class Looker extends Component {
     constructor() {
         super();
         this.state = {
@@ -35,7 +35,7 @@ class Starter extends Component {
         // })
         const starterForm = document.getElementById('starter-form')
         starterForm.reset();
-        alert ("Thank you for submitting this event, we'll let you know if others join!")
+        alert ("Thank you for submitting your preferences, we will now provide you with events that match your preferences!")
     }
 
     render() {
@@ -45,7 +45,7 @@ class Starter extends Component {
                     <h1 className="home">
                         <a href="/"> Home </a>
                     </h1>
-                    <h1 className="welcome"> Provide your event details: </h1> 
+                    <h1 className="welcome"> Provide your event preferences: </h1> 
                 </header>
                 <div className="form-div">
                     <form id="starter-form" onSubmit={this.handleSubmit}>
@@ -78,20 +78,18 @@ class Starter extends Component {
                             </div>
                         </div>
                         <div className="event"> 
-                            <label for="start-time" className="text"> Start Time? </label>
+                            <label for="start-time" className="text"> When are you free? </label>
+                            <br/>
+                            <br/>
+                            from:  
                             <input id="start-time" type="time"/>
-                            <br/>
-                            <br/>
-                            <label for="end-time" className="text"> End Time? </label>
+                            to:  
                             <input id="end-time" type="time"/>
                         </div>
+                        <br/>
                         <div className="event">
                             <label for="location" className="text"> Location: </label>
                             <input id="location" type="text"/>
-                        </div>
-                        <div className="event">
-                            <label for="number" className="text"> Desired number of people: </label>
-                            <input id="number" type="number"/>
                         </div>
                         <button className="submit" type="submit"> Submit</button>
                     </form>
@@ -101,4 +99,4 @@ class Starter extends Component {
     }
 }
 
-export default Starter;
+export default Looker;
