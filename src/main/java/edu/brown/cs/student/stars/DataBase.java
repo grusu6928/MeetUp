@@ -16,8 +16,7 @@ public class DataBase {
       stat.executeUpdate("PRAGMA foreign_keys=ON;");
     } catch (ClassNotFoundException e) {
       System.out.println("ERROR: Could not initialize database");
-    } catch (
-            SQLException throwables) {
+    } catch (SQLException throwables) {
       System.out.println("ERROR: Could not initialize database");
     }
   }

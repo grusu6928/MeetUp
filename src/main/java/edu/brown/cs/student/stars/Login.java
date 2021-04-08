@@ -1,20 +1,25 @@
 package edu.brown.cs.student.stars;
 
-import java.sql.*;
+import spark.*;
 
-public class Login {
-  public static String user;
-  public void log(String username, String password) {
+import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
+
+public class Login implements TemplateViewRoute {
+  public String log(String username, String password) {
+    Boolean loggedIn = false;
     Connection conn = DataBase.conn;
+    System.out.println(username);
     try {
       PreparedStatement prep;
-      prep = conn.prepareStatement("SELECT * from users WHERE username= ? AND password= ?");
+      prep = conn.prepareStatement("SELECT * from users WHERE (username= ? AND password= ?)");
       prep.setString(1, username);
       prep.setString(2, password);
       ResultSet rs = prep.executeQuery();
       if(rs.next()) {
         System.out.println("logged in as " + username);
-        user = username;
+        loggedIn = true;
       }
       else {
         System.out.println("Invalid username and password pair");
@@ -22,9 +27,28 @@ public class Login {
     } catch(SQLException e) {
       System.out.println(e);
     }
+    if(loggedIn) {
+      return username;
+    }
+    return null;
   }
   public void logout() {
-    user = null;
     System.out.println("logged out");
+  }
+
+  @Override
+  public ModelAndView handle(Request request, Response response) throws Exception {
+    System.out.println("Hi");
+    QueryParamsMap form = request.queryMap();
+    String username = form.value("username");
+    String password = form.value("password");
+    username = log(username, password);
+    if(username != null) {
+      request.session().attribute("currentUser", username);
+      response.redirect("/");
+      return null;
+    }
+    Map<String, String> variables = new HashMap<>();
+    return new ModelAndView(variables, "main.ftl");
   }
 }
