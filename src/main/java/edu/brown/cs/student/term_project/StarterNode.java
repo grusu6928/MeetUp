@@ -8,9 +8,9 @@ public class StarterNode implements GraphNode {
   private String event;
   private LocalTime startTime;
   private LocalTime endTime;
+
   private String location; // modify data type
   private int capacity;
-
   private int numAttendees;
 
 

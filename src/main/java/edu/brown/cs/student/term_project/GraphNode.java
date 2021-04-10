@@ -4,7 +4,7 @@ import java.time.LocalTime;
 
 public interface GraphNode {
 
-  int getId();
+  int getId(); // unique
   String getEvent();
   LocalTime getStartTime();
   LocalTime getEndTime();

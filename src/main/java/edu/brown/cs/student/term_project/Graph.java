@@ -157,7 +157,7 @@ public class Graph {
       for (int j = 0; j < this.numNodes; j++) {
         // if weight is on initial value -> compute a heuristic for it
         if (Double.compare(adjMatrix[i][j], Double.POSITIVE_INFINITY) == 0) {
-          double heuristic = computeHeuristic(this.allNodes.get(i), this.allNodes.get(j));
+          double heuristic = this.computeHeuristic(this.allNodes.get(i), this.allNodes.get(j));
           adjMatrix[i][j] = heuristic;
           adjMatrix[j][i] = heuristic;
         }
