@@ -27,6 +27,18 @@
 .App-link {
   color: #61dafb;
 }
+.App-background {
+  background-image: linear-gradient(rgba(175,238,238), rgba(119,136,153)
+  );
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+
+}
 
 @keyframes App-logo-spin {
   from {

@@ -1,16 +1,23 @@
 import './App.css';
+
 import Home from './Home';
 import { BrowserRouter as Switch, Route, BrowserRouter } from "react-router-dom";
 import Starter from './Starter';
 import Looker from './Looker';
 import './index.css';
+import React, {useState} from 'react';
+import Lookers from './Lookers';
+import FriendsList from './FriendsList';
 
 
 function App() {
   return (
     <div className="App">
-      <header>
+      <header className="App-background">
         <title> MeetUp </title>
+        <div className = "App-Background">
+        <FriendsList/>
+      </div>
       </header>
       <BrowserRouter>
         <Switch>
