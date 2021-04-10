@@ -1,0 +1,17 @@
+INPUT
+stars data/stars/three-star.csv
+neighbors -2 "Star One"
+radius -10 "Star Two"
+neighbors 10 star1 star2 star3
+radius 5 a b c
+neighbors 1.1 "Star One"
+radius close_radius "Star Three"
+OUTPUT
+Read 3 stars from data/stars/three-star.csv
+ERROR: number of neighbors to find must be non-negative
+ERROR: radius must be non-negative
+ERROR: Improperly formatted coordinate(s) inputted
+ERROR: Improperly formatted coordinate(s) inputted
+ERROR: Improperly formatted number of neighbors to find inputted
+ERROR: Improperly formatted radius inputted
+END

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>KDNode.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stars</a> &gt; <a href="index.source.html" class="el_package">edu.brown.cs.hshah9.KDTree</a> &gt; <span class="el_source">KDNode.java</span></div><h1>KDNode.java</h1><pre class="source lang-java linenums">package edu.brown.cs.hshah9.KDTree;
+
+import edu.brown.cs.hshah9.stars.HasCoordinates;
+
+/**
+ * This class represents a KDNode, which is the comprising unit of a KDTree. A KDNode can hold
+ * any object that implements the HasCoordinates interface.
+ * @param &lt;T&gt; object that implements HasCoordinates interface
+ */
+public class KDNode&lt;T extends HasCoordinates&gt; {
+
+
+  private T value;
+  private KDNode&lt;T&gt; left;
+  private KDNode&lt;T&gt; right;
+
+  /**
+   * Instantiates a KDNode.
+   * @param value object that implements HasCoordinates
+   * @param left left child
+   * @param right right child
+   */
+<span class="fc" id="L23">  public KDNode(T value, KDNode&lt;T&gt; left, KDNode&lt;T&gt; right) {</span>
+<span class="fc" id="L24">    this.value = value;</span>
+<span class="fc" id="L25">    this.left = left;</span>
+<span class="fc" id="L26">    this.right = right;</span>
+<span class="fc" id="L27">  }</span>
+
+  /**
+   * Sets the node's left child.
+   * @param leftChild left child
+   */
+  public void setLeftChild(KDNode&lt;T&gt; leftChild) {
+<span class="fc" id="L34">    this.left = leftChild;</span>
+<span class="fc" id="L35">  }</span>
+
+  /**
+   * Sets the node's right child.
+   * @param rightChild right child
+   */
+  public void setRightChild(KDNode&lt;T&gt; rightChild) {
+<span class="fc" id="L42">    this.right = rightChild;</span>
+<span class="fc" id="L43">  }</span>
+
+  /**
+   * Gets the node's left child.
+   * @return left child
+   */
+  public KDNode&lt;T&gt; getLeft() {
+<span class="fc" id="L50">    return this.left;</span>
+  }
+
+  /**
+   * Gets the node's right child.
+   * @return right child
+   */
+  public KDNode&lt;T&gt; getRight() {
+<span class="fc" id="L58">    return this.right;</span>
+  }
+
+  /**
+   * Gets the value stored at the node.
+   * @return value
+   */
+  public T getValue() {
+<span class="fc" id="L66">    return this.value;</span>
+  }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

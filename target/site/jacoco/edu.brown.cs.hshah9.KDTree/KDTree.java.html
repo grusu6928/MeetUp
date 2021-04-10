@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>KDTree.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stars</a> &gt; <a href="index.source.html" class="el_package">edu.brown.cs.hshah9.KDTree</a> &gt; <span class="el_source">KDTree.java</span></div><h1>KDTree.java</h1><pre class="source lang-java linenums">package edu.brown.cs.hshah9.KDTree;
+
+import edu.brown.cs.hshah9.stars.HasCoordinates;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+
+/**
+ * This class represents a KDTree, which is comprised of KDNodes whose values are objects
+ * implementing the HasCoordinates interface.
+ * @param &lt;T&gt; object that implements HasCoordinates interface
+ */
+public final class KDTree&lt;T extends HasCoordinates&gt; {
+
+  private KDNode&lt;T&gt; root;
+  private int currDim;
+
+
+  /**
+   * Instantiates KDTree from a list.
+   * @param data list from which to make tree
+   * @param totalDims dimensions of tree
+   * @param startingDim first dimension to sort by
+   */
+<span class="fc" id="L27">  public KDTree(ArrayList&lt;T&gt; data, int totalDims, int startingDim) {</span>
+<span class="fc" id="L28">    currDim = startingDim;</span>
+<span class="fc" id="L29">    Collections.sort(data, new NodeComparator(currDim)); // sort by 1st dimension -&gt; X</span>
+<span class="fc" id="L30">    root = this.addNode(data, currDim, totalDims); // first recursive call</span>
+<span class="fc" id="L31">  }</span>
+
+  /**
+   * Adds a node to the KDTree. This is a recursive function. Note that in the case of equality,
+   * it is not specified whether a node will be added to the left or right subtree.
+   * @param data list of nodes from which to select the node to add
+   * @param dim current iteration's dimension of coordinate comparison
+   * @param totalDims total number of dimensions the KDNode objects have
+   * @return added node
+   */
+  public KDNode&lt;T&gt; addNode(List&lt;T&gt; data, Integer dim, Integer totalDims) {
+
+    // base case (out of data)
+<span class="fc bfc" id="L44" title="All 2 branches covered.">    if (data.size() == 0) {</span>
+<span class="fc" id="L45">      return null;</span>
+    }
+
+    // new node is in middle of sorted list
+<span class="fc" id="L49">    int mid = data.size() / 2;</span>
+<span class="fc" id="L50">    KDNode&lt;T&gt; node = new KDNode(data.get(mid), null, null);</span>
+
+    // increment dimension before recursion
+<span class="fc" id="L53">    dim = (dim + 1) % totalDims;</span>
+
+    // create left and right sublists
+<span class="fc" id="L56">    List&lt;T&gt; leftSublist = data.subList(0, mid);</span>
+<span class="fc" id="L57">    List&lt;T&gt; rightSublist = data.subList(mid + 1, data.size());</span>
+
+    // sort sublists
+<span class="fc" id="L60">    Collections.sort(leftSublist, new NodeComparator(dim));</span>
+<span class="fc" id="L61">    Collections.sort(rightSublist, new NodeComparator(dim));</span>
+
+    // recursive calls
+<span class="fc" id="L64">    node.setLeftChild(this.addNode(leftSublist, dim, totalDims));</span>
+<span class="fc" id="L65">    node.setRightChild(this.addNode(rightSublist, dim, totalDims));</span>
+
+<span class="fc" id="L67">    return node;</span>
+  }
+
+  /**
+   * Gets the root of the KDTree, which is useful for traversals.
+   * @return root of tree
+   */
+  public KDNode&lt;T&gt; getRoot() {
+<span class="fc" id="L75">    return root;</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

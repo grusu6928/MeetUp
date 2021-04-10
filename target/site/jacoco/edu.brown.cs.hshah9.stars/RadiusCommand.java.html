@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RadiusCommand.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stars</a> &gt; <a href="index.source.html" class="el_package">edu.brown.cs.hshah9.stars</a> &gt; <span class="el_source">RadiusCommand.java</span></div><h1>RadiusCommand.java</h1><pre class="source lang-java linenums">package edu.brown.cs.hshah9.stars;
+
+import edu.brown.cs.hshah9.KDTree.KDNode;
+
+import java.util.ArrayList;
+
+/**
+ * This class holds functionality for the Radius command. It's a subclass of MainFourCommands.
+ * A KDTree is used to find all stars within a specified
+ * radius from a point of interest.
+ */
+public class RadiusCommand extends MainFourCommands implements CommandManager {
+
+  // store stars in list
+  private ArrayList&lt;Star&gt; list;
+
+  /**
+   * Instantiates radius command.
+   */
+<span class="fc" id="L20">  public RadiusCommand() { }</span>
+
+  /**
+   * Point of execution for the command. First makes call to errorCheck
+   * before processing user's input and calling necessary private methods
+   * to execute the command.
+   * @param input caller's input
+   * @return -1 on error; 0 o.w.
+   */
+  @Override
+  public int execute(String[] input) {
+
+    // commandType: 1 -&gt; radius command
+<span class="pc bpc" id="L33" title="1 of 2 branches missed.">    if (!super.errorCheck(input, 1)) {</span>
+
+<span class="fc" id="L35">      ArrayList&lt;Star&gt; data = SharedData.getInstance().getStarsData();</span>
+
+<span class="fc" id="L37">      Integer numArgs = input.length - 1;</span>
+<span class="fc bfc" id="L38" title="All 2 branches covered.">      boolean nameVersion = (numArgs == 2);</span>
+<span class="fc" id="L39">      double r = Double.parseDouble(input[1]);</span>
+
+<span class="fc" id="L41">      String starName = null;</span>
+      // removes quotes
+<span class="fc bfc" id="L43" title="All 2 branches covered.">      if (nameVersion) {</span>
+<span class="fc" id="L44">        starName = input[2].substring(1, input[2].length() - 1);</span>
+      }
+
+      // get POI
+<span class="fc" id="L48">      double[] poi = super.determinePOI(input, nameVersion);</span>
+
+<span class="fc" id="L50">      Integer totalDims = poi.length;</span>
+<span class="fc" id="L51">      Integer staringDim = 0;</span>
+
+<span class="fc" id="L53">      KDNode&lt;Star&gt; root = SharedData.getInstance().getRoot();</span>
+<span class="fc" id="L54">      list = new ArrayList&lt;&gt;();</span>
+
+      // call to run radius algo
+<span class="fc" id="L57">      this.runAlgorithm(root, poi, r, totalDims, staringDim, nameVersion, starName);</span>
+
+      // sort + print list
+<span class="fc" id="L60">      super.printIds(sortList(list, new EuclideanDistComparator(1)));</span>
+
+<span class="fc" id="L62">      return 0;</span>
+    }
+
+<span class="nc" id="L65">    return -1;</span>
+  }
+
+  /**
+   * Returns the final, sorted list of star IDs.
+   * @return list of sorted IDs
+   */
+  public ArrayList&lt;Star&gt; getFinalList() {
+<span class="fc" id="L73">    return this.list;</span>
+  }
+
+  /**
+   * Recusively searches KDTree to find all stars within a specified radius
+   * from a point of interest.
+   * @param node search (parent) node
+   * @param poi point of interest coordinates
+   * @param r search radius
+   * @param totalDims total dimensions of KDTree
+   * @param dim current search dimension
+   * @param nameVersion true: nameVersion; false: corVersion
+   * @param starName if nameVersion -&gt; name of specified star; o.w. null
+   */
+  private void runAlgorithm(KDNode&lt;Star&gt; node, double[] poi, double r,
+                            Integer totalDims, Integer dim,
+                            boolean nameVersion, String starName) {
+
+<span class="fc bfc" id="L91" title="All 2 branches covered.">    if (node == null) {</span>
+<span class="fc" id="L92">      return;</span>
+    }
+
+<span class="fc" id="L95">    Integer axis = dim % totalDims;</span>
+
+<span class="fc" id="L97">    Star currStar = node.getValue();</span>
+<span class="fc" id="L98">    currStar.setDistance(super.calcDistance(poi, currStar));</span>
+
+    // if dist &lt;= radius + NOT(name version &amp; trying to add current star) - &gt; add to list
+<span class="fc bfc" id="L101" title="All 2 branches covered.">    if (Double.compare(currStar.getDistance(), r) &lt;= 0) {</span>
+<span class="pc bpc" id="L102" title="2 of 4 branches missed.">      if (!(nameVersion &amp;&amp; currStar.getName().equals(starName))) {</span>
+<span class="nc" id="L103">        list.add(currStar);</span>
+      }
+    }
+
+<span class="fc" id="L107">    Double corRelAxis = currStar.getCoors()[axis];</span>
+<span class="fc" id="L108">    Double poiRelAxis = poi[axis];</span>
+<span class="fc" id="L109">    Double distTargetToCurr = Math.abs(corRelAxis - poiRelAxis);</span>
+
+    // inc dim before recurring
+<span class="fc" id="L112">    dim++;</span>
+
+
+    // if nodes of interest could be on either side -&gt; recur on both sides
+    // ; o.w. just on relevant side
+    // special cases: pq empty, any equality case -&gt; recur on both sides
+    // tree doesn't specify direction in cases of equality
+<span class="fc bfc" id="L119" title="All 2 branches covered.">    if (Double.compare(r, distTargetToCurr) &gt;= 0) {</span>
+<span class="fc" id="L120">      this.runAlgorithm(node.getLeft(), poi, r, totalDims, dim, nameVersion, starName);</span>
+<span class="fc" id="L121">      this.runAlgorithm(node.getRight(), poi, r, totalDims, dim, nameVersion, starName);</span>
+    } else {
+<span class="fc bfc" id="L123" title="All 2 branches covered.">      if (corRelAxis.compareTo(poiRelAxis) &lt; 0) {</span>
+<span class="fc" id="L124">        this.runAlgorithm(node.getRight(), poi, r, totalDims, dim, nameVersion, starName);</span>
+<span class="pc bpc" id="L125" title="1 of 2 branches missed.">      } else if (corRelAxis.compareTo(poiRelAxis) &gt; 0) {</span>
+<span class="fc" id="L126">        this.runAlgorithm(node.getLeft(), poi, r, totalDims, dim, nameVersion, starName);</span>
+      } else {
+<span class="nc" id="L128">        this.runAlgorithm(node.getLeft(), poi, r, totalDims, dim, nameVersion, starName);</span>
+<span class="nc" id="L129">        this.runAlgorithm(node.getRight(), poi, r, totalDims, dim, nameVersion, starName);</span>
+      }
+    }
+<span class="fc" id="L132">  }</span>
+
+}
+
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

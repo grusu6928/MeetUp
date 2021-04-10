@@ -1,0 +1,9 @@
+INPUT
+stars data/stars/ten-star.csv
+naive_radius 3 ""
+naive_neighbors 10 ""
+OUTPUT
+Read 10 stars from data/stars/ten-star.csv
+ERROR: No such star exists in the loaded file
+ERROR: No such star exists in the loaded file
+END

@@ -1,0 +1,9 @@
+INPUT
+stars data/stars/ten-star.csv
+naive_neighbors 3 Sol
+naive_radius 3.3 Star
+OUTPUT
+Read 10 stars from data/stars/ten-star.csv
+ERROR: Star name must be enclosed in quotation marks
+ERROR: Star name must be enclosed in quotation marks
+END

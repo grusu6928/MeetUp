@@ -1,40 +1,85 @@
-# cs0320 Term Project 2021
+# README
 
-**Team Members:** Amin Hijaz, Ermias Genet, George Rusu, Hamzah Shah
+## Stars
 
-**Team Strengths and Weaknesses:**
-George Rusu
-Strengths: Extensive experience working with frontend and backend frameworks like React and Django. Experience with deployment, databases, and user login/authentication. 
-Weaknesses: Django is python not Java. Not too comfortable with frontend development - more comfortable with setting up routing, endpoints, and testing for the frontend.
-Ermias Genet
-Strengths: Front end development ( familiar with React,  Js, bootstrap, good experience with Html/css), connecting APIs
-Weaknesses: little SQL experience, not strong with java 
-Amin Hijaz
-Strengths: have some experience working with React(a long time ago), know some Js, html, and Css. Love Learning new stuff
-Weaknesses: new to Java, databases(I used google firebase with React before but not SQL).
-Hamzah Shah
-Strengths: Databases (SQL), working with large datasets, functionality testing, Python, communication 
-Weaknesses: Front end development
+### Code Structure
+
+#### Program Flow
+In Main, I instantiate a REPL object and call runREPL. I instantiate a starsApplication (which runs the logic of my program) in my REPL class, and in every iteration of my REPL, I read user input by calling a parse method in a separate Parser class, check for EOF, and call starsApplication.run(input).
+
+#### Command Manager Interface / Main Command Classes
+CommandManager interface: all of the commands for this project must implement this interface (one required method -> execute(input)); extensibility -> no need for a bunch of if/elses to run commands, just command.execute
+    Implementing classes: StarsCommand, NaiveNeighborsCommand, NeighborsCommand, NaiveRadiusCommand, RadiusCommand
+    In short -> each command = diff class
+
+#### Stars Application
+StarsApplication: site of command execution
+
+#### CSV Reader
+CSVReader package/class: reads in CSV; stores as List of Lists of strings; separate class for extensibility
+Parser package/class: parses a string based on delimiter; for extensibility: user specifies delimiter + when instaniate Parser object, caller specifies readerType
+
+#### KDTree
+KDTree package:
+  KDNode class: extensibility -> can hold any object that implements HasCoordinates interface
+  KDTree class: stores KDNodes; extensibility -> caller specifies totalDimensions of tree; before each recursive call -> dim = (dim+1) % totalDimensions
+  NodeComparator: extensibility -> caller specifies on which dimension to compare
+  
+#### Shared Data
+Shared Data class (Singleton class): allows key data to be set 1x and then accessed across classes (list of Stars, HashMap star name -> star, KD tree root node)
+  Why use HashMap -> often I performed look ups of stars based on name to get their coordinates, etc. so HashMap allowed for quick search; this also works because we assume no  legitimate star names will be repeated
+
+#### Stars 
+Stars class: separate class b/c easy to store attributes and have getters/setters; implements HasCoordinates interface -> extensibility: KDNode can hold anything that implements HasCoordinates (in this case, a Star)
+
+#### MainFourCommands superclass
+MainFourCommands superclass: extended by naive and non-naive neighbors and radius; lots of shared methods (including error checking) between the 4 commands, so this saved lots of code
+
+### How to Run
+./run in the command line
+
+### System Tests
+
+#### Location
+/tests/student/stars -> Applies to whole Stars project
+/tests/student/stars/stars1 -> Stars 1 specific
+/tests/student/stars/stars2 -> Stars 2 specific
+
+Note: the Stars 1 and 2 system tests are the same, except for switching "naive_neighbors" and "naive_radius" to "neighbors" and "radius" respectively
+
+#### Notable Tests
+##### /stars
+- improper_CSV_header: wrong CSV header format
+- stars_incorrect_num_args
+- stars_invalid_args: various invalid argument cases
+##### /stars2
+- exclude_provided_name: running name version of commands -> ensure specified star isn't part of output
+- incorrect_num_args
+- invalid_args
+- k_geq_n: reuqesting more neighbors than exist stars -> output as much as can
+- large_data_n_cor (n_name, r_cor, r_name): verified correct output on stardata.csv 
+- no_file_loaded: can't run commands without loaded csv
+- request_0_neighbors: print nothing
+- star_name_empty_string: don't run commands on such a star
+- star_name_no_quotes: errpr
+- zero_radius_corVersion (nameVersion)
 
 
-**Project Idea(s):**
-### Idea 1
-With everyone’s busy schedules, coordinating spontaneous meet-ups with friends on campus can be difficult. Our idea is to create a service to automate the process: it will match friends together considering their preferences (e.g. what activity to meet up for, distance willing to travel, time willing to spend, etc) as well as their location. The core algorithmic complexity comes from using these preferences and location constraints to form meet-up groups via a graph-based matching algorithm. For the sake of this project, we will limit our scope to Brown University students and the Brown University campus. 
+### Design Questions
 
-### Idea 2
+#### Stars 1
+1. In this scenaro, my current way of evaluating which command was inputted (by using individual if statements) is inefficent. Instead, it would be better design to have Map of input commands -> the relevant object that could execute such a command. This way, instead of a bunch of for loops, we can easily search our map for what command the user inputted and get out the object we need to execute such a command. In order for this to work properly, our design would also have to ensure that each command (regardless of the object) can be started in the same way (with the same function call). Otherwise, we would have to incorporate more information into our mapping, namely all of the information we need to run any given command (i.e. function name, parameters, etc).
 
-### Idea 3
+Update: in Stars 3, I updated my code such that each command implements a CommandManager interface and there is a HashMap mapping command name -> command object, so that I can simply query the caller's specified command for the appropriate object and call command_object.execute(input). This got rid of the need for separate if/elses.
 
-**Mentor TA:** _Put your mentor TA's name and email here once you're assigned one!_
+#### Stars 2
+1. Latitudes/Longditudes are extremely precise, and it is often the case that two places with just minor differences in far down decimal places are in actuality not that close to each other (relatively speaking, i.e. one difference in the ten-thousandths place of a coordinate makes a huge difference). As such, it might be difficult for our KDTree to pick up on such nuanced differences in location which could result in imprecise results.
 
-## Meetings
-_On your first meeting with your mentor TA, you should plan dates for at least the following meetings:_
+2. not sure
 
-**Specs, Mockup, and Design Meeting:** _(Schedule for on or before March 15)_
+  
+  
 
-**4-Way Checkpoint:** _(Schedule for on or before April 5)_
+### Known Bugs
+N/A
 
-**Adversary Checkpoint:** _(Schedule for on or before April 12 once you are assigned an adversary TA)_
-
-## How to Build and Run
-_A necessary part of any README!_

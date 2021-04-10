@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pmd-cpd>
+   <duplication lines="27" tokens="165">
+      <file line="139"
+            path="/Users/hamzahshah/Desktop/cs0320/stars-hamzah-shah/src/main/java/edu/brown/cs/hshah9/stars/Main.java"/>
+      <file line="201"
+            path="/Users/hamzahshah/Desktop/cs0320/stars-hamzah-shah/src/main/java/edu/brown/cs/hshah9/stars/Main.java"/>
+      <codefragment><![CDATA[      String output = "";
+
+      if (searchType == null) {
+        output = "ERROR: please select naive or optimized";
+      } else if (searchType.equals("naive_radius")) {
+        NaiveRadiusCommand naiveRCommand = new NaiveRadiusCommand();
+        int err = naiveRCommand.execute(input); // what about errors
+
+        if (err == -1) {
+          output = naiveRCommand.getErrorMessage();
+        } else {
+          output = new StarsApplication().getOutput(naiveRCommand.getFinalList());
+        }
+      } else if (searchType.equals("radius")) {
+        RadiusCommand rCommand = new RadiusCommand();
+        int err = rCommand.execute(input); // what about errors
+
+        if (err == -1) {
+          output = rCommand.getErrorMessage();
+        } else {
+          output = new StarsApplication().getOutput(rCommand.getFinalList());
+        }
+      }
+
+      Map<String, Object> variables = ImmutableMap.of("title",
+              "The Endgame: KD's Gambit", "n_cor_results", "", "n_name_results", "",
+              "r_cor_results", "", "r_name_results", output);]]></codefragment>
+   </duplication>
+   <duplication lines="28" tokens="157">
+      <file line="262"
+            path="/Users/hamzahshah/Desktop/cs0320/stars-hamzah-shah/src/main/java/edu/brown/cs/hshah9/stars/Main.java"/>
+      <file line="326"
+            path="/Users/hamzahshah/Desktop/cs0320/stars-hamzah-shah/src/main/java/edu/brown/cs/hshah9/stars/Main.java"/>
+      <codefragment><![CDATA[      String output = "";
+
+      if (searchType == null) {
+        output = "ERROR: please select naive or optimized";
+      } else if (searchType.equals("naive_neighbors")) {
+        NaiveNeighborsCommand naiveNCommand = new NaiveNeighborsCommand();
+        int err = naiveNCommand.execute(input); // what about errors
+
+        if (err == -1) {
+          output = naiveNCommand.getErrorMessage();
+        } else {
+          output = new StarsApplication().getOutput(naiveNCommand.getFinalList());
+        }
+
+      } else if (searchType.equals("neighbors")) {
+        NeighborsCommand nCommand = new NeighborsCommand();
+        int err = nCommand.execute(input); // what about errors
+
+        if (err == -1) {
+          output = nCommand.getErrorMessage();
+        } else {
+          output = new StarsApplication().getOutput(nCommand.getFinalList());
+        }
+      }
+
+
+      Map<String, Object> variables = ImmutableMap.of("title",
+              "The Endgame: KD's Gambit", "n_cor_results", "", "n_name_results", output,]]></codefragment>
+   </duplication>
+</pmd-cpd>

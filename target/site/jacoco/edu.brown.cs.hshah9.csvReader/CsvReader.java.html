@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CsvReader.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stars</a> &gt; <a href="index.source.html" class="el_package">edu.brown.cs.hshah9.csvReader</a> &gt; <span class="el_source">CsvReader.java</span></div><h1>CsvReader.java</h1><pre class="source lang-java linenums">package edu.brown.cs.hshah9.csvReader;
+
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Stream;
+
+
+
+/**
+ * This class reads in a CSV file specified by the user and outputs it as a list of lists.
+ */
+public class CsvReader {
+
+  private String properHeader;
+  private String readInHeader;
+
+  /**
+   * Instantiates a CSVReader, caller specifies properHeading.
+   * @param properHeader proper heading
+   */
+<span class="fc" id="L26">  public CsvReader(String properHeader) {</span>
+<span class="fc" id="L27">    this.properHeader = properHeader;</span>
+<span class="fc" id="L28">  }</span>
+
+  /**
+   * Overloaded constructor for Mock csv, since there's no
+   * specific valid header.
+   */
+<span class="nc" id="L34">  public CsvReader() { }</span>
+
+
+  /**
+   * Reads in a caller-specified file and returns the file as a list of lists of strings, in which
+   * each line of the csv is its own list.
+   * @param inputFile the caller-specified file
+   * @return data represented as list of lists of strings
+   */
+  public ArrayList&lt;List&lt;String&gt;&gt; readInData(String inputFile) {
+<span class="fc" id="L44">    BufferedReader in = null;</span>
+    try {
+<span class="fc" id="L46">      in = new BufferedReader(new FileReader(inputFile));</span>
+<span class="nc" id="L47">    } catch (FileNotFoundException e) {</span>
+<span class="nc" id="L48">      System.out.println(&quot;ERROR: file not found&quot;);</span>
+<span class="fc" id="L49">    }</span>
+
+<span class="fc" id="L51">    Stream&lt;String&gt; stream = in.lines();</span>
+
+    // collecting CSV data into ArrayList (one line = one element)
+<span class="fc" id="L54">    List&lt;String&gt; rawEntries = stream.collect(ArrayList::new, ArrayList::add,</span>
+            ArrayList::addAll);
+
+<span class="fc" id="L57">    this.readInHeader = rawEntries.get(0);</span>
+
+    // take CSV data out of List -&gt; parse row by row (each row into a List) + add to new ArrayList
+<span class="fc" id="L60">    ArrayList&lt;List&lt;String&gt;&gt; data = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">    for (int i = 1; i &lt; rawEntries.size(); i++) { // starting from 1 to get rid of header</span>
+<span class="fc" id="L62">      List&lt;String&gt; entry = Arrays.asList(rawEntries.get(i).split(&quot;,&quot;, -1));</span>
+<span class="fc" id="L63">      data.add(entry);</span>
+    }
+
+<span class="fc" id="L66">    return data;</span>
+
+  }
+
+  /**
+   * Verifies that the desired header specified by the caller
+   * matches the header read in from the CSV file.
+   * @return true if they match; false o.w.
+   */
+  public boolean correctHeader() {
+<span class="fc" id="L76">    return this.readInHeader.equals(this.properHeader);</span>
+  }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

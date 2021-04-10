@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Main.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">stars</a> &gt; <a href="index.source.html" class="el_package">edu.brown.cs.hshah9.stars</a> &gt; <span class="el_source">Main.java</span></div><h1>Main.java</h1><pre class="source lang-java linenums">package edu.brown.cs.hshah9.stars;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.Map;
+
+import edu.brown.cs.hshah9.REPL.REPL;
+import joptsimple.OptionParser;
+import joptsimple.OptionSet;
+import spark.ExceptionHandler;
+import spark.ModelAndView;
+import spark.QueryParamsMap;
+import spark.Request;
+import spark.Response;
+import spark.Spark;
+import spark.TemplateViewRoute;
+import spark.template.freemarker.FreeMarkerEngine;
+
+import com.google.common.collect.ImmutableMap;
+
+import freemarker.template.Configuration;
+
+/**
+ * The Main class of our project. This is where execution begins.
+ *
+ */
+public final class Main {
+
+  private static final int DEFAULT_PORT = 4567;
+
+  /**
+   * The initial method called when execution begins.
+   * @param args An array of command line arguments
+   * @throws Exception thrown exception if there's one
+   */
+  public static void main(String[] args) throws Exception {
+<span class="nc" id="L39">    new Main(args).run();</span>
+<span class="nc" id="L40">  }</span>
+
+  private String[] args;
+
+<span class="nc" id="L44">  private Main(String[] args) {</span>
+<span class="nc" id="L45">    this.args = args;</span>
+<span class="nc" id="L46">  }</span>
+
+  private void run() throws Exception {
+    // Parse command line arguments
+<span class="nc" id="L50">    OptionParser parser = new OptionParser();</span>
+<span class="nc" id="L51">    parser.accepts(&quot;gui&quot;);</span>
+<span class="nc" id="L52">    parser.accepts(&quot;port&quot;).withRequiredArg().ofType(Integer.class)</span>
+<span class="nc" id="L53">    .defaultsTo(DEFAULT_PORT);</span>
+<span class="nc" id="L54">    OptionSet options = parser.parse(args);</span>
+
+<span class="nc bnc" id="L56" title="All 2 branches missed.">    if (options.has(&quot;gui&quot;)) {</span>
+<span class="nc" id="L57">      runSparkServer((int) options.valueOf(&quot;port&quot;));</span>
+    }
+
+
+    // REPL
+<span class="nc" id="L62">    REPL repl = new REPL();</span>
+<span class="nc" id="L63">    repl.runREPL();</span>
+
+<span class="nc" id="L65">  }</span>
+
+
+
+  private static FreeMarkerEngine createEngine() {
+<span class="nc" id="L70">    Configuration config = new Configuration();</span>
+<span class="nc" id="L71">    File templates = new File(&quot;src/main/resources/spark/template/freemarker&quot;);</span>
+    try {
+<span class="nc" id="L73">      config.setDirectoryForTemplateLoading(templates);</span>
+<span class="nc" id="L74">    } catch (IOException ioe) {</span>
+<span class="nc" id="L75">      System.out.printf(&quot;ERROR: Unable use %s for template loading.%n&quot;,</span>
+          templates);
+<span class="nc" id="L77">      System.exit(1);</span>
+<span class="nc" id="L78">    }</span>
+<span class="nc" id="L79">    return new FreeMarkerEngine(config);</span>
+  }
+
+  private void runSparkServer(int port) {
+<span class="nc" id="L83">    Spark.port(port);</span>
+<span class="nc" id="L84">    Spark.externalStaticFileLocation(&quot;src/main/resources/static&quot;);</span>
+<span class="nc" id="L85">    Spark.exception(Exception.class, new ExceptionPrinter());</span>
+
+<span class="nc" id="L87">    FreeMarkerEngine freeMarker = createEngine();</span>
+
+    // Setup Spark Routes
+<span class="nc" id="L90">    Spark.get(&quot;/stars&quot;, new FrontHandler(), freeMarker);</span>
+<span class="nc" id="L91">    Spark.get(&quot;/neighbors_cor&quot;, new NeighborsCorHandler(), freeMarker);</span>
+<span class="nc" id="L92">    Spark.get(&quot;/neighbors_name&quot;, new NeighborsNameHandler(), freeMarker);</span>
+<span class="nc" id="L93">    Spark.get(&quot;/radius_cor&quot;, new RadiusCorHandler(), freeMarker);</span>
+<span class="nc" id="L94">    Spark.get(&quot;/radius_name&quot;, new RadiusNameHandler(), freeMarker);</span>
+<span class="nc" id="L95">  }</span>
+
+  /**
+   * Handle requests to the front page of our Stars website.
+   *
+   */
+  private static class FrontHandler implements TemplateViewRoute {
+    @Override
+    public ModelAndView handle(Request req, Response res) {
+<span class="nc" id="L104">      Map&lt;String, Object&gt; variables = ImmutableMap.of(&quot;title&quot;,</span>
+          &quot;The Endgame: KD's Gambit&quot;, &quot;n_cor_results&quot;, &quot;&quot;, &quot;n_name_results&quot;, &quot;&quot;,
+              &quot;r_cor_results&quot;, &quot;&quot;, &quot;r_name_results&quot;, &quot;&quot;);
+
+<span class="nc" id="L108">      return new ModelAndView(variables, &quot;query.ftl&quot;);</span>
+    }
+  }
+
+
+  /**
+   * RadiusNameHandler.
+   */
+  private static class RadiusNameHandler implements TemplateViewRoute {
+
+    /**
+     * RadiusNameHandler handle method.
+     * @param req request
+     * @param res response
+     * @return modelViewHandler
+     */
+    @Override
+    public ModelAndView handle(Request req, Response res) {
+
+<span class="nc" id="L127">      QueryParamsMap qm = req.queryMap();</span>
+
+<span class="nc" id="L129">      String searchType = qm.value(&quot;searchType&quot;);</span>
+<span class="nc" id="L130">      String r = qm.value(&quot;r&quot;);</span>
+<span class="nc" id="L131">      String starname = qm.value(&quot;starname&quot;);</span>
+
+
+<span class="nc" id="L134">      String[] input = new String[3];</span>
+<span class="nc" id="L135">      input[0] = searchType;</span>
+<span class="nc" id="L136">      input[1] = r;</span>
+<span class="nc" id="L137">      input[2] = starname;</span>
+
+<span class="nc" id="L139">      String output = &quot;&quot;;</span>
+
+<span class="nc bnc" id="L141" title="All 2 branches missed.">      if (searchType == null) {</span>
+<span class="nc" id="L142">        output = &quot;ERROR: please select naive or optimized&quot;;</span>
+<span class="nc bnc" id="L143" title="All 2 branches missed.">      } else if (searchType.equals(&quot;naive_radius&quot;)) {</span>
+<span class="nc" id="L144">        NaiveRadiusCommand naiveRCommand = new NaiveRadiusCommand();</span>
+<span class="nc" id="L145">        int err = naiveRCommand.execute(input); // what about errors</span>
+
+<span class="nc bnc" id="L147" title="All 2 branches missed.">        if (err == -1) {</span>
+<span class="nc" id="L148">          output = naiveRCommand.getErrorMessage();</span>
+        } else {
+<span class="nc" id="L150">          output = new StarsApplication().getOutput(naiveRCommand.getFinalList());</span>
+        }
+<span class="nc bnc" id="L152" title="All 2 branches missed.">      } else if (searchType.equals(&quot;radius&quot;)) {</span>
+<span class="nc" id="L153">        RadiusCommand rCommand = new RadiusCommand();</span>
+<span class="nc" id="L154">        int err = rCommand.execute(input); // what about errors</span>
+
+<span class="nc bnc" id="L156" title="All 2 branches missed.">        if (err == -1) {</span>
+<span class="nc" id="L157">          output = rCommand.getErrorMessage();</span>
+        } else {
+<span class="nc" id="L159">          output = new StarsApplication().getOutput(rCommand.getFinalList());</span>
+        }
+      }
+
+<span class="nc" id="L163">      Map&lt;String, Object&gt; variables = ImmutableMap.of(&quot;title&quot;,</span>
+              &quot;The Endgame: KD's Gambit&quot;, &quot;n_cor_results&quot;, &quot;&quot;, &quot;n_name_results&quot;, &quot;&quot;,
+              &quot;r_cor_results&quot;, &quot;&quot;, &quot;r_name_results&quot;, output);
+
+<span class="nc" id="L167">      return new ModelAndView(variables, &quot;query.ftl&quot;);</span>
+    }
+  }
+
+
+  /**
+   * RadiusCorHandler.
+   */
+  private static class RadiusCorHandler implements TemplateViewRoute {
+
+    /**
+     * RadiusCorHandler handle method.
+     * @param req request
+     * @param res response
+     * @return modelViewHandler
+     */
+    @Override
+    public ModelAndView handle(Request req, Response res) {
+
+<span class="nc" id="L186">      QueryParamsMap qm = req.queryMap();</span>
+
+<span class="nc" id="L188">      String searchType = qm.value(&quot;searchType&quot;);</span>
+<span class="nc" id="L189">      String r = qm.value(&quot;r&quot;);</span>
+<span class="nc" id="L190">      String xcor = qm.value(&quot;x&quot;);</span>
+<span class="nc" id="L191">      String ycor = qm.value(&quot;y&quot;);</span>
+<span class="nc" id="L192">      String zcor = qm.value(&quot;z&quot;);</span>
+
+<span class="nc" id="L194">      String[] input = new String[5];</span>
+<span class="nc" id="L195">      input[0] = searchType;</span>
+<span class="nc" id="L196">      input[1] = r;</span>
+<span class="nc" id="L197">      input[2] = xcor;</span>
+<span class="nc" id="L198">      input[3] = ycor;</span>
+<span class="nc" id="L199">      input[4] = zcor;</span>
+
+<span class="nc" id="L201">      String output = &quot;&quot;;</span>
+
+<span class="nc bnc" id="L203" title="All 2 branches missed.">      if (searchType == null) {</span>
+<span class="nc" id="L204">        output = &quot;ERROR: please select naive or optimized&quot;;</span>
+<span class="nc bnc" id="L205" title="All 2 branches missed.">      } else if (searchType.equals(&quot;naive_radius&quot;)) {</span>
+<span class="nc" id="L206">        NaiveRadiusCommand naiveRCommand = new NaiveRadiusCommand();</span>
+<span class="nc" id="L207">        int err = naiveRCommand.execute(input); // what about errors</span>
+
+<span class="nc bnc" id="L209" title="All 2 branches missed.">        if (err == -1) {</span>
+<span class="nc" id="L210">          output = naiveRCommand.getErrorMessage();</span>
+        } else {
+<span class="nc" id="L212">          output = new StarsApplication().getOutput(naiveRCommand.getFinalList());</span>
+        }
+
+<span class="nc bnc" id="L215" title="All 2 branches missed.">      } else if (searchType.equals(&quot;radius&quot;)) {</span>
+<span class="nc" id="L216">        RadiusCommand rCommand = new RadiusCommand();</span>
+<span class="nc" id="L217">        int err = rCommand.execute(input); // what about errors</span>
+
+<span class="nc bnc" id="L219" title="All 2 branches missed.">        if (err == -1) {</span>
+<span class="nc" id="L220">          output = rCommand.getErrorMessage();</span>
+        } else {
+<span class="nc" id="L222">          output = new StarsApplication().getOutput(rCommand.getFinalList());</span>
+        }
+      }
+
+
+<span class="nc" id="L227">      Map&lt;String, Object&gt; variables = ImmutableMap.of(&quot;title&quot;,</span>
+              &quot;The Endgame: KD's Gambit&quot;, &quot;n_cor_results&quot;, &quot;&quot;, &quot;n_name_results&quot;, &quot;&quot;,
+              &quot;r_cor_results&quot;, output, &quot;r_name_results&quot;, &quot;&quot;);
+
+<span class="nc" id="L231">      return new ModelAndView(variables, &quot;query.ftl&quot;);</span>
+    }
+  }
+
+
+  /**
+   * NeighborsNameHandler.
+   */
+  private static class NeighborsNameHandler implements TemplateViewRoute {
+
+    /**
+     * NeighborsNameHandler handle method.
+     * @param req request
+     * @param res response
+     * @return modelViewHandler
+     */
+    @Override
+    public ModelAndView handle(Request req, Response res) {
+
+<span class="nc" id="L250">      QueryParamsMap qm = req.queryMap();</span>
+
+<span class="nc" id="L252">      String searchType = qm.value(&quot;searchType&quot;);</span>
+<span class="nc" id="L253">      String k = qm.value(&quot;k&quot;);</span>
+<span class="nc" id="L254">      String starname = qm.value(&quot;starname&quot;);</span>
+
+
+<span class="nc" id="L257">      String[] input = new String[3];</span>
+<span class="nc" id="L258">      input[0] = searchType;</span>
+<span class="nc" id="L259">      input[1] = k;</span>
+<span class="nc" id="L260">      input[2] = starname;</span>
+
+<span class="nc" id="L262">      String output = &quot;&quot;;</span>
+
+<span class="nc bnc" id="L264" title="All 2 branches missed.">      if (searchType == null) {</span>
+<span class="nc" id="L265">        output = &quot;ERROR: please select naive or optimized&quot;;</span>
+<span class="nc bnc" id="L266" title="All 2 branches missed.">      } else if (searchType.equals(&quot;naive_neighbors&quot;)) {</span>
+<span class="nc" id="L267">        NaiveNeighborsCommand naiveNCommand = new NaiveNeighborsCommand();</span>
+<span class="nc" id="L268">        int err = naiveNCommand.execute(input); // what about errors</span>
+
+<span class="nc bnc" id="L270" title="All 2 branches missed.">        if (err == -1) {</span>
+<span class="nc" id="L271">          output = naiveNCommand.getErrorMessage();</span>
+        } else {
+<span class="nc" id="L273">          output = new StarsApplication().getOutput(naiveNCommand.getFinalList());</span>
+        }
+
+<span class="nc bnc" id="L276" title="All 2 branches missed.">      } else if (searchType.equals(&quot;neighbors&quot;)) {</span>
+<span class="nc" id="L277">        NeighborsCommand nCommand = new NeighborsCommand();</span>
+<span class="nc" id="L278">        int err = nCommand.execute(input); // what about errors</span>
+
+<span class="nc bnc" id="L280" title="All 2 branches missed.">        if (err == -1) {</span>
+<span class="nc" id="L281">          output = nCommand.getErrorMessage();</span>
+        } else {
+<span class="nc" id="L283">          output = new StarsApplication().getOutput(nCommand.getFinalList());</span>
+        }
+      }
+
+
+<span class="nc" id="L288">      Map&lt;String, Object&gt; variables = ImmutableMap.of(&quot;title&quot;,</span>
+              &quot;The Endgame: KD's Gambit&quot;, &quot;n_cor_results&quot;, &quot;&quot;, &quot;n_name_results&quot;, output,
+              &quot;r_cor_results&quot;, &quot;&quot;, &quot;r_name_results&quot;, &quot;&quot;);
+
+<span class="nc" id="L292">      return new ModelAndView(variables, &quot;query.ftl&quot;);</span>
+    }
+  }
+
+
+  /**
+   * NeighborsCorHandler.
+   */
+  private static class NeighborsCorHandler implements TemplateViewRoute {
+
+    /**
+     * NeighborsCorHandler handle method.
+     * @param req request
+     * @param res response
+     * @return modelViewHandler
+     */
+    @Override
+    public ModelAndView handle(Request req, Response res) {
+
+<span class="nc" id="L311">      QueryParamsMap qm = req.queryMap();</span>
+
+<span class="nc" id="L313">      String searchType = qm.value(&quot;searchType&quot;);</span>
+<span class="nc" id="L314">      String k = qm.value(&quot;k&quot;);</span>
+<span class="nc" id="L315">      String xcor = qm.value(&quot;x&quot;);</span>
+<span class="nc" id="L316">      String ycor = qm.value(&quot;y&quot;);</span>
+<span class="nc" id="L317">      String zcor = qm.value(&quot;z&quot;);</span>
+
+<span class="nc" id="L319">      String[] input = new String[5];</span>
+<span class="nc" id="L320">      input[0] = searchType;</span>
+<span class="nc" id="L321">      input[1] = k;</span>
+<span class="nc" id="L322">      input[2] = xcor;</span>
+<span class="nc" id="L323">      input[3] = ycor;</span>
+<span class="nc" id="L324">      input[4] = zcor;</span>
+
+<span class="nc" id="L326">      String output = &quot;&quot;;</span>
+
+<span class="nc bnc" id="L328" title="All 2 branches missed.">      if (searchType == null) {</span>
+<span class="nc" id="L329">        output = &quot;ERROR: please select naive or optimized&quot;;</span>
+<span class="nc bnc" id="L330" title="All 2 branches missed.">      } else if (searchType.equals(&quot;naive_neighbors&quot;)) {</span>
+<span class="nc" id="L331">        NaiveNeighborsCommand naiveNCommand = new NaiveNeighborsCommand();</span>
+<span class="nc" id="L332">        int err = naiveNCommand.execute(input); // what about errors</span>
+
+<span class="nc bnc" id="L334" title="All 2 branches missed.">        if (err == -1) {</span>
+<span class="nc" id="L335">          output = naiveNCommand.getErrorMessage();</span>
+        } else {
+<span class="nc" id="L337">          output = new StarsApplication().getOutput(naiveNCommand.getFinalList());</span>
+        }
+<span class="nc bnc" id="L339" title="All 2 branches missed.">      } else if (searchType.equals(&quot;neighbors&quot;)) {</span>
+<span class="nc" id="L340">        NeighborsCommand nCommand = new NeighborsCommand();</span>
+<span class="nc" id="L341">        int err = nCommand.execute(input); // what about errors</span>
+
+<span class="nc bnc" id="L343" title="All 2 branches missed.">        if (err == -1) {</span>
+<span class="nc" id="L344">          output = nCommand.getErrorMessage();</span>
+        } else {
+<span class="nc" id="L346">          output = new StarsApplication().getOutput(nCommand.getFinalList());</span>
+        }
+      }
+
+
+<span class="nc" id="L351">      Map&lt;String, Object&gt; variables = ImmutableMap.of(&quot;title&quot;,</span>
+              &quot;The Endgame: KD's Gambit&quot;, &quot;n_cor_results&quot;, output, &quot;n_name_results&quot;, &quot;&quot;,
+              &quot;r_name_results&quot;, &quot;&quot;, &quot;r_cor_results&quot;, &quot;&quot;);
+
+<span class="nc" id="L355">      return new ModelAndView(variables, &quot;query.ftl&quot;);</span>
+    }
+  }
+
+  /**
+   * Display an error page when an exception occurs in the server.
+   *
+   */
+  private static class ExceptionPrinter implements ExceptionHandler {
+    @Override
+    public void handle(Exception e, Request req, Response res) {
+<span class="nc" id="L366">      res.status(500);</span>
+<span class="nc" id="L367">      StringWriter stacktrace = new StringWriter();</span>
+<span class="nc" id="L368">      try (PrintWriter pw = new PrintWriter(stacktrace)) {</span>
+<span class="nc" id="L369">        pw.println(&quot;&lt;pre&gt;&quot;);</span>
+<span class="nc" id="L370">        e.printStackTrace(pw);</span>
+<span class="nc" id="L371">        pw.println(&quot;&lt;/pre&gt;&quot;);</span>
+      }
+<span class="nc" id="L373">      res.body(stacktrace.toString());</span>
+<span class="nc" id="L374">    }</span>
+  }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>
