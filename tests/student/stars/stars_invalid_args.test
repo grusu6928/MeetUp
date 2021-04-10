@@ -1,5 +1,0 @@
-INPUT
-stars data/stars/dne.csv
-OUTPUT
-ERROR: file does not exist
-END

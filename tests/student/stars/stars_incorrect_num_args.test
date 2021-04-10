@@ -1,7 +1,0 @@
-INPUT
-stars data/stars/stardata.csv 20
-OUTPUT
-ERROR: incorrect number of arguments
-END
-
-

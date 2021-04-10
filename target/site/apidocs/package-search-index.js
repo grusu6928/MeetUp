@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"edu.brown.cs.hshah9.csvReader"},{"l":"edu.brown.cs.hshah9.KDTree"},{"l":"edu.brown.cs.hshah9.Mock"},{"l":"edu.brown.cs.hshah9.Parser"},{"l":"edu.brown.cs.hshah9.REPL"},{"l":"edu.brown.cs.hshah9.stars"}]

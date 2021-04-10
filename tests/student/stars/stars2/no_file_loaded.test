@@ -1,7 +1,0 @@
-INPUT
-neighbors 10 "Sol"
-radius 5 20.6 -30.2 123.3
-OUTPUT
-ERROR: no csv file loaded
-ERROR: no csv file loaded
-END

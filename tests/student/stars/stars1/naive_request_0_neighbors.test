@@ -1,7 +1,0 @@
-INPUT
-stars data/stars/three-star.csv
-naive_neighbors 0 1 1 1
-naive_neighbors 0 "Star One"
-OUTPUT
-Read 3 stars from data/stars/three-star.csv
-END

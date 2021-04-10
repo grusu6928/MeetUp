@@ -1,5 +1,0 @@
-INPUT
-stars data/improper_header.csv
-OUTPUT
-ERROR: malformed CSV file
-END
