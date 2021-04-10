@@ -1,4 +1,4 @@
-package edu.brown.cs.student.stars;
+package edu.brown.cs.student.term_project;
 
 import java.io.File;
 import java.io.IOException;

@@ -11,6 +11,8 @@ public class StarterNode implements GraphNode {
   private String location; // modify data type
   private int capacity;
 
+  private int numAttendees;
+
 
   public StarterNode(int id, String event, LocalTime startTime,
                      LocalTime endTime, String location, int capacity) {
@@ -21,6 +23,8 @@ public class StarterNode implements GraphNode {
     this.endTime = endTime;
     this.location = location;
     this.capacity = capacity;
+
+    this.numAttendees = 0;
 
   }
 
@@ -55,5 +59,13 @@ public class StarterNode implements GraphNode {
 
   public int getCapacity() {
     return this.capacity;
+  }
+
+  public void incrementAttendees() {
+    this.numAttendees ++;
+  }
+
+  public int getNumAttendees() {
+    return this.numAttendees;
   }
 }
