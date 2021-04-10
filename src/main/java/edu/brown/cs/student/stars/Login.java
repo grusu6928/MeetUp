@@ -44,10 +44,10 @@ public class Login implements TemplateViewRoute {
     String password = form.value("password");
     username = log(username, password);
     if(username != null) {
-      request.session().attribute("currentUser", username);
       response.redirect("/");
       return null;
     }
+    request.session().attribute("currentUser", username);
     Map<String, String> variables = new HashMap<>();
     return new ModelAndView(variables, "main.ftl");
   }

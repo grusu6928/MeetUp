@@ -16,7 +16,9 @@
     <body class ="some-class">
         <h1>You are logged in</h1>
     </body>
-    <button method="POST" action = "/logout" />
+    <form method="POST" action="/logout">
+        <input type="submit" value="logout">
+    </form>
     <!-- See http://html5boilerplate.com/ for a good place to start
          dealing with real world issues like old browsers.  -->
     </html>
