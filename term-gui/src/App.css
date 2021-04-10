@@ -48,3 +48,89 @@
     transform: rotate(360deg);
   }
 }
+
+body {
+  margin-left: 300px;
+  margin-right: 300px;
+  font-family: "Courier New", Courier, monospace;
+  background-color: white;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+a:hover {
+  opacity: 55%;
+}
+
+.home {
+  margin-left: 15px;
+  margin-top: 10px;
+  color: black;
+  font-weight: 130;
+  font-size: 30px;
+}
+
+.margins {
+  margin-top: -20px;
+  width: 800px;
+  height: 760px;
+  border: 20px;
+  border-color: white;
+  background-color: lightblue;
+  border-radius: 20px;
+}
+
+.welcome {
+  font-weight: 300;
+  padding-top: 100px;
+}
+.starter {
+  margin-top: 40px;
+  border-radius: 20px;
+  width: 220px;
+  margin-left: 280px;
+  padding: 6px;
+  background-color: white;
+}
+
+.looker {
+  margin-top: 40px;
+  border-radius: 20px;
+  width: 220px;
+  margin-left: 280px;
+  padding: 6px;
+  background-color: white;
+}
+
+.form-div {
+  background-color: white;
+  border-radius: 20px;
+  margin-left: 150px;
+  width: 500px;
+  display: flex;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.event {
+  padding-top: 10px;
+}
+
+.text {
+  font-weight: bold;
+}
+
+.submit {
+  margin: 10px;
+  padding: 5px;
+  border-radius: 10px;
+  border-color: white;
+  border-style: double;
+  background-color: lightblue;
+  color: black;
+  font-weight: 120;
+}
