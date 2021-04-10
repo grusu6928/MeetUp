@@ -9,8 +9,6 @@ class Starter extends Component {
           selectedType: null,
           selectedActivity: null
         };
-        // https://www.pluralsight.com/guides/how-to-use-radio-buttons-in-reactjs < used this resource for 
-        // help with radio button event handlers
 
         this.handleTypeChange = this.handleTypeChange.bind(this);
         this.handleActivityChange = this.handleActivityChange.bind(this);
