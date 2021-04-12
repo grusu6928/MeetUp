@@ -15,6 +15,21 @@ import spark.Response;
 import spark.Spark;
 import spark.TemplateViewRoute;
 import spark.template.freemarker.FreeMarkerEngine;
+// new imports
+import spark.ExceptionHandler;
+import spark.ModelAndView;
+import spark.QueryParamsMap;
+import spark.Request;
+import spark.Response;
+import spark.Route;
+import spark.Spark;
+import spark.TemplateViewRoute;
+import spark.template.freemarker.FreeMarkerEngine;
+
+import com.google.common.collect.ImmutableMap;
+import freemarker.template.Configuration;
+import com.google.gson.Gson;
+import org.json.JSONObject;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -81,6 +96,7 @@ public final class Main {
 
     // Setup Spark Routes
     Spark.get("/stars", new FrontHandler(), freeMarker);
+    Spark,post("/login" new loginAuthHandler());
   }
 
   /**
@@ -93,6 +109,16 @@ public final class Main {
       Map<String, Object> variables = ImmutableMap.of("title",
           "Stars: Query the database");
       return new ModelAndView(variables, "query.ftl");
+    }
+  }
+
+  private static class loginAuthHandler implements Route {
+    @Override
+    public Object handle(Request request, Response response) throws Exception {
+      JSONObject data = new JSONObject(request.body());
+       return GSON.toJSON(Login.log(data.getString("email"), data.getString("pass")));
+      // Map<String, Object> variables = ImmutableMap.of("checkin", isAuth);
+      // return GSON.toJson(isAuth);
     }
   }
 
