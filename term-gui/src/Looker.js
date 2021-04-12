@@ -96,5 +96,4 @@ class Looker extends Component {
         );
     }
 }
-
 export default Looker;

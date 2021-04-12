@@ -25,9 +25,9 @@ function FriendsList(props) {
             friendListUI.innerHTML += (`<li tabindex="0" class = "att">${friendListUI[i]}</li>`)
         }
     }
-    useEffect(() => {
-        requestFriends
-    }, [friendList])
+    // useEffect(() => {
+    //     requestFriends
+    // }, [friendList])
 
 
     const requestFriends = () => {
