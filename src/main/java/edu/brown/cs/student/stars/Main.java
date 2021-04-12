@@ -96,7 +96,7 @@ public final class Main {
 
     // Setup Spark Routes
     Spark.get("/stars", new FrontHandler(), freeMarker);
-    Spark,post("/login" new loginAuthHandler());
+    Spark.post("/login" new loginAuthHandler());
   }
 
   /**
