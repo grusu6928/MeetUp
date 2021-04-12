@@ -15,6 +15,22 @@ import spark.Response;
 import spark.Spark;
 import spark.TemplateViewRoute;
 import spark.template.freemarker.FreeMarkerEngine;
+// new imports
+import spark.ExceptionHandler;
+import spark.ModelAndView;
+import spark.QueryParamsMap;
+import spark.Request;
+import spark.Response;
+import spark.Route;
+import spark.Spark;
+import spark.TemplateViewRoute;
+import spark.template.freemarker.FreeMarkerEngine;
+
+import com.google.common.collect.ImmutableMap;
+import freemarker.template.Configuration;
+import com.google.gson.Gson;
+import org.json.JSONObject;
+import java.sql.Connection;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -27,6 +43,7 @@ import freemarker.template.Configuration;
 public final class Main {
 
   private static final int DEFAULT_PORT = 4567;
+  private static final Gson GSON = new Gson();
 
   /**
    * The initial method called when execution begins.
@@ -57,6 +74,7 @@ public final class Main {
     }
 
     // TODO: Process commands in a REPL
+    Connection c = Database.getConn();
   }
 
   private static FreeMarkerEngine createEngine() {
@@ -81,8 +99,7 @@ public final class Main {
 
     // Setup Spark Routes
     Spark.get("/stars", new FrontHandler(), freeMarker);
-    Spart.post("/lookers", new LookersHandler());
-    Spark.post("/friends-list", new FriendsListHandler());
+    Spark.post("/login", new loginAuthHandler());
   }
 
   /**
@@ -98,34 +115,15 @@ public final class Main {
     }
   }
 
-  private static class LookersHandler implements Route {
+  private static class loginAuthHandler implements Route {
     @Override
     public Object handle(Request request, Response response) throws Exception {
-      // TODO this is filler code for now - need to see how backend is structured for this 
-      // to be updated. 
       JSONObject data = new JSONObject(request.body());
-      String user = data.getString("user");
-      Map<String, Object> variables = ImmutableMap.of("friends", friendsMap);
-      return GSON.toJson(variables);
+       return GSON.toJSON(Login.log(data.getString("email"), data.getString("pass")));
+      // Map<String, Object> variables = ImmutableMap.of("checkin", isAuth);
+      // return GSON.toJson(isAuth);
     }
   }
-
-  /**
-   * have this method perform the routing for the friendslist
-   * for each user, get their friends from the sql backend 
-   */
-  private static class FriendsListHandler implements Route {
-    @Override
-    public Object handle(Request request, Response response) throws Exception {
-      // TODO this is filler code for now - need to see how backend is structured for this 
-      // to be updated. 
-      JSONObject data = new JSONObject(request.body());
-      String user = data.getString("user");
-      Map<String, Object> variables = ImmutableMap.of("friends", friendsMap);
-      return GSON.toJson(variables);
-    }
-  }
-
 
   /**
    * Display an error page when an exception occurs in the server.

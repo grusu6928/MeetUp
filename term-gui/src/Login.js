@@ -22,12 +22,34 @@ function Login() {
 
   function handleSubmit(event) {
     event.preventDefault();
-    try {
-        userHasAuthenticated(true);
-    } catch {
-        
-    }
+    requestAuthentication(email, password);
   }
+  
+  const requestAuthentication = () => {
+    const toSend = {
+        email: email,
+        pass: password,
+    }
+    let config = {
+        headers: {
+          "Content-Type": "application/json",
+          'Access-Control-Allow-Origin': '*',
+          }
+        }
+        axios.post('http://localhost:4567/login', toSend, config)
+        .then(response => {
+            if(response.data) {
+                // successful login, we want to redirect to home
+                console.log("sucess");
+            } else {
+                // rerender page, with alert
+                console.log("failure");
+            }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      }
 
   return (
     <div className="Login">
