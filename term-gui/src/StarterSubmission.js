@@ -40,7 +40,7 @@ class StarterSubmission extends Component {
    
 
     render() {
-        const {state} = this.location.state
+        // const {state} = this.location.state
         return (
             <div className="margins">
                 <FriendsList />

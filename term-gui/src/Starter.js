@@ -175,13 +175,13 @@ class Starter extends Component {
                         </div>
 
                         
-                        <Link
-                            to={{
+                        {/* <Link */}
+                            {/* to={{
                                 pathname: "/starter-submission",
                                 state: this.data // your data array of objects
-                            }}>
+                            }}> */}
                             <button className="submit" type="submit" onSubmit = {this.handleSubmit}> Submit</button>
-                        </Link>
+                        {/* </Link> */}
 
                     </form>
                 </div>

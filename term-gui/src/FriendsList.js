@@ -59,11 +59,11 @@ function FriendsList(props) {
               <div className="friends-div">
               <p>Friends List</p>
               <ul id = "FL">
-                <li>Friend 1</li>
-                <li>Friend 2</li>
-                <li>Friend 3</li>
-                <li>Friend 4</li>
-                <li>Friend 5</li>
+                <li>George</li>
+                <li>Hamzah </li>
+                <li>Ermias</li>
+                <li>Amin</li>
+                <li>Nick </li>
               </ul>
               </div>
             </div>

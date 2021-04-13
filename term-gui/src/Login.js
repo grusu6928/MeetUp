@@ -96,14 +96,13 @@ function Login() {
         </Form.Group>
 
           <Link
-              to={ if( this.{
+              to={{
                   pathname: "/home",
               }}>
               <Button block size="lg" type="submit" disabled={!validateForm()}>
                   Login
               </Button>
           </Link>
-        
       </Form>
     </div>
   );
