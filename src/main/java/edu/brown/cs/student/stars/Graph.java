@@ -86,7 +86,7 @@ public class Graph {
           if (!eventAtCapacity(event)) {
 
             PriorityQueue<Double> pq = starterToLookerWeights.get(event);
-            LookerNode looker = pq.poll(); // PROBLEM
+            // LookerNode looker = pq.poll(); // PROBLEM
 
             // add looker to grouping.get(event).getValue()
 

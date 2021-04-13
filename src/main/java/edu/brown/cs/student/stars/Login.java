@@ -9,7 +9,7 @@ import java.util.Map;
 public class Login {
   public static Boolean log(String username, String password) {
     Boolean loggedIn = false;
-    Connection conn = DataBase.conn;
+    Connection conn = MyDatabase.conn;
     System.out.println(username);
     try {
       PreparedStatement prep;

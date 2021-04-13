@@ -4,14 +4,21 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.Map;
 
-import joptsimple.OptionParser;
-import joptsimple.OptionSet;
+import edu.brown.cs.student.stars.Login;
+import freemarker.template.Configuration;
 import spark.ExceptionHandler;
-import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
+import spark.Spark;
+import spark.template.freemarker.FreeMarkerEngine;
+
+import spark.ExceptionHandler;
+import spark.ModelAndView;
+import spark.QueryParamsMap;
+import spark.Request;
+import spark.Response;
+import spark.Route;
 import spark.Spark;
 import spark.TemplateViewRoute;
 import spark.template.freemarker.FreeMarkerEngine;
@@ -32,8 +39,12 @@ import com.google.gson.Gson;
 import org.json.JSONObject;
 
 import com.google.common.collect.ImmutableMap;
-
 import freemarker.template.Configuration;
+import org.json.JSONObject;
+import com.google.gson.Gson;
+import java.sql.Connection;
+
+import com.google.common.collect.ImmutableMap;
 
 /**
  * The Main class of our project. This is where execution begins.
@@ -44,11 +55,13 @@ public final class Main {
   private static final int DEFAULT_PORT = 4567;
   private static final Gson GSON = new Gson();
 
+  public static final String USERID = "USERID";
+
+
   /**
    * The initial method called when execution begins.
    *
-   * @param args
-   *          An array of command line arguments
+   * @param args An array of command line arguments
    */
   public static void main(String[] args) {
     new Main(args).run();
@@ -61,19 +74,7 @@ public final class Main {
   }
 
   private void run() {
-    // Parse command line arguments
-    OptionParser parser = new OptionParser();
-    parser.accepts("gui");
-    parser.accepts("port").withRequiredArg().ofType(Integer.class)
-    .defaultsTo(DEFAULT_PORT);
-    OptionSet options = parser.parse(args);
-
-    if (options.has("gui")) {
-      runSparkServer((int) options.valueOf("port"));
-    }
-
-    // TODO: Process commands in a REPL
-    Connection c = Database.getConn();
+    runSparkServer(DEFAULT_PORT);
   }
 
   private static FreeMarkerEngine createEngine() {
@@ -82,43 +83,49 @@ public final class Main {
     try {
       config.setDirectoryForTemplateLoading(templates);
     } catch (IOException ioe) {
-      System.out.printf("ERROR: Unable use %s for template loading.%n",
-          templates);
+      System.out.printf("ERROR: Unable use %s for template loading.%n", templates);
       System.exit(1);
     }
     return new FreeMarkerEngine(config);
   }
 
+  /**
+   ** IMPLEMENT METHOD runSparkServer() HERE
+   */
   private void runSparkServer(int port) {
+    // TODO
+  
+    MyDatabase.connect();
     Spark.port(port);
+    Spark.options("/*", (request, response) -> {
+      String accessControlRequestHeaders = request.headers("Access-Control-Request-Headers");
+      if (accessControlRequestHeaders != null) {
+        response.header("Access-Control-Allow-Headers", accessControlRequestHeaders);
+      }
+
+      String accessControlRequestMethod = request.headers("Access-Control-Request-Method");
+
+      if (accessControlRequestMethod != null) {
+        response.header("Access-Control-Allow-Methods", accessControlRequestMethod);
+      }
+
+      return "OK";
+});
+
+Spark.before((request, response) -> response.header("Access-Control-Allow-Origin", "*"));
     Spark.externalStaticFileLocation("src/main/resources/static");
     Spark.exception(Exception.class, new ExceptionPrinter());
-
     FreeMarkerEngine freeMarker = createEngine();
-
-    // Setup Spark Routes
-    Spark.get("/stars", new FrontHandler(), freeMarker);
-    Spark.post("/login" new loginAuthHandler());
+    // Spark.get("/", new Home(), freeMarker);
+    Spark.post("/login", new loginAuthHandler());
+    Spark.post("/logout", new Logout(), freeMarker);
   }
-
-  /**
-   * Handle requests to the front page of our Stars website.
-   *
-   */
-  private static class FrontHandler implements TemplateViewRoute {
-    @Override
-    public ModelAndView handle(Request req, Response res) {
-      Map<String, Object> variables = ImmutableMap.of("title",
-          "Stars: Query the database");
-      return new ModelAndView(variables, "query.ftl");
-    }
-  }
-
   private static class loginAuthHandler implements Route {
     @Override
     public Object handle(Request request, Response response) throws Exception {
       JSONObject data = new JSONObject(request.body());
-       return GSON.toJSON(Login.log(data.getString("email"), data.getString("pass")));
+      System.out.println(data);
+      return new Gson().toJson(Login.log(data.getString("email"), data.getString("pass")));
       // Map<String, Object> variables = ImmutableMap.of("checkin", isAuth);
       // return GSON.toJson(isAuth);
     }
@@ -126,7 +133,6 @@ public final class Main {
 
   /**
    * Display an error page when an exception occurs in the server.
-   *
    */
   private static class ExceptionPrinter implements ExceptionHandler {
     @Override
@@ -141,5 +147,4 @@ public final class Main {
       res.body(stacktrace.toString());
     }
   }
-
 }
