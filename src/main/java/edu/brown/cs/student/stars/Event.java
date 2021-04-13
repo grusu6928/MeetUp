@@ -1,5 +1,5 @@
 // package edu.brown.cs.student.stars;
-
+//
 // public class Event {
 //   private String eventType;
 //   private String activityType;

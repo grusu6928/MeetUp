@@ -43,6 +43,7 @@ import freemarker.template.Configuration;
 import org.json.JSONObject;
 import com.google.gson.Gson;
 import java.sql.Connection;
+import java.util.List;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -96,6 +97,14 @@ public final class Main {
     // TODO
   
     MyDatabase.connect();
+
+    List<Event> events = new Events().getAllEvents();
+
+    Graph graph = new Graph();
+
+
+
+
     Spark.port(port);
     Spark.options("/*", (request, response) -> {
       String accessControlRequestHeaders = request.headers("Access-Control-Request-Headers");

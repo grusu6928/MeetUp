@@ -1,7 +1,6 @@
 package edu.brown.cs.student.stars;
 
 import java.util.*;
-import edu.stanford.nlp.math.ArrayMath;
 
 public class Graph {
 
@@ -19,14 +18,6 @@ public class Graph {
   private int numIters = 10;
 
 
-  // TODO: 1) finish out last bits of algorithm, 2) Heuristic computation
-  // INTEGRATION w/ Amin -> use friends SQL table in Heuristic comp
-
-  // INTEGRATION w/ Front-End ->
-  // 1) receive lookers & starters lists
-  // 2) run algorithm
-  // 3) send back list of groups
-
 
   /**
    *
@@ -41,10 +32,8 @@ public class Graph {
     this.lookers = lookers;
     this.centroids = starters;
 
-
     this.capacityMap = new HashMap<>();
     this.setCapacityMap();
-
 
     this.centroidIdToRow = new HashMap<>();
     this.lookerIdToCol = new HashMap<>();
@@ -79,27 +68,42 @@ public class Graph {
   }
 
 
+  private Map<StarterNode, PriorityQueue<GraphEntry
+          <StarterNode>>> mapCentroidsToEntries() {
+
+    Map<StarterNode, PriorityQueue<GraphEntry<StarterNode>>> starterToLookerEntries = new HashMap<>();
+
+    // maps [centroid -> priority queue of entries in its row]
+    for (StarterNode centroid : this.centroids) {
+      PriorityQueue<GraphEntry<StarterNode>> pq = new PriorityQueue<>(new WeightComparator());
+
+      int row = this.centroidIdToRow.get(centroid.getId()); // gets row in adj matrix corresponding to centroid's id
+      GraphEntry<StarterNode>[] entries = this.adjMatrix[row];
+      Collections.addAll(pq, entries);
+      starterToLookerEntries.put(centroid, pq);
+    }
+
+    return starterToLookerEntries;
+  }
 
 
+  /**
+   * Returns a map of the optimal cluster arrangement.
+   * A group of lookers tied to each starter (i.e. event)
+   * @return optimal map
+   */
   private Map<StarterNode, List<LookerNode>> runAlgorithm() {
+    // hold data for every iteration
     List<Map<StarterNode, List<LookerNode>>> potentialGroupings = new ArrayList<>();
     double[] scatters = new double[this.numIters];
+
 
     for (int iter = 0; iter < numIters; iter++) {
       Collections.shuffle(this.centroids);
 
+      Map<StarterNode, PriorityQueue<GraphEntry<StarterNode>>>
+              starterToLookerEntries = this.mapCentroidsToEntries();
 
-      Map<StarterNode, PriorityQueue<GraphEntry<StarterNode>>> starterToLookerEntries = new HashMap<>();
-
-      // maps [centroid -> priority queue of entries in its row]
-      for (StarterNode centroid : this.centroids) {
-        PriorityQueue<GraphEntry<StarterNode>> pq = new PriorityQueue<>(new WeightComparator());
-
-        int row = this.centroidIdToRow.get(centroid.getId()); // gets row in adj matrix corresponding to centroid's id
-        GraphEntry<StarterNode>[] entries = this.adjMatrix[row];
-        Collections.addAll(pq, entries);
-        starterToLookerEntries.put(centroid, pq);
-      }
 
       int numMatchedLookers = 0;
       Map<StarterNode, List<LookerNode>> grouping = new HashMap<>();
@@ -128,16 +132,15 @@ public class Graph {
 
             // make sure that looker can't attend other events
             // REMOVES POSSIBILITY OF THIS LOOKER BEING IN ANY OTHER GROUP
-            Collection queues = starterToLookerEntries.values();
+            Collection<PriorityQueue<GraphEntry<StarterNode>>> queues = starterToLookerEntries.values();
             for (PriorityQueue q : queues) {
               q.remove(looker);
             }
           }
         }
-
       }
 
-      // done making this group
+      // done making this iter's grouping
       potentialGroupings.add(grouping);
       scatters[iter] = this.calculateScatter(grouping);
     }
