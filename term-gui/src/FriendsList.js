@@ -52,11 +52,20 @@ function FriendsList(props) {
             });
           }
           return (
-            <div className="FL">
-              <header className="FL-header">
+            <div className="">
+              <header className="">
                 <title>Friends List</title>
-                <ul id = "FL"></ul>
               </header>
+              <div className="friends-div">
+              <p>Friends List</p>
+              <ul id = "FL">
+                <li>Friend 1</li>
+                <li>Friend 2</li>
+                <li>Friend 3</li>
+                <li>Friend 4</li>
+                <li>Friend 5</li>
+              </ul>
+              </div>
             </div>
           );
 }

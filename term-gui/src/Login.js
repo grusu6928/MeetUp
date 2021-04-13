@@ -74,7 +74,7 @@ function Login() {
       }
       else{
   return (
-    <div className="Login">
+    <div className="login-div">
       <Form onSubmit={handleSubmit}>
         <Form.Group size="lg" controlId="email">
           <Form.Label>Email</Form.Label>

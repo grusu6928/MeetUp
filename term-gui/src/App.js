@@ -18,26 +18,24 @@ function App() {
 
   return (
     <div className="App">
-      <header className="App-background">
+      <header>
         <title> MeetUp </title>
-        <div className = "App-Background">
-        <Login/>
-      </div>
       </header>
+      <FriendsList />
       <BrowserRouter>
         <Switch>
-        <Route exact path="/Login.js">
-          <Login />
-        </Route>
           <Route exact path="/Starter.js"> 
             <Starter />
           </Route>
           <Route exact path="/Looker.js"> 
             <Looker />
           </Route>
-          <Route exact path="/"> 
+          <Route exact path="/Home.js"> 
             <Home />
           </Route>
+          <Route exact path="/">
+          <Login />
+        </Route>
         </Switch>
       </BrowserRouter>
     </div>

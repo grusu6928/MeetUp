@@ -28,8 +28,7 @@
   color: #61dafb;
 }
 .App-background {
-  background-image: linear-gradient(rgba(175,238,238), rgba(119,136,153)
-  );
+  background-image: linear-gradient(rgba(175, 238, 238), rgba(119, 136, 153));
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -37,7 +36,6 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
-
 }
 
 @keyframes App-logo-spin {
@@ -111,7 +109,6 @@ a:hover {
   margin-left: 150px;
   width: 500px;
   display: flex;
-  display: flex;
   justify-content: center;
   align-items: center;
 }
@@ -133,4 +130,35 @@ a:hover {
   background-color: lightblue;
   color: black;
   font-weight: 120;
+}
+
+.friends-div {
+  position: absolute;
+  left: 0;
+  top: 220px;
+  height: 300px;
+  width: 250px;
+  background-color: lightblue;
+  border-radius: 15px;
+  justify-content: center;
+  align-items: center;
+}
+
+#FL {
+  margin-left: -50px;
+}
+.login-div {
+  width: 800px;
+  height: 760px;
+  border: 20px;
+  border-color: white;
+  background-color: lightblue;
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+ul {
+  list-style: none;
 }
