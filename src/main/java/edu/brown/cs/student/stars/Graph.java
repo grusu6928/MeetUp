@@ -10,6 +10,12 @@ public class Graph {
   private ArrayList<GraphNode> allNodes;
   private ArrayList<LookerNode> lookers;
   private ArrayList<StarterNode> centroids;
+
+  // for both: id -> object
+  private Map<Integer, LookerNode> lookersMap;
+  private Map<Integer, StarterNode> startersMap;
+
+
   private HashMap<StarterNode, Integer> capacityMap; // max capacity at each event
 
   private int numLookers;
@@ -34,18 +40,24 @@ public class Graph {
    * @param starters list of starters (from front-end)
    */
   public Graph(ArrayList<LookerNode> lookers, ArrayList<StarterNode> starters) {
+//    this.lookersMap = new HashMap<>();
+//    this.startersMap = new HashMap<>();
+//    this.setStarterLookerMaps(lookers, starters);
+
     this.lookers = lookers;
     this.centroids = starters;
 
     // creates list of all nodes (to be used in adjacency matrix initialization)
     this.allNodes = new ArrayList<>();
+    this.allNodes.addAll(starters); // ADDING STARTERS BEFORE LOOKERS MATTERS
+    // index [0, numStarters) in the adjacency matrix are starters
     this.allNodes.addAll(lookers);
-    this.allNodes.addAll(starters);
-    Collections.shuffle(this.allNodes);
+
+//    Collections.shuffle(this.allNodes);
     //
 
 
-    this.numNodes = lookers.size() + starters.size();
+    this.numNodes = this.allNodes.size();
     this.numLookers = lookers.size();
     this.numStarters = starters.size();
 
@@ -55,6 +67,20 @@ public class Graph {
     this.setCapacityMap();
 
   }
+
+//  /**
+//   * Populates HashMaps, which map lookers' and starters' ids to their respective objects.
+//   * @param lookers
+//   * @param starters
+//   */
+//  private void setStarterLookerMaps(ArrayList<LookerNode> lookers, ArrayList<StarterNode> starters) {
+//    for (LookerNode l : lookers) {
+//      this.lookersMap.put(l.getId(), l);
+//    }
+//    for (StarterNode s: starters) {
+//      this.startersMap.put(s.getId(), s);
+//    }
+//  }
 
 
   private void runAlgorithm() {
@@ -79,11 +105,14 @@ public class Graph {
         starterToLookerWeights.put(centroids.get(c), pq);
       }
 
-      while (!allEventsAtCapacity() || numMatchedLookers < this.numLookers) {
+      // PART 2
+      while (!this.allEventsAtCapacity() || numMatchedLookers < this.numLookers) {
+
+        // don't forget to increment numMatchedLookers
 
         for (int c = 0; c < centroids.size(); c++) {
           StarterNode event = centroids.get(c);
-          if (!eventAtCapacity(event)) {
+          if (!this.eventAtCapacity(event)) {
 
             PriorityQueue<Double> pq = starterToLookerWeights.get(event);
             LookerNode looker = pq.poll(); // PROBLEM
@@ -146,11 +175,8 @@ public class Graph {
 
     // computationally faster to create starter-only matrix in same loop
 
-    ArrayList<GraphNode> allNodes = new ArrayList<>();
-    allNodes.addAll(this.centroids);
-    allNodes.addAll(this.lookers);
 
-    int starterCounter = 0;
+//    int starterCounter = 0;
 
     for (int i = 0; i < this.numNodes; i++) {
 
@@ -164,11 +190,11 @@ public class Graph {
       }
 
       // populates starter adjacency matrix
-      boolean isStarter = this.allNodes.get(i).isStarter();
-      if (isStarter) {
-        System.arraycopy(adjMatrix[i], 0, starterAdjMatrix[starterCounter], 0, starterAdjMatrix[starterCounter].length);
-      }
-      starterCounter++;
+//      boolean isStarter = this.allNodes.get(i).isStarter();
+//      if (isStarter) {
+//        System.arraycopy(adjMatrix[i], 0, starterAdjMatrix[starterCounter], 0, starterAdjMatrix[starterCounter].length);
+//      }
+//      starterCounter++;
 
     }
 
@@ -179,15 +205,17 @@ public class Graph {
    */
   private void preProcessAdjMatrix() {
     // initialize all weights to positive infinity
-    Arrays.fill(adjMatrix, Double.POSITIVE_INFINITY);
+    Arrays.fill(this.adjMatrix, Double.POSITIVE_INFINITY);
 
-    // negative infinity weights
-    for (int i = 0; i < numNodes; i++) {
-      for (int j = 0; j < numNodes; j++) {
-        if (bothStarters(this.allNodes.get(i), this.allNodes.get(j)) || atDiagonal(i, j)) {
-          adjMatrix[i][j] = Double.NEGATIVE_INFINITY;
-        }
+    
+    for (int i = 0; i < this.numStarters; i ++) {
+      for (int j = 0; j < this.numStarters; j++) {
+        this.adjMatrix[i][j] = Double.NEGATIVE_INFINITY;
       }
+    }
+
+    for (int index = this.numStarters; index < this.numNodes; index++) {
+      this.adjMatrix[index][index] = Double.NEGATIVE_INFINITY;
     }
   }
 
