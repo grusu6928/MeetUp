@@ -21,16 +21,15 @@ function App() {
       <header>
         <title> MeetUp </title>
       </header>
-      <FriendsList />
       <BrowserRouter>
         <Switch>
-          <Route exact path="/Starter.js"> 
-            <Starter />
+          <Route exact path="/starter" component = {FriendsList}> 
+            <Starter component = {FriendsList} />
           </Route>
-          <Route exact path="/Looker.js"> 
-            <Looker />
+          <Route exact path="/looker" > 
+            <Looker component = {FriendsList}/>
           </Route>
-          <Route exact path="/Home.js"> 
+          <Route exact path="/home" component = {FriendsList}> 
             <Home />
           </Route>
           <Route exact path="/">

@@ -14,10 +14,10 @@ class Home extends Component {
                 </header>
                 <h3>
                     <div className="starter">
-                        <a href="Starter.js"> Start an Event </a>
+                        <a href="starter"> Start an Event </a>
                     </div>
                     <div className="looker">
-                        <a href="Looker.js"> Look for an Event </a>
+                        <a href="looker"> Look for an Event </a>
                     </div>
                 </h3>
             </div>
