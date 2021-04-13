@@ -32,7 +32,6 @@ public class Login {
   public void logout() {
     System.out.println("logged out");
   }
-
   // @Override
   // public ModelAndView handle(Request request, Response response) throws Exception {
   //   System.out.println("Hi");

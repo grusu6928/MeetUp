@@ -42,6 +42,7 @@ import freemarker.template.Configuration;
 public final class Main {
 
   private static final int DEFAULT_PORT = 4567;
+  private static final Gson GSON = new Gson();
 
   /**
    * The initial method called when execution begins.
@@ -72,6 +73,7 @@ public final class Main {
     }
 
     // TODO: Process commands in a REPL
+    Connection c = Database.getConn();
   }
 
   private static FreeMarkerEngine createEngine() {
