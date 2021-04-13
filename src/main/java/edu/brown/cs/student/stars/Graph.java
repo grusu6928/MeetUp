@@ -1,6 +1,7 @@
 package edu.brown.cs.student.stars;
 
 import java.util.*;
+import edu.stanford.nlp.math.ArrayMath;
 
 public class Graph {
 
@@ -80,7 +81,7 @@ public class Graph {
 
 
 
-  private void runAlgorithm() {
+  private Map<StarterNode, List<LookerNode>> runAlgorithm() {
     List<Map<StarterNode, List<LookerNode>>> potentialGroupings = new ArrayList<>();
     double[] scatters = new double[this.numIters];
 
@@ -136,22 +137,78 @@ public class Graph {
 
       }
 
-      // after all groups are set
+      // done making this group
       potentialGroupings.add(grouping);
-      scatters[iter] = this.calculateScatter(potentialGroupings);
+      scatters[iter] = this.calculateScatter(grouping);
     }
 
+    // after all groups are set
+    int bestIter = argmin(scatters);
+    Map<StarterNode, List<LookerNode>> bestGrouping = potentialGroupings.get(bestIter);
+    return bestGrouping;
+
+  }
+
+  /**
+   * Gets the argmin of a list.
+   * @param list
+   * @return
+   */
+  private int argmin(double[] list) {
+    double min = Double.POSITIVE_INFINITY;
+    int argmin = 0;
+    for (int i = 0; i < list.length; i++) {
+      double elem = list[i];
+      if (Double.compare(elem, min) < 0) {
+        min = elem;
+        argmin = i;
+      }
+    }
+    return argmin;
   }
 
 
-  private double calculateScatter(List<Map<StarterNode, List<LookerNode>>> potentialGroupings) {
+  private double calculateScatter(Map<StarterNode, List<LookerNode>> groupings) {
 
     double totalScatter = 0;
+    Set<StarterNode> clusters = groupings.keySet();
 
-    // for a cluster in potentialGroupings
+    for (StarterNode cluster : clusters) {
+      double kScatter = 0;
 
+      // get centroid row
+      int centroidRow = this.centroidIdToRow.get(cluster.getId());
+      List<LookerNode> lookers = groupings.get(cluster);
+      List<Integer> lookerCols = new ArrayList<>();
 
+      // get list of looker columns
+      for (LookerNode l : lookers) {
+        int lCol = this.lookerIdToCol.get(l.getId());
+        lookerCols.add(lCol);
+      }
+
+      // calc scatter btwn centroid and everything in lookerCols
+      for (Integer col: lookerCols) {
+        kScatter += this.adjMatrix[centroidRow][col].getWeight();
+      }
+
+      // calc scatter btwn everything in lookerCols and everything in lookerCols
+      for (Integer row: lookerCols) {
+        for (Integer col: lookerCols) {
+          if (!row.equals(col)) {
+            kScatter += this.adjMatrix[row][col].getWeight();
+          }
+        }
+      }
+
+      int n = lookers.size() + 1;
+      totalScatter += n * kScatter;
+    }
+
+    return totalScatter;
   }
+
+
 
 
   /**
