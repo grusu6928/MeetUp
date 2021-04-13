@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "./Button";
+import axios from 'axios';
 
 import { useAppContext } from "./Contexts";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { userHasAuthenticated } = useAppContext();
+  // const { userHasAuthenticated } = useAppContext();
 
   function validateForm() {
     return isValidEmail(email) && isValidPassword(password);
