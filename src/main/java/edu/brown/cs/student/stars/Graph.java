@@ -4,28 +4,17 @@ import java.util.*;
 
 public class Graph {
 
-  private double[][] adjMatrix; // used for calculating within cluster point scatter
-//  private double[][] starterAdjMatrix;
+  private GraphEntry[][] adjMatrix;
 
-  private ArrayList<GraphNode> allNodes;
   private ArrayList<LookerNode> lookers;
   private ArrayList<StarterNode> centroids;
 
-  // for both: id -> object
-  private Map<Integer, LookerNode> lookersMap;
-  private Map<Integer, StarterNode> startersMap;
-
-  // id -> row/col in adjacency matrix
-  private Map<Integer, Integer> centroidIdToRow;
-  private Map<Integer, Integer> lookerIdToCol;
-
-
+  private Map<Integer, Integer> lookerIdToCol; // looker id -> col in adjMatrix
+  private Map<Integer, Integer> centroidIdToRow; // starter id -> row in adjMatrix
   private HashMap<StarterNode, Integer> capacityMap; // max capacity at each event
 
-  private int numLookers;
-  private int numStarters;
-  private int numNodes;
-
+  private final int numLookers;
+  private final int numNodes;
   private int numIters = 10;
 
 
@@ -44,35 +33,30 @@ public class Graph {
    * @param starters list of starters (from front-end)
    */
   public Graph(ArrayList<LookerNode> lookers, ArrayList<StarterNode> starters) {
-//    this.lookersMap = new HashMap<>();
-//    this.startersMap = new HashMap<>();
-//    this.setStarterLookerMaps(lookers, starters);
+
+    this.numNodes = lookers.size() + starters.size();
+    this.numLookers = lookers.size();
 
     this.lookers = lookers;
     this.centroids = starters;
 
-    // creates list of all nodes (to be used in adjacency matrix initialization)
-    // VERIFY: addAll PRESERVES ORDER of lookers and of starters
-    this.allNodes = new ArrayList<>();
-    this.allNodes.addAll(lookers); // ADDING LOOKERS BEFORE STARTERS MATTERS
-    this.allNodes.addAll(starters);
-    // n x L adjacency matrix: first L rows -> lookers; second S rows -> starters
+
+    this.capacityMap = new HashMap<>();
+    this.setCapacityMap();
+
 
     this.centroidIdToRow = new HashMap<>();
     this.lookerIdToCol = new HashMap<>();
     this.setIdToIndInMatrixMaps(lookers, starters);
 
+    // n x L adjacency matrix: first L rows -> lookers; second S rows -> starters
+    this.adjMatrix = new GraphEntry[this.numNodes][this.numLookers];
+    this.setEdgeWeights();
 
-    this.numNodes = this.allNodes.size();
-    this.numLookers = lookers.size();
-    this.numStarters = starters.size();
-
-    this.adjMatrix = new double[this.numNodes][this.numLookers];
-//    this.starterAdjMatrix = new double[numStarters][numNodes];
-
-    this.setCapacityMap();
+    this.runAlgorithm();
 
   }
+
 
   /**
    * Maps [ looker id -> column index for that looker in adjMatrix]
@@ -93,77 +77,91 @@ public class Graph {
     }
   }
 
-//  /**
-//   * Populates HashMaps, which map lookers' and starters' ids to their respective objects.
-//   * @param lookers
-//   * @param starters
-//   */
-//  private void setStarterLookerMaps(ArrayList<LookerNode> lookers, ArrayList<StarterNode> starters) {
-//    for (LookerNode l : lookers) {
-//      this.lookersMap.put(l.getId(), l);
-//    }
-//    for (StarterNode s: starters) {
-//      this.startersMap.put(s.getId(), s);
-//    }
-//  }
+
 
 
   private void runAlgorithm() {
     List<Map<StarterNode, List<LookerNode>>> potentialGroupings = new ArrayList<>();
-    double[] scatters = new double[numIters];
+    double[] scatters = new double[this.numIters];
 
     for (int iter = 0; iter < numIters; iter++) {
       Collections.shuffle(this.centroids);
-      int numMatchedLookers = 0;
 
-      Map<StarterNode, List<LookerNode>> grouping = new HashMap<>();
-      Map<StarterNode, PriorityQueue<Double>> starterToLookerWeights = new HashMap<>();
 
-      // for each centroid -> create a priority queue of the weights in the centroid's row in
-      // the adjacency matrix
-      for (int c = 0; c < this.centroids.size(); c++) {
-        PriorityQueue<Double> pq = new PriorityQueue<>(new WeightComparator());
+      Map<StarterNode, PriorityQueue<GraphEntry<StarterNode>>> starterToLookerEntries = new HashMap<>();
 
-        StarterNode centroid = this.centroids.get(c);
+      // maps [centroid -> priority queue of entries in its row]
+      for (StarterNode centroid : this.centroids) {
+        PriorityQueue<GraphEntry<StarterNode>> pq = new PriorityQueue<>(new WeightComparator());
+
         int row = this.centroidIdToRow.get(centroid.getId()); // gets row in adj matrix corresponding to centroid's id
-        double[] weights = this.adjMatrix[row];
-
-        for (double w : weights) {
-          pq.add(w);
-        }
-        starterToLookerWeights.put(centroid, pq);
+        GraphEntry<StarterNode>[] entries = this.adjMatrix[row];
+        Collections.addAll(pq, entries);
+        starterToLookerEntries.put(centroid, pq);
       }
 
+      int numMatchedLookers = 0;
+      Map<StarterNode, List<LookerNode>> grouping = new HashMap<>();
       // PART 2
       while (!this.allEventsAtCapacity() || numMatchedLookers < this.numLookers) {
 
-        // don't forget to increment numMatchedLookers
-
-        for (int c = 0; c < centroids.size(); c++) {
-          StarterNode event = centroids.get(c);
+        for (StarterNode event : centroids) {
           if (!this.eventAtCapacity(event)) {
 
-            PriorityQueue<Double> pq = starterToLookerWeights.get(event);
-            // LookerNode looker = pq.poll(); // PROBLEM
+            PriorityQueue<GraphEntry<StarterNode>> pq = starterToLookerEntries.get(event);
+            GraphEntry<StarterNode> entry = pq.poll();
+            LookerNode looker = entry.getTo();
 
-            // add looker to grouping.get(event).getValue()
+            // add looker to an event list
+            List<LookerNode> attendees;
+            if (grouping.get(event) == null) {
+              attendees = new ArrayList<>();
+            } else {
+              attendees = grouping.get(event);
+            }
+            attendees.add(looker);
+            grouping.put(event, attendees);
+            ////
 
-//            removeLookerFromStarterAdjMatrix(); // REMOVES POSSIBILITY OF THIS LOOKER BEING IN ANY OTHER GROUP
+            numMatchedLookers++;
+
+            // make sure that looker can't attend other events
+            // REMOVES POSSIBILITY OF THIS LOOKER BEING IN ANY OTHER GROUP
+            Collection queues = starterToLookerEntries.values();
+            for (PriorityQueue q : queues) {
+              q.remove(looker);
+            }
           }
         }
 
       }
 
+      // after all groups are set
       potentialGroupings.add(grouping);
-//      scatters[iter] =
+      scatters[iter] = this.calculateScatter(potentialGroupings);
     }
 
   }
 
 
-  private void removeLookerFromStarterAdjMatrix(LookerNode looker) {
-    // iterate through starterToLookerWeights map and remove looker from each priority queue
+  private double calculateScatter(List<Map<StarterNode, List<LookerNode>>> potentialGroupings) {
 
+    double totalScatter = 0;
+
+    // for a cluster in potentialGroupings
+
+
+  }
+
+
+  /**
+   * Sets the capacity map, which will be used to keep track
+   * of how many spots are left in each starter's event.
+   */
+  private void setCapacityMap() {
+    for (StarterNode s: this.centroids) {
+      this.capacityMap.put(s, s.getCapacity());
+    }
   }
 
   /**
@@ -180,6 +178,11 @@ public class Graph {
     return true;
   }
 
+  /**
+   * Determines if an event is at capacity
+   * @param event
+   * @return
+   */
   private boolean eventAtCapacity(StarterNode event) {
     int currAttendance = event.getNumAttendees();
     int maxCapacity = this.capacityMap.get(event);
@@ -191,55 +194,59 @@ public class Graph {
 
 
 
-
   private double computeHeuristic(GraphNode n1, GraphNode n2) {
     return 0;
   }
 
 
   /**
-   * Populates the overall adjacency matrix.
+   * Fills in the adjacency matrix with GraphEntries.
    */
   private void setEdgeWeights() {
+    this.setLookersToLookers();
+    this.setStartersToLookers();
+  }
 
-    // allNodes is a list of L lookers and then S starters (in that order)
+  /**
+   * Fills in the first L rows of the adjacency matrix. L = numLookers.
+   * Each entry: looker - looker
+   */
+  private void setLookersToLookers() {
+    for (int lrow = 0; lrow < this.lookers.size(); lrow++) {
+      for (int lcol = 0; lcol < this.lookers.size(); lcol++) {
 
-    // produces n x L adjacency matrix
-    for (int i = 0; i < this.numNodes; i++) {
-      for (int j = 0; j < this.numLookers; j++) {
-        // if weight is on initial value -> compute a heuristic for it
-        if (Double.compare(adjMatrix[i][j], Double.POSITIVE_INFINITY) == 0) {
-          double heuristic = this.computeHeuristic(this.allNodes.get(i), this.allNodes.get(j));
-          this.adjMatrix[i][j] = heuristic;
+        GraphEntry<LookerNode> entry;
+        if (lrow == lcol) {
+          entry = new GraphEntry<>(null, null, lrow, lcol, Double.NEGATIVE_INFINITY);
+        } else {
+          LookerNode from = this.lookers.get(lrow);
+          LookerNode to = this.lookers.get(lcol);
+          double weight = this.computeHeuristic(from, to);
+          entry = new GraphEntry<>(from, to, lrow, lcol, weight);
         }
+        this.adjMatrix[lrow][lcol] = entry;
       }
     }
-
   }
 
   /**
-   * Sets the weight between looker i, looker i to negative infinity.
+   * Fills in the next S rows of the adjacency matrix. S = numStarters.
+   * Each entry: starter - looker
    */
-  private void preProcessAdjMatrix() {
-    // initialize all weights to positive infinity
-    Arrays.fill(this.adjMatrix, Double.POSITIVE_INFINITY);
+  private void setStartersToLookers() {
+    int rowOffset = this.numLookers;
+    for (int srow = rowOffset; srow < this.numNodes; srow++) {
+      for (int lcol = 0; lcol < this.numLookers; lcol++) {
 
-    // weight between looker i and looker i = > Negative Infinity
-    for (int index = 0; index < this.numLookers; index++) {
-      this.adjMatrix[index][index] = Double.NEGATIVE_INFINITY;
+        StarterNode from = this.centroids.get(srow - rowOffset);
+        LookerNode to = this.lookers.get(lcol);
+        double weight = this.computeHeuristic(from, to);
+        GraphEntry<StarterNode> entry = new GraphEntry<>(from, to, srow, lcol, weight);
+
+        this.adjMatrix[srow][lcol] = entry;
+      }
     }
   }
 
 
-
-  /**
-   * Sets the capacity map, which will be used to keep track
-   * of how many spots are left in each starter's event.
-   */
-  private void setCapacityMap() {
-    for (StarterNode s: this.centroids) {
-      capacityMap.put(s, s.getCapacity());
-    }
-
-  }
 }
