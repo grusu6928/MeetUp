@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import './index.css';
 import FriendsList from './FriendsList';
+import {Link} from 'react-router-dom';
 
 
 // const requestAuthentication = () => {
@@ -56,8 +57,9 @@ class Starter extends Component {
         this.handleTypeChange = this.handleTypeChange.bind(this);
         this.handleActivityChange = this.handleActivityChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        let data = [];
       }
-
+    
     handleTypeChange (e){
         this.setState({
             selectedType: e.target.value
@@ -96,11 +98,20 @@ class Starter extends Component {
             console.log(this.state.endTime);
             console.log(this.state.location);
             console.log(this.state.numberOfAttendees);
+        this.data = [
+            {typeOfEvent: this.state.selectedType,
+            typeOfActivity: this.state.selectedActivity,
+            startTime: this.state.startTime,
+            endTime: this.state.endTime,
+            location: this.state.location,
+            numOfAttendees: this.state.numberOfAttendees
+            }
+        ]
+        // this.history.push('/starter-submission');
         const starterForm = document.getElementById('starter-form')
         starterForm.reset(); 
         alert ("Thank you for submitting this event, we'll let you know if others join!")
     }
-
 
     render() {
         return (
@@ -158,7 +169,14 @@ class Starter extends Component {
                             <label for="number" className="text"> Desired number of people: </label>
                             <input id="number" type="number" onChange = {e => this.handleAttendees(e)}/>
                         </div>
-                        <button className="submit" type="submit" onSubmit = {this.handleSubmit}> Submit</button>
+                        
+                        <Link
+                            to={{
+                                pathname: "/starter-submission",
+                                state: this.data // your data array of objects
+                            }}>
+                            <button className="submit" type="submit" onSubmit = {this.handleSubmit}> Submit</button>
+                        </Link>
                     </form>
                 </div>
             </div>
