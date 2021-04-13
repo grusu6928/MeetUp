@@ -41,7 +41,7 @@ class Looker extends Component {
             <div className="margins">
                 <header>
                     <h1 className="home">
-                        <a href="/"> Home </a>
+                        <a href="/Home.js"> Home </a>
                     </h1>
                     <h1 className="welcome"> Provide your event preferences: </h1>
                 </header>
