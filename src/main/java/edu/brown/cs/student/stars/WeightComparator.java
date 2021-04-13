@@ -1,13 +1,14 @@
 package edu.brown.cs.student.stars;
 
+
 import java.util.Comparator;
 
-public class WeightComparator implements Comparator<Double> {
+public class WeightComparator implements Comparator<GraphEntry> {
+
 
   @Override
-  public int compare(Double weight1, Double weight2) {
-    return weight1.compareTo(weight2);
+  public int compare(GraphEntry e1, GraphEntry e2) {
+    return Double.compare(e1.getWeight(), e2.getWeight());
   }
-
 }
 
