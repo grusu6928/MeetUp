@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import './index.css';
+import FriendsList from './FriendsList';
 
 
 // const requestAuthentication = () => {
@@ -89,12 +90,6 @@ class Starter extends Component {
     }
     handleSubmit (e){
         e.preventDefault();
-        // this.setState({
-        //     startTime: "1",
-        //     endTime: "12",
-        //     location: "Home",
-        //     numberOfAttendees: "5"
-        //     })
             console.log(this.state.selectedType);
             console.log(this.state.selectedActivity);
             console.log(this.state.startTime);
@@ -102,16 +97,15 @@ class Starter extends Component {
             console.log(this.state.location);
             console.log(this.state.numberOfAttendees);
         const starterForm = document.getElementById('starter-form')
-        // starterForm.reset(); 
+        starterForm.reset(); 
         alert ("Thank you for submitting this event, we'll let you know if others join!")
     }
-
-
 
 
     render() {
         return (
             <div className="margins">
+                <FriendsList />
                 <header>
                     <h1 className="home">
                         <a href="/home"> Home </a>

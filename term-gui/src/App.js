@@ -23,13 +23,13 @@ function App() {
       </header>
       <BrowserRouter>
         <Switch>
-          <Route exact path="/starter" component = {FriendsList}> 
-            <Starter component = {FriendsList} />
+          <Route exact path="/starter"> 
+            <Starter />
           </Route>
           <Route exact path="/looker" > 
-            <Looker component = {FriendsList}/>
+            <Looker/>
           </Route>
-          <Route exact path="/home" component = {FriendsList}> 
+          <Route exact path="/home"> 
             <Home />
           </Route>
           <Route exact path="/">
