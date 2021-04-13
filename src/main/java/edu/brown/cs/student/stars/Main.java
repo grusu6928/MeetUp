@@ -7,6 +7,7 @@ import java.io.StringWriter;
 
 import edu.brown.cs.student.stars.Login;
 import freemarker.template.Configuration;
+import jdk.jfr.Event;
 import spark.ExceptionHandler;
 import spark.Request;
 import spark.Response;
@@ -98,13 +99,15 @@ public final class Main {
   
     MyDatabase.connect();
 
-    List<Event> events = new Events().getAllEvents();
-
-    Graph graph = new Graph();
-
-
-
-
+    List<StarterNode> events = new Events().getAllEvents();
+    List<LookerNode> lookers = new Events().getAllLockers();
+    Graph graph = new Graph(lookers, events);
+    //TODO: when should we run it.
+    //TODO: create table of RSVP with fields below:
+    // id/ username(foreign key for looker)/ eventID(foreign key for starter)/ response(yes/no/no response)
+    // TODO: write to RSVP after running algo.
+    // TODO: Decide when to grab updates from RSVP table.
+    // TODO: When to clear the table. (maybe after each event finishes, delete all related data)
     Spark.port(port);
     Spark.options("/*", (request, response) -> {
       String accessControlRequestHeaders = request.headers("Access-Control-Request-Headers");
