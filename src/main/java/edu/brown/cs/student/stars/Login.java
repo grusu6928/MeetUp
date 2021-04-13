@@ -6,8 +6,8 @@ import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Login implements TemplateViewRoute {
-  public String log(String username, String password) {
+public class Login {
+  public static Boolean log(String username, String password) {
     Boolean loggedIn = false;
     Connection conn = DataBase.conn;
     System.out.println(username);
@@ -27,28 +27,26 @@ public class Login implements TemplateViewRoute {
     } catch(SQLException e) {
       System.out.println(e);
     }
-    if(loggedIn) {
-      return username;
-    }
-    return null;
+
+    return loggedIn;
   }
   public void logout() {
     System.out.println("logged out");
   }
 
-  @Override
-  public ModelAndView handle(Request request, Response response) throws Exception {
-    System.out.println("Hi");
-    QueryParamsMap form = request.queryMap();
-    String username = form.value("username");
-    String password = form.value("password");
-    username = log(username, password);
-    if(username != null) {
-      response.redirect("/");
-      return null;
-    }
-    request.session().attribute("currentUser", username);
-    Map<String, String> variables = new HashMap<>();
-    return new ModelAndView(variables, "main.ftl");
-  }
+  // @Override
+  // public ModelAndView handle(Request request, Response response) throws Exception {
+  //   System.out.println("Hi");
+  //   QueryParamsMap form = request.queryMap();
+  //   String username = form.value("username");
+  //   String password = form.value("password");
+  //   username = log(username, password);
+  //   if(username != null) {
+  //     response.redirect("/");
+  //     return null;
+  //   }
+  //   request.session().attribute("currentUser", username);
+  //   Map<String, String> variables = new HashMap<>();
+  //   return new ModelAndView(variables, "main.ftl");
+  // }
 }
