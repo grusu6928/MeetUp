@@ -5,7 +5,7 @@ import java.util.*;
 public class Graph {
 
   private double[][] adjMatrix; // used for calculating within cluster point scatter
-  private double[][] starterAdjMatrix;
+//  private double[][] starterAdjMatrix;
 
   private ArrayList<GraphNode> allNodes;
   private ArrayList<LookerNode> lookers;
@@ -14,6 +14,10 @@ public class Graph {
   // for both: id -> object
   private Map<Integer, LookerNode> lookersMap;
   private Map<Integer, StarterNode> startersMap;
+
+  // id -> row/col in adjacency matrix
+  private Map<Integer, Integer> centroidIdToRow;
+  private Map<Integer, Integer> lookerIdToCol;
 
 
   private HashMap<StarterNode, Integer> capacityMap; // max capacity at each event
@@ -48,24 +52,45 @@ public class Graph {
     this.centroids = starters;
 
     // creates list of all nodes (to be used in adjacency matrix initialization)
+    // VERIFY: addAll PRESERVES ORDER of lookers and of starters
     this.allNodes = new ArrayList<>();
-    this.allNodes.addAll(starters); // ADDING STARTERS BEFORE LOOKERS MATTERS
-    // index [0, numStarters) in the adjacency matrix are starters
-    this.allNodes.addAll(lookers);
+    this.allNodes.addAll(lookers); // ADDING LOOKERS BEFORE STARTERS MATTERS
+    this.allNodes.addAll(starters);
+    // n x L adjacency matrix: first L rows -> lookers; second S rows -> starters
 
-//    Collections.shuffle(this.allNodes);
-    //
+    this.centroidIdToRow = new HashMap<>();
+    this.lookerIdToCol = new HashMap<>();
+    this.setIdToIndInMatrixMaps(lookers, starters);
 
 
     this.numNodes = this.allNodes.size();
     this.numLookers = lookers.size();
     this.numStarters = starters.size();
 
-    this.adjMatrix = new double[numNodes][numNodes];
-    this.starterAdjMatrix = new double[numStarters][numNodes];
+    this.adjMatrix = new double[this.numNodes][this.numLookers];
+//    this.starterAdjMatrix = new double[numStarters][numNodes];
 
     this.setCapacityMap();
 
+  }
+
+  /**
+   * Maps [ looker id -> column index for that looker in adjMatrix]
+   * Maps [ starter id -> row index for that starter in adjMatrix]
+   * @param lookers
+   * @param starters
+   */
+  private void setIdToIndInMatrixMaps(ArrayList<LookerNode> lookers, ArrayList<StarterNode> starters) {
+    for (int l = 0; l < lookers.size(); l++) {
+      LookerNode lNode = lookers.get(l);
+      this.lookerIdToCol.put(lNode.getId(), l);
+    }
+
+    int rowOffset = this.numLookers; // since first L row indices are for lookers
+    for (int s = 0; s < starters.size(); s++) {
+      StarterNode sNode = starters.get(s);
+      this.centroidIdToRow.put(sNode.getId(), s + rowOffset);
+    }
   }
 
 //  /**
@@ -96,13 +121,17 @@ public class Graph {
 
       // for each centroid -> create a priority queue of the weights in the centroid's row in
       // the adjacency matrix
-      for (int c = 0; c < centroids.size(); c++) {
+      for (int c = 0; c < this.centroids.size(); c++) {
         PriorityQueue<Double> pq = new PriorityQueue<>(new WeightComparator());
-        double[] weights = starterAdjMatrix[c];
+
+        StarterNode centroid = this.centroids.get(c);
+        int row = this.centroidIdToRow.get(centroid.getId()); // gets row in adj matrix corresponding to centroid's id
+        double[] weights = this.adjMatrix[row];
+
         for (double w : weights) {
           pq.add(w);
         }
-        starterToLookerWeights.put(centroids.get(c), pq);
+        starterToLookerWeights.put(centroid, pq);
       }
 
       // PART 2
@@ -169,63 +198,36 @@ public class Graph {
 
 
   /**
-   * Populates the overall AND starter-subset adjacency matrix.
+   * Populates the overall adjacency matrix.
    */
   private void setEdgeWeights() {
 
-    // computationally faster to create starter-only matrix in same loop
+    // allNodes is a list of L lookers and then S starters (in that order)
 
-
-//    int starterCounter = 0;
-
+    // produces n x L adjacency matrix
     for (int i = 0; i < this.numNodes; i++) {
-
-      for (int j = 0; j < this.numNodes; j++) {
+      for (int j = 0; j < this.numLookers; j++) {
         // if weight is on initial value -> compute a heuristic for it
         if (Double.compare(adjMatrix[i][j], Double.POSITIVE_INFINITY) == 0) {
           double heuristic = this.computeHeuristic(this.allNodes.get(i), this.allNodes.get(j));
-          adjMatrix[i][j] = heuristic;
-          adjMatrix[j][i] = heuristic;
+          this.adjMatrix[i][j] = heuristic;
         }
       }
-
-      // populates starter adjacency matrix
-//      boolean isStarter = this.allNodes.get(i).isStarter();
-//      if (isStarter) {
-//        System.arraycopy(adjMatrix[i], 0, starterAdjMatrix[starterCounter], 0, starterAdjMatrix[starterCounter].length);
-//      }
-//      starterCounter++;
-
     }
 
   }
 
   /**
-   * Sets the weight between a) two starters and b) a node and itself to Negative Infinity.
+   * Sets the weight between looker i, looker i to negative infinity.
    */
   private void preProcessAdjMatrix() {
     // initialize all weights to positive infinity
     Arrays.fill(this.adjMatrix, Double.POSITIVE_INFINITY);
 
-    
-    for (int i = 0; i < this.numStarters; i ++) {
-      for (int j = 0; j < this.numStarters; j++) {
-        this.adjMatrix[i][j] = Double.NEGATIVE_INFINITY;
-      }
-    }
-
-    for (int index = this.numStarters; index < this.numNodes; index++) {
+    // weight between looker i and looker i = > Negative Infinity
+    for (int index = 0; index < this.numLookers; index++) {
       this.adjMatrix[index][index] = Double.NEGATIVE_INFINITY;
     }
-  }
-
-
-  private boolean bothStarters(GraphNode n1, GraphNode n2) {
-    return n1.isStarter() && n2.isStarter();
-  }
-
-  private boolean atDiagonal(int num1, int num2) {
-    return num1 == num2;
   }
 
 
