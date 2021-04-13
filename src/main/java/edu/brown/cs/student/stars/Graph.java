@@ -18,14 +18,6 @@ public class Graph {
   private int numIters = 10;
 
 
-  // TODO: 1) finish out last bits of algorithm, 2) Heuristic computation
-  // INTEGRATION w/ Amin -> use friends SQL table in Heuristic comp
-
-  // INTEGRATION w/ Front-End ->
-  // 1) receive lookers & starters lists
-  // 2) run algorithm
-  // 3) send back list of groups
-
 
   /**
    *
@@ -40,10 +32,8 @@ public class Graph {
     this.lookers = lookers;
     this.centroids = starters;
 
-
     this.capacityMap = new HashMap<>();
     this.setCapacityMap();
-
 
     this.centroidIdToRow = new HashMap<>();
     this.lookerIdToCol = new HashMap<>();
@@ -78,27 +68,42 @@ public class Graph {
   }
 
 
+  private Map<StarterNode, PriorityQueue<GraphEntry
+          <StarterNode>>> mapCentroidsToEntries() {
+
+    Map<StarterNode, PriorityQueue<GraphEntry<StarterNode>>> starterToLookerEntries = new HashMap<>();
+
+    // maps [centroid -> priority queue of entries in its row]
+    for (StarterNode centroid : this.centroids) {
+      PriorityQueue<GraphEntry<StarterNode>> pq = new PriorityQueue<>(new WeightComparator());
+
+      int row = this.centroidIdToRow.get(centroid.getId()); // gets row in adj matrix corresponding to centroid's id
+      GraphEntry<StarterNode>[] entries = this.adjMatrix[row];
+      Collections.addAll(pq, entries);
+      starterToLookerEntries.put(centroid, pq);
+    }
+
+    return starterToLookerEntries;
+  }
 
 
-  private void runAlgorithm() {
+  /**
+   * Returns a map of the optimal cluster arrangement.
+   * A group of lookers tied to each starter (i.e. event)
+   * @return optimal map
+   */
+  private Map<StarterNode, List<LookerNode>> runAlgorithm() {
+    // hold data for every iteration
     List<Map<StarterNode, List<LookerNode>>> potentialGroupings = new ArrayList<>();
     double[] scatters = new double[this.numIters];
+
 
     for (int iter = 0; iter < numIters; iter++) {
       Collections.shuffle(this.centroids);
 
+      Map<StarterNode, PriorityQueue<GraphEntry<StarterNode>>>
+              starterToLookerEntries = this.mapCentroidsToEntries();
 
-      Map<StarterNode, PriorityQueue<GraphEntry<StarterNode>>> starterToLookerEntries = new HashMap<>();
-
-      // maps [centroid -> priority queue of entries in its row]
-      for (StarterNode centroid : this.centroids) {
-        PriorityQueue<GraphEntry<StarterNode>> pq = new PriorityQueue<>(new WeightComparator());
-
-        int row = this.centroidIdToRow.get(centroid.getId()); // gets row in adj matrix corresponding to centroid's id
-        GraphEntry<StarterNode>[] entries = this.adjMatrix[row];
-        Collections.addAll(pq, entries);
-        starterToLookerEntries.put(centroid, pq);
-      }
 
       int numMatchedLookers = 0;
       Map<StarterNode, List<LookerNode>> grouping = new HashMap<>();
@@ -127,31 +132,86 @@ public class Graph {
 
             // make sure that looker can't attend other events
             // REMOVES POSSIBILITY OF THIS LOOKER BEING IN ANY OTHER GROUP
-            Collection queues = starterToLookerEntries.values();
+            Collection<PriorityQueue<GraphEntry<StarterNode>>> queues = starterToLookerEntries.values();
             for (PriorityQueue q : queues) {
               q.remove(looker);
             }
           }
         }
-
       }
 
-      // after all groups are set
+      // done making this iter's grouping
       potentialGroupings.add(grouping);
-      scatters[iter] = this.calculateScatter(potentialGroupings);
+      scatters[iter] = this.calculateScatter(grouping);
     }
 
+    // after all groups are set
+    int bestIter = argmin(scatters);
+    Map<StarterNode, List<LookerNode>> bestGrouping = potentialGroupings.get(bestIter);
+    return bestGrouping;
+
+  }
+
+  /**
+   * Gets the argmin of a list.
+   * @param list
+   * @return
+   */
+  private int argmin(double[] list) {
+    double min = Double.POSITIVE_INFINITY;
+    int argmin = 0;
+    for (int i = 0; i < list.length; i++) {
+      double elem = list[i];
+      if (Double.compare(elem, min) < 0) {
+        min = elem;
+        argmin = i;
+      }
+    }
+    return argmin;
   }
 
 
-  private double calculateScatter(List<Map<StarterNode, List<LookerNode>>> potentialGroupings) {
+  private double calculateScatter(Map<StarterNode, List<LookerNode>> groupings) {
 
     double totalScatter = 0;
+    Set<StarterNode> clusters = groupings.keySet();
 
-    // for a cluster in potentialGroupings
+    for (StarterNode cluster : clusters) {
+      double kScatter = 0;
 
+      // get centroid row
+      int centroidRow = this.centroidIdToRow.get(cluster.getId());
+      List<LookerNode> lookers = groupings.get(cluster);
+      List<Integer> lookerCols = new ArrayList<>();
 
+      // get list of looker columns
+      for (LookerNode l : lookers) {
+        int lCol = this.lookerIdToCol.get(l.getId());
+        lookerCols.add(lCol);
+      }
+
+      // calc scatter btwn centroid and everything in lookerCols
+      for (Integer col: lookerCols) {
+        kScatter += this.adjMatrix[centroidRow][col].getWeight();
+      }
+
+      // calc scatter btwn everything in lookerCols and everything in lookerCols
+      for (Integer row: lookerCols) {
+        for (Integer col: lookerCols) {
+          if (!row.equals(col)) {
+            kScatter += this.adjMatrix[row][col].getWeight();
+          }
+        }
+      }
+
+      int n = lookers.size() + 1;
+      totalScatter += n * kScatter;
+    }
+
+    return totalScatter;
   }
+
+
 
 
   /**
