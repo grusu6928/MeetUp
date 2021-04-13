@@ -78,13 +78,14 @@ public final class Main {
    */
   private void runSparkServer(int port) {
     // TODO
+  
     DataBase.connect();
     Spark.port(port);
     Spark.externalStaticFileLocation("src/main/resources/static");
     Spark.exception(Exception.class, new ExceptionPrinter());
     FreeMarkerEngine freeMarker = createEngine();
-    Spark.get("/", new Home(), freeMarker);
-    Spark.post("/login", new loginAuthHandler());
+    // Spark.get("/", new Home(), freeMarker);
+    Spark.post("login", new loginAuthHandler());
     Spark.post("/logout", new Logout(), freeMarker);
   }
   private static class loginAuthHandler implements Route {
