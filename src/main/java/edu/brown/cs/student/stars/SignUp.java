@@ -1,4 +1,5 @@
 package edu.brown.cs.student.stars;
+import edu.brown.cs.student.stars.MyDatabase;
 
 import org.eclipse.jetty.util.Loader;
 
@@ -6,7 +7,7 @@ import java.sql.*;
 
 public class SignUp {
   public void newUser(String username, String password, String email) {
-    Connection conn = DataBase.conn;
+    Connection conn = MyDatabase.conn;
     try {
       PreparedStatement prep;
       prep = conn.prepareStatement("CREATE TABLE IF NOT EXISTS users("

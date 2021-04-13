@@ -9,7 +9,7 @@ import java.util.Map;
 public class Login {
   public static Boolean log(String username, String password) {
     Boolean loggedIn = false;
-    Connection conn = DataBase.conn;
+    Connection conn = MyDatabase.conn;
     System.out.println(username);
     try {
       PreparedStatement prep;
@@ -32,7 +32,6 @@ public class Login {
   public void logout() {
     System.out.println("logged out");
   }
-
   // @Override
   // public ModelAndView handle(Request request, Response response) throws Exception {
   //   System.out.println("Hi");
