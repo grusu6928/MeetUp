@@ -10,6 +10,7 @@ import React, {useState} from 'react';
 import Lookers from './Lookers';
 import FriendsList from './FriendsList';
 import { AppContext } from "./Contexts";
+import ReactSession from 'react-client-session';
 
 
 function App() {
@@ -25,7 +26,6 @@ function App() {
       </header>
       <BrowserRouter>
         <Switch>
-        <AppContext.Provider value={{ isAuth, changeAuth }}>
         <Route exact path="/Login.js">
           <Login />
         </Route>
@@ -38,14 +38,10 @@ function App() {
           <Route exact path="/"> 
             <Home />
           </Route>
-          </AppContext.Provider>
         </Switch>
       </BrowserRouter>
     </div>
   );
 }
-
-
-
 
 export default App;

@@ -1,13 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Form from "react-bootstrap/Form";
 import Button from "./Button";
 import axios from 'axios';
+import ReactSession from 'react-client-session';
+import { Redirect } from "react-router-dom";
+import { BrowserRouter as Switch, Route, BrowserRouter } from "react-router-dom";
+import Home from './Home';
 
 import { useAppContext } from "./Contexts";
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [redirect, setRedirect] = useState(false)
   // const { userHasAuthenticated } = useAppContext();
 
   function validateForm() {
@@ -24,6 +29,7 @@ function Login() {
   function handleSubmit(event) {
     event.preventDefault();
     requestAuthentication(email, password);
+    // if true, then we wanna redirect to another page (home) and save user in session 
   }
   
   const requestAuthentication = () => {
@@ -37,13 +43,23 @@ function Login() {
           'Access-Control-Allow-Origin': '*',
           }
         }
-        axios.post('https://localhost:4567/login', toSend, config)
+        axios.post('http://localhost:4567/login', toSend, config)
         .then(response => {
             if(response.data) {
-                // successful login, we want to redirect to home
-                console.log("sucess");
+              // TODO 
+              // ReactSession.setStoreType("localStorage");
+              // ReactSession.set("username", email);
+              // setRedirect(true);
+              // window.location.href = "/";
+              console.log("success");
+              return(
+                // TODO: I want to render the home page after successful login. 
+            <Home />
+              )
+                
             } else {
                 // rerender page, with alert
+                setRedirect(false);
                 console.log("failure");
             }
         })
@@ -51,7 +67,12 @@ function Login() {
           console.log(error);
         });
       }
-
+      if (ReactSession != null) {
+        return(
+          <Redirect to='/Home'/>
+        );
+      }
+      else{
   return (
     <div className="Login">
       <Form onSubmit={handleSubmit}>
@@ -72,13 +93,13 @@ function Login() {
             onChange={(e) => setPassword(e.target.value)}
           />
         </Form.Group>
-        <a href="Home.js">
         <Button block size="lg" type="submit" disabled={!validateForm()}>
           Login
         </Button>
-        </a>
+        
       </Form>
     </div>
   );
+      }
 }
 export default Login;
