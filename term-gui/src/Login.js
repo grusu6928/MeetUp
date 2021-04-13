@@ -6,6 +6,7 @@ import ReactSession from 'react-client-session';
 import { Redirect } from "react-router-dom";
 import { BrowserRouter as Switch, Route, BrowserRouter } from "react-router-dom";
 import Home from './Home';
+import {Link} from 'react-router-dom';
 
 import { useAppContext } from "./Contexts";
 
@@ -93,9 +94,15 @@ function Login() {
             onChange={(e) => setPassword(e.target.value)}
           />
         </Form.Group>
-        <Button block size="lg" type="submit" disabled={!validateForm()}>
-          Login
-        </Button>
+
+          <Link
+              to={ if( this.{
+                  pathname: "/home",
+              }}>
+              <Button block size="lg" type="submit" disabled={!validateForm()}>
+                  Login
+              </Button>
+          </Link>
         
       </Form>
     </div>
