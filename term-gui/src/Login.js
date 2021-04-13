@@ -37,7 +37,7 @@ function Login() {
           'Access-Control-Allow-Origin': '*',
           }
         }
-        axios.post('http://localhost:4567/login', toSend, config)
+        axios.post('https://localhost:4567/login', toSend, config)
         .then(response => {
             if(response.data) {
                 // successful login, we want to redirect to home
