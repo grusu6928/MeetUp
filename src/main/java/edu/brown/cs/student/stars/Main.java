@@ -99,6 +99,7 @@ public final class Main {
   
     MyDatabase.connect();
 
+<<<<<<< HEAD
     List<StarterNode> events = new Events().getAllEvents();
     List<LookerNode> lookers = new Events().getAllLockers();
     Graph graph = new Graph(lookers, events);
@@ -108,7 +109,14 @@ public final class Main {
     // TODO: write to RSVP after running algo.
     // TODO: Decide when to grab updates from RSVP table.
     // TODO: When to clear the table. (maybe after each event finishes, delete all related data)
+=======
+    List<Event> events = new Events().getAllEvents();
+
+    Graph graph = new Graph();
+
+>>>>>>> 3c5fc461898f1398b19dcb48e744737331efdb73
     Spark.port(port);
+    // Spark.externalStaticFileLocation("src/main/resources/static");
     Spark.options("/*", (request, response) -> {
       String accessControlRequestHeaders = request.headers("Access-Control-Request-Headers");
       if (accessControlRequestHeaders != null) {
@@ -125,7 +133,7 @@ public final class Main {
 });
 
 Spark.before((request, response) -> response.header("Access-Control-Allow-Origin", "*"));
-    Spark.externalStaticFileLocation("src/main/resources/static");
+ 
     Spark.exception(Exception.class, new ExceptionPrinter());
     FreeMarkerEngine freeMarker = createEngine();
     // Spark.get("/", new Home(), freeMarker);
@@ -137,6 +145,15 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
     public Object handle(Request request, Response response) throws Exception {
       JSONObject data = new JSONObject(request.body());
       System.out.println(data);
+      return new Gson().toJson(Login.log(data.getString("email"), data.getString("pass")));
+      // Map<String, Object> variables = ImmutableMap.of("checkin", isAuth);
+      // return GSON.toJson(isAuth);
+    }
+  }
+  private static class eventsHandler implements Route {
+    @Override
+    public Object handle(Request request, Response response) throws Exception {
+      JSONObject data = new JSONObject(request.body());
       return new Gson().toJson(Login.log(data.getString("email"), data.getString("pass")));
       // Map<String, Object> variables = ImmutableMap.of("checkin", isAuth);
       // return GSON.toJson(isAuth);

@@ -1,15 +1,58 @@
 import React, { Component } from 'react';
 import './App.css';
 import './index.css';
+import FriendsList from './FriendsList';
+
+
+// const requestAuthentication = () => {
+//     const toSend = {
+//         email:
+//         pass: ,
+//     }
+//     let config = {
+//         headers: {
+//           "Content-Type": "application/json",
+//           'Access-Control-Allow-Origin': '*',
+//           }
+//         }
+//         axios.post('http://localhost:4567/events', toSend, config)
+//         .then(response => {
+//             if(response.data) {
+//               // TODO 
+//               // ReactSession.setStoreType("localStorage");
+//               // ReactSession.set("username", email);
+//               // setRedirect(true);
+//               // window.location.href = "/";
+//               console.log("success");
+//               return(
+//                 // TODO: I want to render the home page after successful login. 
+//             <Home />
+//               )
+                
+//             } else {
+//                 // rerender page, with alert
+//                 setRedirect(false);
+//                 console.log("failure");
+//             }
+//         })
+//         .catch(function (error) {
+//           console.log(error);
+//         });
+//       }
+
 
 class Starter extends Component {
     constructor() {
         super();
         this.state = {
           selectedType: null,
-          selectedActivity: null
+          selectedActivity: null,
+          startTime: null,
+          endTime: null,
+          location: null,
+          numberOfAttendees: null
         };
-
+// const [state, changeState] = setState(0)
         this.handleTypeChange = this.handleTypeChange.bind(this);
         this.handleActivityChange = this.handleActivityChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -18,30 +61,54 @@ class Starter extends Component {
     handleTypeChange (e){
         this.setState({
             selectedType: e.target.value
-        })
+        });
     }
     handleActivityChange (e){
         this.setState({
             selectedActivity: e.target.value
         })
     }
+    handleStartTime (e){
+        this.setState({
+            startTime: e.target.value
+        })
+    }
+    handleEndTime (e){
+        this.setState({
+            endTime: e.target.value
+        })
+    }
+    handleLocation (e){
+        this.setState({
+            location: e.target.value
+        })
+    }
+    handleAttendees (e){
+        this.setState({
+            numberOfAttendees: e.target.value
+        })
+    }
     handleSubmit (e){
         e.preventDefault();
-        // this.setState({
-        //     selectedType: '',
-        //     selectedActivity: ''
-        // })
+            console.log(this.state.selectedType);
+            console.log(this.state.selectedActivity);
+            console.log(this.state.startTime);
+            console.log(this.state.endTime);
+            console.log(this.state.location);
+            console.log(this.state.numberOfAttendees);
         const starterForm = document.getElementById('starter-form')
-        starterForm.reset();
+        starterForm.reset(); 
         alert ("Thank you for submitting this event, we'll let you know if others join!")
     }
+
 
     render() {
         return (
             <div className="margins">
+                <FriendsList />
                 <header>
                     <h1 className="home">
-                        <a href="/Home.js"> Home </a>
+                        <a href="/home"> Home </a>
                     </h1>
                     <h1 className="welcome"> Provide your event details: </h1> 
                 </header>
@@ -49,9 +116,9 @@ class Starter extends Component {
                     <form id="starter-form" onSubmit={this.handleSubmit}>
                         <div class="event">
                             <p className="text"> Type of event: </p>
-                            <input type="radio" value="public" checked={this.state.selectedType === 'public'} onChange={this.handleTypeChange}/>
+                            <input type="radio" value="public" checked={this.state.selectedType === 'public'} onChange={ e => this.handleTypeChange(e)}/>
                             <label for="public"> Public </label>
-                            <input type="radio" value="private" checked={this.state.selectedType === 'private'} onChange={this.handleTypeChange}/>
+                            <input type="radio" value="private" checked={this.state.selectedType === 'private'} onChange={this.handleTypeChange.bind(this)}/>
                             <label for="private"> Private </label>
                         </div>
                         <div className="event">
@@ -76,22 +143,22 @@ class Starter extends Component {
                             </div>
                         </div>
                         <div className="event"> 
-                            <label for="start-time" className="text"> Start Time? </label>
-                            <input id="start-time" type="time"/>
+                            <label for="start-time" className="text" > Start Time? </label>
+                            <input id="start-time" type="time" onChange = {e => this.handleStartTime(e)}/>
                             <br/>
                             <br/>
                             <label for="end-time" className="text"> End Time? </label>
-                            <input id="end-time" type="time"/>
+                            <input id="end-time" type="time" onChange = {e => this.handleEndTime(e)}/>
                         </div>
                         <div className="event">
                             <label for="location" className="text"> Location: </label>
-                            <input id="location" type="text"/>
+                            <input id="location" type="text" onChange = {e => this.handleLocation(e)}/>
                         </div>
                         <div className="event">
                             <label for="number" className="text"> Desired number of people: </label>
-                            <input id="number" type="number"/>
+                            <input id="number" type="number" onChange = {e => this.handleAttendees(e)}/>
                         </div>
-                        <button className="submit" type="submit"> Submit</button>
+                        <button className="submit" type="submit" onSubmit = {this.handleSubmit}> Submit</button>
                     </form>
                 </div>
             </div>

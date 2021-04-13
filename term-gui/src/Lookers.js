@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import axios from 'axios';
 import './App.css';
 import TextInput from './TextInput';
+import FriendsList from './FriendsList';
 
 function Lookers(props) {
     const [eventType, setEventType] = useState("")

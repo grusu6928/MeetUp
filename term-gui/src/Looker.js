@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import './index.css';
+import FriendsList from './FriendsList';
 
 class Looker extends Component {
     constructor() {
@@ -39,9 +40,10 @@ class Looker extends Component {
     render() {
         return (
             <div className="margins">
+                <FriendsList />
                 <header>
                     <h1 className="home">
-                        <a href="/Home.js"> Home </a>
+                        <a href="/home"> Home </a>
                     </h1>
                     <h1 className="welcome"> Provide your event preferences: </h1>
                 </header>
