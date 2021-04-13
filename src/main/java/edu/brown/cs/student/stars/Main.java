@@ -85,13 +85,14 @@ public final class Main {
     Spark.exception(Exception.class, new ExceptionPrinter());
     FreeMarkerEngine freeMarker = createEngine();
     // Spark.get("/", new Home(), freeMarker);
-    Spark.post("login", new loginAuthHandler());
+    Spark.post("/login", new loginAuthHandler());
     Spark.post("/logout", new Logout(), freeMarker);
   }
   private static class loginAuthHandler implements Route {
     @Override
     public Object handle(Request request, Response response) throws Exception {
       JSONObject data = new JSONObject(request.body());
+      System.out.println(data);
       return new Gson().toJson(Login.log(data.getString("email"), data.getString("pass")));
       // Map<String, Object> variables = ImmutableMap.of("checkin", isAuth);
       // return GSON.toJson(isAuth);
