@@ -6,7 +6,7 @@ public interface GraphNode {
 
   int getId(); // unique
   String getEvent();
-  LocalTime getStartTime();
-  LocalTime getEndTime();
+  String getStartTime();
+  String getEndTime();
   boolean isStarter();
 }

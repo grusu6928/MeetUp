@@ -6,8 +6,8 @@ public class Graph {
 
   private GraphEntry[][] adjMatrix;
 
-  private ArrayList<LookerNode> lookers;
-  private ArrayList<StarterNode> centroids;
+  private List<LookerNode> lookers;
+  private List<StarterNode> centroids;
 
   private Map<Integer, Integer> lookerIdToCol; // looker id -> col in adjMatrix
   private Map<Integer, Integer> centroidIdToRow; // starter id -> row in adjMatrix
@@ -24,7 +24,7 @@ public class Graph {
    * @param lookers list of lookers (from front-end)
    * @param starters list of starters (from front-end)
    */
-  public Graph(ArrayList<LookerNode> lookers, ArrayList<StarterNode> starters) {
+  public Graph(List<LookerNode> lookers, List<StarterNode> starters) {
 
     this.numNodes = lookers.size() + starters.size();
     this.numLookers = lookers.size();
@@ -54,7 +54,7 @@ public class Graph {
    * @param lookers
    * @param starters
    */
-  private void setIdToIndInMatrixMaps(ArrayList<LookerNode> lookers, ArrayList<StarterNode> starters) {
+  private void setIdToIndInMatrixMaps(List<LookerNode> lookers, List<StarterNode> starters) {
     for (int l = 0; l < lookers.size(); l++) {
       LookerNode lNode = lookers.get(l);
       this.lookerIdToCol.put(lNode.getId(), l);

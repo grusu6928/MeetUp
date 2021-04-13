@@ -5,6 +5,7 @@ import FriendsList from './FriendsList';
 import {Link} from 'react-router-dom';
 
 
+
 // const requestAuthentication = () => {
 //     const toSend = {
 //         email:
@@ -98,6 +99,7 @@ class Starter extends Component {
             console.log(this.state.endTime);
             console.log(this.state.location);
             console.log(this.state.numberOfAttendees);
+
         this.data = [
             {typeOfEvent: this.state.selectedType,
             typeOfActivity: this.state.selectedActivity,
@@ -108,10 +110,12 @@ class Starter extends Component {
             }
         ]
         // this.history.push('/starter-submission');
+
         const starterForm = document.getElementById('starter-form')
         starterForm.reset(); 
         alert ("Thank you for submitting this event, we'll let you know if others join!")
     }
+
 
     render() {
         return (
@@ -169,6 +173,7 @@ class Starter extends Component {
                             <label for="number" className="text"> Desired number of people: </label>
                             <input id="number" type="number" onChange = {e => this.handleAttendees(e)}/>
                         </div>
+
                         
                         <Link
                             to={{
@@ -177,6 +182,7 @@ class Starter extends Component {
                             }}>
                             <button className="submit" type="submit" onSubmit = {this.handleSubmit}> Submit</button>
                         </Link>
+
                     </form>
                 </div>
             </div>

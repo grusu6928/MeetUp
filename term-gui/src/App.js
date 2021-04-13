@@ -25,6 +25,7 @@ function App() {
       </header>
       <BrowserRouter>
         <Switch>
+
         <Route exact path="/starter-submission"> 
             <StarterSubmission />
           </Route>
@@ -34,6 +35,7 @@ function App() {
           <Route exact path="/looker-submission"> 
             <LookerSubmission />
           </Route>
+
           <Route exact path="/looker" > 
             <Looker/>
           </Route>
