@@ -10,6 +10,27 @@
  public class Events {
    Connection conn = MyDatabase.conn;
    //might convert location to longitude and latitude
+   public void addMatch(String username, int eventId) {
+     try {
+       PreparedStatement prep;
+       prep = conn.prepareStatement("CREATE TABLE IF NOT EXISTS lookers("
+               + "number INTEGER,"
+               + "username TEXT,"
+               + "eventId TEXT,"
+               + "FOREIGN KEY (username) REFERENCES lookers(username)"
+               + "ON DELETE CASCADE ON UPDATE CASCADE,"
+               + "FOREIGN KEY (eventId) REFERENCES events(number)"
+               + "ON DELETE CASCADE ON UPDATE CASCADE,"
+               + "PRIMARY KEY (number));");
+       prep.executeUpdate();
+       prep = conn.prepareStatement("INSERT INTO events VALUES(NULL, ?, ?)");
+       prep.setString(1, username);
+       prep.setString(2, Integer.toString(eventId));
+     } catch(SQLException e) {
+       System.out.println(e);
+     }
+
+   }
    public void addLocker(String eventType, String activityType, String startTime, String endTime, String loc) {
      try {
        PreparedStatement prep;
