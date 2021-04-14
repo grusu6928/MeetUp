@@ -3,17 +3,18 @@ import './App.css';
 import './index.css';
 import FriendsList from './FriendsList';
 import {Link} from 'react-router-dom';
+import axios from "axios";
 
 
 
-const sendEvent = () => {
+const sendEvent = (selectedType, selectedActivity, startTime, endTime, location, numAttendees) => {
     const toSend = {
-        typeOfEvent: this.state.selectedType,
-        typeOfActivity: this.state.selectedActivity,
-        startTime: this.state.startTime,
-        endTime: this.state.endTime,
-        location: this.state.location,
-        numOfAttendees: this.state.numberOfAttendees
+        typeOfEvent: selectedType,
+        typeOfActivity: selectedActivity,
+        startTime: startTime,
+        endTime: endTime,
+        location: location,
+        numOfAttendees: numAttendees
     }
     let config = {
         headers: {
@@ -97,6 +98,8 @@ class Starter extends Component {
             numOfAttendees: this.state.numberOfAttendees
             }
         ]
+        sendEvent(this.state.selectedType, this.state.selectedActivity, this.state.startTime, this.state.endTime,
+            this.state.location, this.state.numberOfAttendees);
         // this.history.push('/starter-submission');
 
         const starterForm = document.getElementById('starter-form')

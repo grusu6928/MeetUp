@@ -151,6 +151,16 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
     public Object handle(Request request, Response response) throws Exception {
       JSONObject data = new JSONObject(request.body());
       System.out.println(data);
+      String event = data.getString("typeOfEvent");
+      String activity = data.getString("typeOfActivity");
+      String startTime = data.getString("startTime");
+      String endTime = data.getString("endTime");
+      String location = data.getString("location");
+      int numAttendees = Integer.parseInt(data.getString("numOfAttendees"));
+
+      Events eventDB = new Events();
+      eventDB.createEvent(event, activity, startTime, endTime, location, numAttendees);
+
       // Map<String, Object> variables = ImmutableMap.of("checkin", isAuth);
       return GSON.toJson("success");
     }

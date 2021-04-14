@@ -33,7 +33,7 @@
      }
 
    }
-   public void addLocker(String eventType, String activityType, String startTime, String endTime, String loc) {
+   public void addLooker(String eventType, String activityType, String startTime, String endTime, String loc) {
      try {
        PreparedStatement prep;
        prep = conn.prepareStatement("CREATE TABLE IF NOT EXISTS lookers("
@@ -84,11 +84,11 @@
                + "startT TEXT,"
                + "endT TEXT,"
                + "loc TEXT,"
-               + "starter TEXT"
+               + "starter TEXT,"
                + "numberOfPeople INTEGER,"
                + "PRIMARY KEY (number));");
        prep.executeUpdate();
-       prep = conn.prepareStatement("INSERT INTO events VALUES(NULL, ?, ?, ?, ?, ?, ?, ?)");
+       prep = conn.prepareStatement("INSERT INTO events VALUES(NULL, ?, ?, ?, ?, ?, ?, ?);");
        prep.setString(1, eventType);
        prep.setString(2, activity);
        prep.setString(3, startTime);
@@ -96,6 +96,7 @@
        prep.setString(5, location);
        prep.setString(6, "");
        prep.setString(7, Integer.toString(numberOfPeople));
+       prep.executeUpdate();
      } catch(SQLException e) {
        System.out.println(e);
    }
