@@ -13,7 +13,6 @@ const sendEvent = (selectedType, selectedActivity, startTime, endTime, location,
         startTime: startTime,
         endTime: endTime,
         location: location,
-        numOfAttendees: numAttendees
     }
     let config = {
         headers: {
@@ -21,7 +20,7 @@ const sendEvent = (selectedType, selectedActivity, startTime, endTime, location,
             'Access-Control-Allow-Origin': '*',
         }
     }
-    axios.post('http://localhost:4567/events', toSend, config)
+    axios.post('http://localhost:4567/looker', toSend, config)
         .then(response => {
             console.log("success");
         })
@@ -35,22 +34,41 @@ class Looker extends Component {
         super();
         this.state = {
             selectedType: null,
-            selectedActivity: null
+            selectedActivity: null,
+            startTime: null,
+            endTime: null,
+            location: null
         };
 
         this.handleTypeChange = this.handleTypeChange.bind(this);
         this.handleActivityChange = this.handleActivityChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        let data = []
     }
 
-    handleTypeChange(e) {
+    handleTypeChange (e){
         this.setState({
             selectedType: e.target.value
-        })
+        });
     }
-    handleActivityChange(e) {
+    handleActivityChange (e){
         this.setState({
             selectedActivity: e.target.value
+        })
+    }
+    handleStartTime (e){
+        this.setState({
+            startTime: e.target.value
+        })
+    }
+    handleEndTime (e){
+        this.setState({
+            endTime: e.target.value
+        })
+    }
+    handleLocation (e){
+        this.setState({
+            location: e.target.value
         })
     }
 
@@ -61,7 +79,6 @@ class Looker extends Component {
         console.log(this.state.startTime);
         console.log(this.state.endTime);
         console.log(this.state.location);
-        console.log(this.state.numberOfAttendees);
 
         this.data = [
             {typeOfEvent: this.state.selectedType,
@@ -69,11 +86,10 @@ class Looker extends Component {
                 startTime: this.state.startTime,
                 endTime: this.state.endTime,
                 location: this.state.location,
-                numOfAttendees: this.state.numberOfAttendees
             }
         ]
         sendEvent(this.state.selectedType, this.state.selectedActivity, this.state.startTime, this.state.endTime,
-            this.state.location, this.state.numberOfAttendees);
+            this.state.location);
         // this.history.push('/starter-submission');
 
         //TODO: lookerForm?
@@ -81,8 +97,6 @@ class Looker extends Component {
         starterForm.reset();
         alert ("Thank you for submitting your preferences, we will now provide you with events that match your preferences!")
     }
-
-
 
 
     render() {
@@ -99,9 +113,9 @@ class Looker extends Component {
                     <form id="starter-form" onSubmit={this.handleSubmit}>
                         <div class="event">
                             <p className="text"> Type of event: </p>
-                            <input type="radio" value="public" checked={this.state.selectedType === 'public'} onChange={this.handleTypeChange} />
+                            <input type="radio" value="public" checked={this.state.selectedType === 'public'} onChange={ e => this.handleTypeChange(e)} />
                             <label for="public"> Public </label>
-                            <input type="radio" value="private" checked={this.state.selectedType === 'private'} onChange={this.handleTypeChange} />
+                            <input type="radio" value="private" checked={this.state.selectedType === 'private'} onChange={ e => this.handleTypeChange(e)} />
                             <label for="private"> Private </label>
                         </div>
                         <div className="event">
@@ -130,16 +144,16 @@ class Looker extends Component {
                             <br />
                             <br />
                             from:
-                            <input id="start-time" type="time" />
+                            <input id="start-time" type="time" onChange = {e => this.handleStartTime(e)} />
                             to:
-                            <input id="end-time" type="time" />
+                            <input id="end-time" type="time" onChange = {e => this.handleEndTime(e)} />
                         </div>
                         <br />
                         <div className="event">
                             <label for="location" className="text"> Location: </label>
-                            <input id="location" type="text" />
+                            <input id="location" type="text" onChange = {e => this.handleLocation(e)} />
                         </div>
-                        <button className="submit" type="submit"> Submit</button>
+                        <button className="submit" type="submit" onSubmit = {this.handleSubmit}> Submit</button>
                     </form>
                 </div>
             </div>

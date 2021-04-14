@@ -140,6 +140,7 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
     // Spark.get("/", new Home(), freeMarker);
     Spark.post("/login", new loginAuthHandler());
     Spark.post("/events", new eventsHandler());
+    Spark.post("/looker", new lookerHandler());
     Spark.post("/logout", new Logout(), freeMarker);
   }
   private static class loginAuthHandler implements Route {
@@ -167,6 +168,24 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
       Events eventDB = new Events();
       eventDB.createEvent(event, activity, startTime, endTime, location, numAttendees);
 
+      // Map<String, Object> variables = ImmutableMap.of("checkin", isAuth);
+      return GSON.toJson("success");
+    }
+  }
+  private static class lookerHandler implements Route {
+    @Override
+    public Object handle(Request request, Response response) throws Exception {
+      JSONObject data = new JSONObject(request.body());
+      System.out.println(data);
+      String event = data.getString("typeOfEvent");
+      String activity = data.getString("typeOfActivity");
+      String startTime = data.getString("startTime");
+      String endTime = data.getString("endTime");
+      String location = data.getString("location");
+      int numAttendees = Integer.parseInt(data.getString("numOfAttendees"));
+
+      Events eventDB = new Events();
+      eventDB.addLooker(event, activity, startTime, endTime, location);
       // Map<String, Object> variables = ImmutableMap.of("checkin", isAuth);
       return GSON.toJson("success");
     }
