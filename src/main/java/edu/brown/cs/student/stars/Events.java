@@ -10,7 +10,30 @@
  public class Events {
    Connection conn = MyDatabase.conn;
    //might convert location to longitude and latitude
-   public void addLooker(String eventType, String activityType, String startTime, String endTime, String loc) {
+   public void addMatch(String username, int eventId, String response) {
+     try {
+       PreparedStatement prep;
+       prep = conn.prepareStatement("CREATE TABLE IF NOT EXISTS RSVP("
+               + "number INTEGER,"
+               + "username TEXT,"
+               + "eventId TEXT,"
+               + "response TEXT,"
+               + "FOREIGN KEY (username) REFERENCES lookers(username)"
+               + "ON DELETE CASCADE ON UPDATE CASCADE,"
+               + "FOREIGN KEY (eventId) REFERENCES events(number)"
+               + "ON DELETE CASCADE ON UPDATE CASCADE,"
+               + "PRIMARY KEY (number));");
+       prep.executeUpdate();
+       prep = conn.prepareStatement("INSERT INTO events VALUES(NULL, ?, ?, ?)");
+       prep.setString(1, username);
+       prep.setString(2, Integer.toString(eventId));
+       prep.setString(3, response)
+     } catch(SQLException e) {
+       System.out.println(e);
+     }
+
+   }
+   public void addLocker(String eventType, String activityType, String startTime, String endTime, String loc) {
      try {
        PreparedStatement prep;
        prep = conn.prepareStatement("CREATE TABLE IF NOT EXISTS lookers("
@@ -35,7 +58,7 @@
        System.out.println(e);
      }
    }
-   public List<LookerNode> getAllLookers() {
+   public List<LookerNode> getAllLockers() {
      List<LookerNode> lookers = new ArrayList<>();
      try {
        PreparedStatement prep;
