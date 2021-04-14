@@ -2,6 +2,33 @@ import React, { Component } from 'react';
 import './App.css';
 import './index.css';
 import FriendsList from './FriendsList';
+import axios from "axios";
+
+
+
+const sendEvent = (selectedType, selectedActivity, startTime, endTime, location, numAttendees) => {
+    const toSend = {
+        typeOfEvent: selectedType,
+        typeOfActivity: selectedActivity,
+        startTime: startTime,
+        endTime: endTime,
+        location: location,
+        numOfAttendees: numAttendees
+    }
+    let config = {
+        headers: {
+            "Content-Type": "application/json",
+            'Access-Control-Allow-Origin': '*',
+        }
+    }
+    axios.post('http://localhost:4567/events', toSend, config)
+        .then(response => {
+            console.log("success");
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}
 
 class Looker extends Component {
     constructor() {
@@ -26,16 +53,37 @@ class Looker extends Component {
             selectedActivity: e.target.value
         })
     }
-    handleSubmit(e) {
+
+    handleSubmit (e){
         e.preventDefault();
-        // this.setState({
-        //     selectedType: '',
-        //     selectedActivity: ''
-        // })
+        console.log(this.state.selectedType);
+        console.log(this.state.selectedActivity);
+        console.log(this.state.startTime);
+        console.log(this.state.endTime);
+        console.log(this.state.location);
+        console.log(this.state.numberOfAttendees);
+
+        this.data = [
+            {typeOfEvent: this.state.selectedType,
+                typeOfActivity: this.state.selectedActivity,
+                startTime: this.state.startTime,
+                endTime: this.state.endTime,
+                location: this.state.location,
+                numOfAttendees: this.state.numberOfAttendees
+            }
+        ]
+        sendEvent(this.state.selectedType, this.state.selectedActivity, this.state.startTime, this.state.endTime,
+            this.state.location, this.state.numberOfAttendees);
+        // this.history.push('/starter-submission');
+
+        //TODO: lookerForm?
         const starterForm = document.getElementById('starter-form')
         starterForm.reset();
-        alert("Thank you for submitting your preferences, we will now provide you with events that match your preferences!")
+        alert ("Thank you for submitting your preferences, we will now provide you with events that match your preferences!")
     }
+
+
+
 
     render() {
         return (
