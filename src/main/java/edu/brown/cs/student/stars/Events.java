@@ -10,7 +10,7 @@
  public class Events {
    Connection conn = MyDatabase.conn;
    //might convert location to longitude and latitude
-   public void addMatch(String username, int eventId, String response) {
+   public void addMatch(String username, int eventId) {
      try {
        PreparedStatement prep;
        prep = conn.prepareStatement("CREATE TABLE IF NOT EXISTS RSVP("
@@ -27,7 +27,7 @@
        prep = conn.prepareStatement("INSERT INTO events VALUES(NULL, ?, ?, ?)");
        prep.setString(1, username);
        prep.setString(2, Integer.toString(eventId));
-       prep.setString(3, response)
+       prep.setString(3, "No response");
      } catch(SQLException e) {
        System.out.println(e);
      }
@@ -58,7 +58,7 @@
        System.out.println(e);
      }
    }
-   public List<LookerNode> getAllLockers() {
+   public List<LookerNode> getAllLookers() {
      List<LookerNode> lookers = new ArrayList<>();
      try {
        PreparedStatement prep;
