@@ -65,7 +65,7 @@
        prep = conn.prepareStatement("SELECT * from lookers");
        ResultSet rs = prep.executeQuery();
        while(rs.next()) {
-         lookers.add(new LookerNode(rs.getInt(1),rs.getString(3), rs.getString(4), rs.getString(5)));
+         lookers.add(new LookerNode(rs.getInt(1),rs.getString(3), rs.getString(4), rs.getString(5), ""));
        }
      } catch (SQLException e) {
        System.out.println(e);
@@ -116,8 +116,9 @@
        prep = conn.prepareStatement("SELECT * from events");
        ResultSet rs = prep.executeQuery();
        while(rs.next()) {
+         //TODO: add usernames after sessions are ready
          Events.add(new StarterNode(rs.getInt(1),rs.getString(3), rs.getString(4), rs.getString(5),
-                 rs.getString(6), rs.getInt(7)));
+                 rs.getString(6), rs.getInt(7), ""));
        }
      } catch (SQLException e) {
        System.out.println(e);

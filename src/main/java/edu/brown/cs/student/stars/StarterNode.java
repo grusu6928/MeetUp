@@ -8,14 +8,14 @@ public class StarterNode implements GraphNode {
   private String event;
   private String startTime;
   private String endTime;
-
+  private String username;
   private String location; // modify data type
   private int capacity;
   private int numAttendees;
 
 
   public StarterNode(int id, String event, String startTime,
-                     String endTime, String location, int capacity) {
+                     String endTime, String location, int capacity, String username) {
 
     this.id = id;
     this.event = event;
@@ -23,7 +23,7 @@ public class StarterNode implements GraphNode {
     this.endTime = endTime;
     this.location = location;
     this.capacity = capacity;
-
+    this.username = username;
     this.numAttendees = 0;
 
   }
@@ -32,7 +32,7 @@ public class StarterNode implements GraphNode {
   public int getId() {
     return this.id;
   }
-
+  public String getUsername() {return this.username;}
   @Override
   public String getEvent() {
     return this.event;

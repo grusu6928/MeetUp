@@ -45,6 +45,7 @@ import org.json.JSONObject;
 import com.google.gson.Gson;
 import java.sql.Connection;
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -103,7 +104,12 @@ public final class Main {
     List<LookerNode> lookers = new Events().getAllLookers();
     Graph graph = new Graph(lookers, events);
     //TODO: specify after how long to run the algo.
-    graph.runAlgorithm();
+    Map<StarterNode, List<LookerNode>> result = graph.runAlgorithm();
+    result.forEach((k,v) -> {
+      for(LookerNode l : v) {
+        new Events().addMatch(l.getUsername(), k.getId());
+      }
+    });
     //TODO: create table of RSVP with fields below:
     // id/ username(foreign key for looker)/ eventID(foreign key for starter)/ response(yes/no/no response)
     // TODO: write to RSVP after running algo.
