@@ -6,42 +6,29 @@ import {Link} from 'react-router-dom';
 
 
 
-// const requestAuthentication = () => {
-//     const toSend = {
-//         email:
-//         pass: ,
-//     }
-//     let config = {
-//         headers: {
-//           "Content-Type": "application/json",
-//           'Access-Control-Allow-Origin': '*',
-//           }
-//         }
-//         axios.post('http://localhost:4567/events', toSend, config)
-//         .then(response => {
-//             if(response.data) {
-//               // TODO 
-//               // ReactSession.setStoreType("localStorage");
-//               // ReactSession.set("username", email);
-//               // setRedirect(true);
-//               // window.location.href = "/";
-//               console.log("success");
-//               return(
-//                 // TODO: I want to render the home page after successful login. 
-//             <Home />
-//               )
-                
-//             } else {
-//                 // rerender page, with alert
-//                 setRedirect(false);
-//                 console.log("failure");
-//             }
-//         })
-//         .catch(function (error) {
-//           console.log(error);
-//         });
-//       }
-
+const sendEvent = () => {
+    const toSend = {
+        typeOfEvent: this.state.selectedType,
+        typeOfActivity: this.state.selectedActivity,
+        startTime: this.state.startTime,
+        endTime: this.state.endTime,
+        location: this.state.location,
+        numOfAttendees: this.state.numberOfAttendees
+    }
+    let config = {
+        headers: {
+          "Content-Type": "application/json",
+          'Access-Control-Allow-Origin': '*',
+          }
+        }
+        axios.post('http://localhost:4567/events', toSend, config)
+        .then(response => {
+            console.log("success");
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      }
 
 class Starter extends Component {
     constructor() {
@@ -91,6 +78,7 @@ class Starter extends Component {
             numberOfAttendees: e.target.value
         })
     }
+
     handleSubmit (e){
         e.preventDefault();
             console.log(this.state.selectedType);

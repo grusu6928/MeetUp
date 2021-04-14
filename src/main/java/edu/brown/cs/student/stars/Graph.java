@@ -256,14 +256,15 @@ public class Graph {
 
     Friends friendsDB = new Friends();
 
-    int areFriends = friendsDB.checkFriendShip(n1.getId(), n2.getId()); // no username field, or should change queries to take in ids instead of username
-    int sameEventPref = (n1.getEvent().equals(n2.getEvent())) ? 1 : 0;
-    int timeCompatability = this.timeOverlap(n1.getStartTime(), n1.getEndTime(),
-            n2.getStartTime(), n2.getEndTime());
+    // int areFriends = friendsDB.checkFriendShip(n1.getId(), n2.getId()); // no username field, or should change queries to take in ids instead of username
+    // int sameEventPref = (n1.getEvent().equals(n2.getEvent())) ? 1 : 0;
+    // int timeCompatability = this.timeOverlap(n1.getStartTime(), n1.getEndTime(),
+    //         n2.getStartTime(), n2.getEndTime());
     // Skip location for now
 
     // TODO: think about this math, b/c time compatability is automatically downweighted
-    return (1/3) * (areFriends + sameEventPref + timeCompatability);
+    return 0;
+    // (1/3) * (areFriends + sameEventPref + timeCompatability);
   }
 
   /**
@@ -278,19 +279,19 @@ public class Graph {
 
   // TODO: figure out how to normalize
   // TODO: what does overlap mean
-  private int timeOverlap(LocalTime start1, LocalTime end1,
-                              LocalTime start2, LocalTime end2) {
+  // private int timeOverlap(LocalTime start1, LocalTime end1,
+  //                             LocalTime start2, LocalTime end2) {
 
-    if (end2.compareTo(start1) < 0 || start2.compareTo(end1) > 0) {
-      return 0;
-    }
-    // remaining 2 cases: overlap
-    else if (start1.compareTo(start2) < 0) {
-      return 1;
-    } else {
-      return 1;
-    }
-  }
+  //   if (end2.compareTo(start1) < 0 || start2.compareTo(end1) > 0) {
+  //     return 0;
+  //   }
+  //   // remaining 2 cases: overlap
+  //   else if (start1.compareTo(start2) < 0) {
+  //     return 1;
+  //   } else {
+  //     return 1;
+  //   }
+  // }
 
 
   /**

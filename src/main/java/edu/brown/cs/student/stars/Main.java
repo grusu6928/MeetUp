@@ -133,6 +133,7 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
     FreeMarkerEngine freeMarker = createEngine();
     // Spark.get("/", new Home(), freeMarker);
     Spark.post("/login", new loginAuthHandler());
+    Spark.post("/events", new eventsHandler());
     Spark.post("/logout", new Logout(), freeMarker);
   }
   private static class loginAuthHandler implements Route {
@@ -149,9 +150,9 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
     @Override
     public Object handle(Request request, Response response) throws Exception {
       JSONObject data = new JSONObject(request.body());
-      return new Gson().toJson(Login.log(data.getString("email"), data.getString("pass")));
+      System.out.println(data);
       // Map<String, Object> variables = ImmutableMap.of("checkin", isAuth);
-      // return GSON.toJson(isAuth);
+      return GSON.toJson("success");
     }
   }
 
