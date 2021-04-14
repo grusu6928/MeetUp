@@ -100,14 +100,14 @@ public final class Main {
   
     MyDatabase.connect();
 
-    List<StarterNode> events = new Events().getAllEvents();
-    List<LookerNode> lookers = new Events().getAllLookers();
+    List<StarterNode> events = Events.getInstance().getAllEvents();
+    List<LookerNode> lookers = Events.getInstance().getAllLookers();
     Graph graph = new Graph(lookers, events);
     //TODO: specify after how long to run the algo.
     Map<StarterNode, List<LookerNode>> result = graph.runAlgorithm();
     result.forEach((k,v) -> {
       for(LookerNode l : v) {
-        new Events().addMatch(l.getUsername(), k.getId());
+        Events.getInstance().addMatch(l.getUsername(), k.getId());
       }
     });
     //TODO: create table of RSVP with fields below:
@@ -165,7 +165,7 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
       String location = data.getString("location");
       int numAttendees = Integer.parseInt(data.getString("numOfAttendees"));
 
-      Events eventDB = new Events();
+      Events eventDB = Events.getInstance();
       eventDB.createEvent(event, activity, startTime, endTime, location, numAttendees);
 
       // Map<String, Object> variables = ImmutableMap.of("checkin", isAuth);
@@ -182,9 +182,8 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
       String startTime = data.getString("startTime");
       String endTime = data.getString("endTime");
       String location = data.getString("location");
-      int numAttendees = Integer.parseInt(data.getString("numOfAttendees"));
 
-      Events eventDB = new Events();
+      Events eventDB = Events.getInstance();
       eventDB.addLooker(event, activity, startTime, endTime, location);
       // Map<String, Object> variables = ImmutableMap.of("checkin", isAuth);
       return GSON.toJson("success");

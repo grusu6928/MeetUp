@@ -5,11 +5,30 @@
  import java.sql.ResultSet;
  import java.sql.SQLException;
  import java.util.ArrayList;
+ import java.util.HashMap;
  import java.util.List;
 
- public class Events {
-   Connection conn = MyDatabase.conn;
+ // NOTE: CHANGED TO SINGLETON CLASS
+ public final class Events {
+
+     private static Events events = null;
+     private Connection conn;
+
+     Events() {
+       conn = MyDatabase.conn;
+     }
+
+
+     public static Events getInstance() {
+       if (events == null) {
+         events = new Events();
+       }
+       return events;
+     }
+
    //might convert location to longitude and latitude
+
+
    public void addMatch(String username, int eventId) {
      try {
        PreparedStatement prep;
@@ -48,12 +67,13 @@
                + "ON DELETE CASCADE ON UPDATE CASCADE,"
                + "PRIMARY KEY (number));");
        prep.executeUpdate();
-       prep = conn.prepareStatement("INSERT INTO events VALUES(NULL, ?, ?, ?, ?, ?)");
+       prep = conn.prepareStatement("INSERT INTO lookers VALUES(NULL, ?, ?, ?, ?, ?, ?);");
        prep.setString(1, eventType);
        prep.setString(2, activityType);
        prep.setString(3, startTime);
        prep.setString(4, endTime);
        prep.setString(5, loc);
+       prep.setString(6, "");
      } catch(SQLException e) {
        System.out.println(e);
      }
@@ -144,3 +164,4 @@
    //TODO: return events within time.
    //TODO: return events in radius r from current location.
  }
+
