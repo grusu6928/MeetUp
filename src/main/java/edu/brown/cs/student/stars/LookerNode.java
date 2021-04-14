@@ -38,8 +38,4 @@ public class LookerNode implements GraphNode {
     return this.endTime;
   }
 
-  @Override
-  public boolean isStarter() {
-    return false;
-  }
 }

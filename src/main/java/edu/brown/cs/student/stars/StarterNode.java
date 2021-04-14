@@ -48,11 +48,6 @@ public class StarterNode implements GraphNode {
     return this.endTime;
   }
 
-  @Override
-  public boolean isStarter() {
-    return true;
-  }
-
   public String getLocation() {
     return this.location;
   }

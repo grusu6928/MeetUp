@@ -10,7 +10,7 @@
  public class Events {
    Connection conn = MyDatabase.conn;
    //might convert location to longitude and latitude
-   public void addLocker(String eventType, String activityType, String startTime, String endTime, String loc) {
+   public void addLooker(String eventType, String activityType, String startTime, String endTime, String loc) {
      try {
        PreparedStatement prep;
        prep = conn.prepareStatement("CREATE TABLE IF NOT EXISTS lookers("
@@ -35,7 +35,7 @@
        System.out.println(e);
      }
    }
-   public List<LookerNode> getAllLockers() {
+   public List<LookerNode> getAllLookers() {
      List<LookerNode> lookers = new ArrayList<>();
      try {
        PreparedStatement prep;

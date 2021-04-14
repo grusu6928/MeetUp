@@ -8,5 +8,4 @@ public interface GraphNode {
   String getEvent();
   String getStartTime();
   String getEndTime();
-  boolean isStarter();
 }

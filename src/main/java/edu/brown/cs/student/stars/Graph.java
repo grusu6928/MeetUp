@@ -1,5 +1,6 @@
 package edu.brown.cs.student.stars;
 
+import java.time.LocalTime;
 import java.util.*;
 
 public class Graph {
@@ -42,9 +43,6 @@ public class Graph {
     // n x L adjacency matrix: first L rows -> lookers; second S rows -> starters
     this.adjMatrix = new GraphEntry[this.numNodes][this.numLookers];
     this.setEdgeWeights();
-
-    this.runAlgorithm();
-
   }
 
 
@@ -92,7 +90,7 @@ public class Graph {
    * A group of lookers tied to each starter (i.e. event)
    * @return optimal map
    */
-  private Map<StarterNode, List<LookerNode>> runAlgorithm() {
+  public Map<StarterNode, List<LookerNode>> runAlgorithm() {
     // hold data for every iteration
     List<Map<StarterNode, List<LookerNode>>> potentialGroupings = new ArrayList<>();
     double[] scatters = new double[this.numIters];
@@ -128,6 +126,7 @@ public class Graph {
             grouping.put(event, attendees);
             ////
 
+            event.incrementAttendees();
             numMatchedLookers++;
 
             // make sure that looker can't attend other events
@@ -147,8 +146,7 @@ public class Graph {
 
     // after all groups are set
     int bestIter = argmin(scatters);
-    Map<StarterNode, List<LookerNode>> bestGrouping = potentialGroupings.get(bestIter);
-    return bestGrouping;
+    return potentialGroupings.get(bestIter);
 
   }
 
@@ -255,7 +253,43 @@ public class Graph {
 
 
   private double computeHeuristic(GraphNode n1, GraphNode n2) {
-    return 0;
+
+    Friends friendsDB = new Friends();
+
+    int areFriends = friendsDB.checkFriendShip(n1.getId(), n2.getId()); // no username field, or should change queries to take in ids instead of username
+    int sameEventPref = (n1.getEvent().equals(n2.getEvent())) ? 1 : 0;
+    int timeCompatability = this.timeOverlap(n1.getStartTime(), n1.getEndTime(),
+            n2.getStartTime(), n2.getEndTime());
+    // Skip location for now
+
+    // TODO: think about this math, b/c time compatability is automatically downweighted
+    return (1/3) * (areFriends + sameEventPref + timeCompatability);
+  }
+
+  /**
+   * Return normalized value between 0 and 1.
+   * 1 if perfect overlap, 0 if no overlap
+   * @param start1
+   * @param end1
+   * @param start2
+   * @param end2
+   * @return
+   */
+
+  // TODO: figure out how to normalize
+  // TODO: what does overlap mean
+  private int timeOverlap(LocalTime start1, LocalTime end1,
+                              LocalTime start2, LocalTime end2) {
+
+    if (end2.compareTo(start1) < 0 || start2.compareTo(end1) > 0) {
+      return 0;
+    }
+    // remaining 2 cases: overlap
+    else if (start1.compareTo(start2) < 0) {
+      return 1;
+    } else {
+      return 1;
+    }
   }
 
 
