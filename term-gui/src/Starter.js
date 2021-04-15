@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import './App.css';
 import './index.css';
 import FriendsList from './FriendsList';
-import {Link} from 'react-router-dom';
 import axios from "axios";
+import {Redirect} from 'react-router-dom'
 
 
 
@@ -40,7 +40,8 @@ class Starter extends Component {
           startTime: null,
           endTime: null,
           location: null,
-          numberOfAttendees: null
+          numberOfAttendees: null,
+          redirect: false
         };
 // const [state, changeState] = setState(0)
         this.handleTypeChange = this.handleTypeChange.bind(this);
@@ -79,7 +80,6 @@ class Starter extends Component {
             numberOfAttendees: e.target.value
         })
     }
-
     handleSubmit (e){
         e.preventDefault();
             console.log(this.state.selectedType);
@@ -105,10 +105,21 @@ class Starter extends Component {
         const starterForm = document.getElementById('starter-form')
         starterForm.reset(); 
         alert ("Thank you for submitting this event, we'll let you know if others join!")
+        this.setState({redirect: true});
     }
 
 
     render() {
+        if (this.state.redirect) {
+            return (
+            <Redirect
+            to={{
+                pathname: "/submission",
+                state: this.data
+            }}
+            />
+            );
+        }
         return (
             <div className="margins">
                 <FriendsList />
