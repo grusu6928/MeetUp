@@ -6,7 +6,6 @@ import FriendsList from './FriendsList';
 import axios from 'axios';
 
 
-
 class Submission extends Component {
     constructor(props) {
         super(props);

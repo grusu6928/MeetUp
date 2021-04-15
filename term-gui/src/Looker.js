@@ -4,6 +4,7 @@ import './index.css';
 import FriendsList from './FriendsList';
 import axios from "axios";
 import {Redirect} from 'react-router-dom'
+import Friend from './Friend';
 
 
 
@@ -118,7 +119,7 @@ class Looker extends Component {
         }
         return (
             <div className="margins">
-                <FriendsList />
+                <Friend />
                 <header>
                     <h1 className="home">
                         <a href="/home"> Home </a>
