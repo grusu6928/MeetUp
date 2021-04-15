@@ -99,19 +99,19 @@ public final class Main {
     // TODO
 
     MyDatabase.connect();
-    // List<StarterNode> events = Events.getInstance().getAllEvents();
-    // List<LookerNode> lookers = Events.getInstance().getAllLookers();
+    List<StarterNode> events = Events.getInstance().getAllEvents();
+    List<LookerNode> lookers = Events.getInstance().getAllLookers();
 
 
-    // Graph graph = new Graph(lookers, events);
-    // //TODO: specify after how long to run the algo.
-    // Map<StarterNode, List<LookerNode>> result = graph.runAlgorithm();
-    // result.forEach((k,v) -> {
-    //   for(LookerNode l : v) {
-    //     System.out.println(l.getUsername());
-    //     Events.getInstance().addMatch(l.getUsername(), k.getUsername());
-    //   }
-    // });
+    Graph graph = new Graph(lookers, events);
+    //TODO: specify after how long to run the algo.
+    Map<StarterNode, List<LookerNode>> result = graph.runAlgorithm();
+    result.forEach((k,v) -> {
+      for(LookerNode l : v) {
+        System.out.println(l.getUsername());
+        Events.getInstance().addMatch(l.getUsername(), k.getUsername());
+      }
+    });
 
     // TODO: Send updates from RSVP table to front-end.
     // TODO: When to clear the table. (maybe after each event finishes, delete all related data)
@@ -148,7 +148,6 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
     @Override
     public Object handle(Request request, Response response) throws Exception {
       JSONObject data = new JSONObject(request.body());
-      System.out.println(data);
       return new Gson().toJson(Login.log(data.getString("email"), data.getString("pass")));
       // Map<String, Object> variables = ImmutableMap.of("checkin", isAuth);
       // return GSON.toJson(isAuth);
@@ -193,6 +192,8 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
       JSONObject data = new JSONObject(request.body());
       System.out.println("a");
       String starter = data.getString("user");
+      System.out.println("starter");
+      System.out.println(starter);
       System.out.println("b");
       List<StarterNode> events = Events.getInstance().getAllEvents();
       System.out.println("c");

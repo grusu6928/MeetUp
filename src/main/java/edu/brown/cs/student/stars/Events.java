@@ -174,11 +174,15 @@ public final class Events {
 
   public List<StarterNode> getAllEvents() {
     List<StarterNode> Events = new ArrayList<>();
+    System.out.println("events a");
     try {
       PreparedStatement prep;
       prep = conn.prepareStatement("SELECT * from events");
+      System.out.println("events b");
       ResultSet rs = prep.executeQuery();
+      System.out.println("events c");
       while(rs.next()) {
+        System.out.println("events d");
         //TODO: add usernames after sessions are ready
         int id = rs.getInt(1);
         String username = rs.getString(7);
@@ -187,7 +191,9 @@ public final class Events {
         String endTime = rs.getString(5);
         String location = rs.getString(6);
         int capacity = rs.getInt(8);
+        System.out.println("events e");
         StarterNode starter = new StarterNode(id, event, startTime, endTime, location, capacity, username);
+        System.out.println("events f");
         Events.add(starter);
       }
     } catch (SQLException e) {

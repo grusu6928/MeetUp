@@ -17,7 +17,7 @@ public class MyDatabase {
     } catch (ClassNotFoundException e) {
       System.out.println("ERROR: Could not initialize MyDatabase");
     } catch (SQLException throwables) {
-      System.out.println("ERROR: Could not initialize MyDatabase");
+      System.out.println("ERROR: Could not do something with MyDatabase");
     }
   }
   public static Connection getConn() {

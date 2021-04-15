@@ -46,7 +46,7 @@ class Submission extends Component {
     componentDidMount() {
          setInterval(
           () => getAttendees(),
-          4000
+          10000
         );
       }
     
