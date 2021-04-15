@@ -2,45 +2,55 @@ import React, { Component } from 'react';
 import './App.css';
 import './index.css';
 import FriendsList from './FriendsList';
+// react context global state 
+import axios from 'axios';
 
-class StarterSubmission extends Component {
-    constructor() {
-        super();
+const getAttendees = (selectedType, selectedActivity, startTime, endTime, location, numAttendees) => {
+    const toSend = {
+        user: "a@brown.edu"
+    }
+    let config = {
+        headers: {
+          "Content-Type": "application/json",
+          'Access-Control-Allow-Origin': '*',
+          }
+        }
+        axios.post('http://localhost:4567/attendees', toSend, config)
+        .then(response => {
+            console.log("success");
+            this.state.setState({
+                attendeeList: response.data
+            } 
+            )
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      }
+
+class Submission extends Component {
+    constructor(props) {
+        super(props);
         this.state = {
-            selectedType: null,
-            selectedActivity: null
+            attendeeList: ['george', 'amin', 'hamzah', 'ermias']
         };
-
-        this.handleTypeChange = this.handleTypeChange.bind(this);
-        this.handleActivityChange = this.handleActivityChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
+        console.log((this.props.location.state[0]))
+    }
+    checkAttendees() {
+        if (this.props.location.state[0].numOfAttendees != null) {
+            return true;
+        }
+        return false;
     }
 
-    handleTypeChange(e) {
-        this.setState({
-            selectedType: e.target.value
-        })
-    }
-    handleActivityChange(e) {
-        this.setState({
-            selectedActivity: e.target.value
-        })
-    }
-    handleSubmit(e) {
-        e.preventDefault();
-        // this.setState({
-        //     selectedType: '',
-        //     selectedActivity: ''
-        // })
-        const starterForm = document.getElementById('starter-form')
-        starterForm.reset();
-        alert("Thank you for submitting your preferences, we will now provide you with events that match your preferences!")
-    }
-
-   
-
+    componentDidMount() {
+         setInterval(
+          () => getAttendees(),
+          4000
+        );
+      }
+    
     render() {
-        // const {state} = this.location.state
         return (
             <div className="margins">
                 <FriendsList />
@@ -48,9 +58,23 @@ class StarterSubmission extends Component {
                     <h1 className="home">
                         <a href="/home"> Home </a>
                     </h1>
-                    <h1 className="welcome"> Provide your event preferences: </h1>
+                    <h1 > Event Privacy: {this.props.location.state[0].typeOfEvent} </h1> 
+                    <h1 > Type of Activity: {this.props.location.state[0].typeOfActivity} </h1> 
+                    <h1 > Start Time: {this.props.location.state[0].startTime} </h1> 
+                    <h1 > End Time: {this.props.location.state[0].endTime} </h1> 
+                    <h1 > Location: {this.props.location.state[0].location} </h1> 
+                    {this.checkAttendees() ? (
+                        <h1 > Attendees: {this.state.attendeeList.map((attendants, index) => (
+                            <h1>
+                                {attendants}
+                            </h1>
+                        ))} and {this.props.location.state[0].numOfAttendees - this.state.attendeeList.length} more open spots</h1> 
+                    ) : (
+                        <h1></h1>
+                    )}
                 </header>
-                <p> {this.props.state} </p>
+               
+
                 {/* <div className="form-div">
                     <form id="starter-form" onSubmit={this.handleSubmit}>
                         <div class="event">
@@ -102,4 +126,4 @@ class StarterSubmission extends Component {
         );
     }
 }
-export default StarterSubmission;
+export default Submission;

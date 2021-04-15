@@ -3,7 +3,7 @@ import './App.css';
 import Home from './Home';
 import { BrowserRouter as Switch, Route, BrowserRouter } from "react-router-dom";
 import Starter from './Starter';
-import StarterSubmission from './StarterSubmission';
+import Submission from './Submission';
 import Looker from './Looker';
 import LookerSubmission from './LookerSubmission.js';
 import Login from './Login';
@@ -25,17 +25,10 @@ function App() {
       </header>
       <BrowserRouter>
         <Switch>
-
-        <Route exact path="/starter-submission"> 
-            <StarterSubmission />
-          </Route>
+        <Route exact path="/submission" component={Submission}/>
           <Route exact path="/starter"> 
             <Starter />
           </Route>
-          <Route exact path="/looker-submission"> 
-            <LookerSubmission />
-          </Route>
-
           <Route exact path="/looker" > 
             <Looker/>
           </Route>

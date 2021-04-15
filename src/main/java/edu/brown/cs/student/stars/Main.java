@@ -99,19 +99,19 @@ public final class Main {
     // TODO
 
     MyDatabase.connect();
-    List<StarterNode> events = Events.getInstance().getAllEvents();
-    List<LookerNode> lookers = Events.getInstance().getAllLookers();
+    // List<StarterNode> events = Events.getInstance().getAllEvents();
+    // List<LookerNode> lookers = Events.getInstance().getAllLookers();
 
 
-    Graph graph = new Graph(lookers, events);
-    //TODO: specify after how long to run the algo.
-    Map<StarterNode, List<LookerNode>> result = graph.runAlgorithm();
-    result.forEach((k,v) -> {
-      for(LookerNode l : v) {
-        System.out.println(l.getUsername());
-        Events.getInstance().addMatch(l.getUsername(), k.getUsername());
-      }
-    });
+    // Graph graph = new Graph(lookers, events);
+    // //TODO: specify after how long to run the algo.
+    // Map<StarterNode, List<LookerNode>> result = graph.runAlgorithm();
+    // result.forEach((k,v) -> {
+    //   for(LookerNode l : v) {
+    //     System.out.println(l.getUsername());
+    //     Events.getInstance().addMatch(l.getUsername(), k.getUsername());
+    //   }
+    // });
 
     // TODO: Send updates from RSVP table to front-end.
     // TODO: When to clear the table. (maybe after each event finishes, delete all related data)
@@ -141,6 +141,7 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
     Spark.post("/login", new loginAuthHandler());
     Spark.post("/events", new eventsHandler());
     Spark.post("/looker", new lookerHandler());
+    Spark.post("/attendees", new attendeesHandler());
     Spark.post("/logout", new Logout(), freeMarker);
   }
   private static class loginAuthHandler implements Route {
@@ -167,8 +168,6 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
 
       Events eventDB = Events.getInstance();
       eventDB.createEvent(event, activity, startTime, endTime, location, numAttendees);
-
-      // Map<String, Object> variables = ImmutableMap.of("checkin", isAuth);
       return GSON.toJson("success");
     }
   }
@@ -176,17 +175,43 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
     @Override
     public Object handle(Request request, Response response) throws Exception {
       JSONObject data = new JSONObject(request.body());
-      System.out.println(data);
       String event = data.getString("typeOfEvent");
       String activity = data.getString("typeOfActivity");
       String startTime = data.getString("startTime");
       String endTime = data.getString("endTime");
       String location = data.getString("location");
-
       Events eventDB = Events.getInstance();
       eventDB.addLooker(event, activity, startTime, endTime, location);
-      // Map<String, Object> variables = ImmutableMap.of("checkin", isAuth);
       return GSON.toJson("success");
+    }
+  }
+  private static class attendeesHandler implements Route {
+    @Override
+    public Object handle(Request request, Response response) throws Exception {
+      // request should be name of starter 
+      System.out.println("beginning");
+      JSONObject data = new JSONObject(request.body());
+      System.out.println("a");
+      String starter = data.getString("user");
+      System.out.println("b");
+      List<StarterNode> events = Events.getInstance().getAllEvents();
+      System.out.println("c");
+      List<LookerNode> lookers = Events.getInstance().getAllLookers();
+      System.out.println("d");
+      Graph graph = new Graph(lookers, events);
+      System.out.println("e");
+      //TODO: specify after how long to run the algo.
+      Map<StarterNode, List<LookerNode>> result = graph.runAlgorithm();
+      System.out.println("f");
+      result.forEach((k,v) -> {
+        for(LookerNode l : v) {
+          System.out.println(l.getUsername());
+          Events.getInstance().addMatch(l.getUsername(), k.getUsername());
+        }
+      });
+      System.out.println(Events.getInstance().getMatches(starter));
+      System.out.println("end");
+      return GSON.toJson(Events.getInstance().getMatches(starter));
     }
   }
 

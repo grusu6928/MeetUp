@@ -13,9 +13,8 @@ public class StarterNode implements GraphNode {
   private int capacity;
   private int numAttendees;
 
-
-  public StarterNode(int id, String username, String event, String startTime,
-                     String endTime, String location, int capacity) {
+  public StarterNode(int id, String event, String startTime,
+                     String endTime, String location, int capacity, String username) {
 
     this.id = id;
     this.username = username;

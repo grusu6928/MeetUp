@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import './App.css';
 import './index.css';
 import FriendsList from './FriendsList';
 import axios from "axios";
+import {Redirect} from 'react-router-dom'
 
 
 
@@ -37,7 +38,8 @@ class Looker extends Component {
             selectedActivity: null,
             startTime: null,
             endTime: null,
-            location: null
+            location: null,
+            redirect: false
         };
 
         this.handleTypeChange = this.handleTypeChange.bind(this);
@@ -45,6 +47,10 @@ class Looker extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         let data = []
     }
+
+    componentDidMount() {
+    }
+    
 
     handleTypeChange (e){
         this.setState({
@@ -79,7 +85,6 @@ class Looker extends Component {
         console.log(this.state.startTime);
         console.log(this.state.endTime);
         console.log(this.state.location);
-
         this.data = [
             {typeOfEvent: this.state.selectedType,
                 typeOfActivity: this.state.selectedActivity,
@@ -90,16 +95,27 @@ class Looker extends Component {
         ]
         sendEvent(this.state.selectedType, this.state.selectedActivity, this.state.startTime, this.state.endTime,
             this.state.location);
-        // this.history.push('/starter-submission');
-
+       
         //TODO: lookerForm?
         const starterForm = document.getElementById('starter-form')
         starterForm.reset();
         alert ("Thank you for submitting your preferences, we will now provide you with events that match your preferences!")
+        // window.location.href = "/starter-submission"
+        this.setState({redirect: true});
     }
 
 
     render() {
+        if (this.state.redirect) {
+            return (
+            <Redirect
+            to={{
+                pathname: "/submission",
+                state: this.data
+            }}
+            />
+            );
+        }
         return (
             <div className="margins">
                 <FriendsList />
