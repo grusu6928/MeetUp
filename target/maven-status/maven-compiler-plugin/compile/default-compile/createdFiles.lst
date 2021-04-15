@@ -6,6 +6,7 @@ edu/brown/cs/student/stars/Main$ExceptionPrinter.class
 edu/brown/cs/student/stars/Home.class
 edu/brown/cs/student/stars/Main$lookerHandler.class
 edu/brown/cs/student/stars/WeightComparator.class
+edu/brown/cs/student/stars/Main$attendeesHandler.class
 edu/brown/cs/student/stars/Events.class
 edu/brown/cs/student/stars/GraphNode.class
 edu/brown/cs/student/stars/Logout.class

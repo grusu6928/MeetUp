@@ -187,8 +187,7 @@ public final class Events {
         String endTime = rs.getString(5);
         String location = rs.getString(6);
         int capacity = rs.getInt(8);
-
-        StarterNode starter = new StarterNode(id, username, event, startTime, endTime, location, capacity);
+        StarterNode starter = new StarterNode(id, event, startTime, endTime, location, capacity, username);
         Events.add(starter);
       }
     } catch (SQLException e) {

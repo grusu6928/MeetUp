@@ -28,8 +28,6 @@ const getAttendees = (selectedType, selectedActivity, startTime, endTime, locati
         });
       }
 
-
-
 class Submission extends Component {
     constructor(props) {
         super(props);
@@ -48,7 +46,7 @@ class Submission extends Component {
     componentDidMount() {
          setInterval(
           () => getAttendees(),
-          60000
+          4000
         );
       }
     

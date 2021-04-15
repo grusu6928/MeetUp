@@ -175,7 +175,6 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
     @Override
     public Object handle(Request request, Response response) throws Exception {
       JSONObject data = new JSONObject(request.body());
-      System.out.println(data);
       String event = data.getString("typeOfEvent");
       String activity = data.getString("typeOfActivity");
       String startTime = data.getString("startTime");
@@ -190,19 +189,28 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
     @Override
     public Object handle(Request request, Response response) throws Exception {
       // request should be name of starter 
+      System.out.println("beginning");
       JSONObject data = new JSONObject(request.body());
+      System.out.println("a");
       String starter = data.getString("user");
+      System.out.println("b");
       List<StarterNode> events = Events.getInstance().getAllEvents();
+      System.out.println("c");
       List<LookerNode> lookers = Events.getInstance().getAllLookers();
+      System.out.println("d");
       Graph graph = new Graph(lookers, events);
+      System.out.println("e");
       //TODO: specify after how long to run the algo.
       Map<StarterNode, List<LookerNode>> result = graph.runAlgorithm();
+      System.out.println("f");
       result.forEach((k,v) -> {
         for(LookerNode l : v) {
           System.out.println(l.getUsername());
           Events.getInstance().addMatch(l.getUsername(), k.getUsername());
         }
       });
+      System.out.println(Events.getInstance().getMatches(starter));
+      System.out.println("end");
       return GSON.toJson(Events.getInstance().getMatches(starter));
     }
   }
