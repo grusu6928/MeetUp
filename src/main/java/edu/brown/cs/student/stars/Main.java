@@ -106,9 +106,9 @@ public final class Main {
     Graph graph = new Graph(lookers, events);
     //TODO: specify after how long to run the algo.
     Map<StarterNode, List<LookerNode>> result = graph.runAlgorithm();
-
     result.forEach((k,v) -> {
       for(LookerNode l : v) {
+        System.out.println(l.getUsername());
         Events.getInstance().addMatch(l.getUsername(), k.getId());
       }
     });
