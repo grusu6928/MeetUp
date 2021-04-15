@@ -5,25 +5,7 @@ import FriendsList from './FriendsList';
 // react context global state 
 import axios from 'axios';
 
-const getAttendees = (selectedType, selectedActivity, startTime, endTime, location, numAttendees) => {
-    const toSend = {
-        user: ""
-    }
-    let config = {
-        headers: {
-          "Content-Type": "application/json",
-          'Access-Control-Allow-Origin': '*',
-          }
-        }
-        axios.post('http://localhost:4567/attendees', toSend, config)
-        .then(response => {
-            console.log("success");
-            console.log(response.data);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-      }
+
 
 class Submission extends Component {
     constructor(props) {
@@ -46,10 +28,29 @@ class Submission extends Component {
         }
         return false;
     }
+    getAttendees (selectedType, selectedActivity, startTime, endTime, location, numAttendees) {
+    const toSend = {
+        user: ""
+    }
+    let config = {
+        headers: {
+          "Content-Type": "application/json",
+          'Access-Control-Allow-Origin': '*',
+          }
+        }
+        axios.post('http://localhost:4567/attendees', toSend, config)
+        .then(response => {
+            console.log("success");
+            this.handleAttendeeList(response.data)
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      }
 
     componentDidMount() {
          setInterval(
-          () => getAttendees(),
+          () => this.getAttendees(),
           10000
         );
       }
