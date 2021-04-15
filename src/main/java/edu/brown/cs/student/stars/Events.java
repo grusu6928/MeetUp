@@ -35,7 +35,7 @@ public final class Events {
       PreparedStatement prep;
       prep = conn.prepareStatement("CREATE TABLE IF NOT EXISTS RSVP("
               + "number INTEGER,"
-              + "username TEXT UNIQUE," // CHANGED: added UNIQUE
+              + "username TEXT," // CHANGED: added UNIQUE
               + "starter TEXT,"
               + "response TEXT,"
               + "FOREIGN KEY (username) REFERENCES lookers(username)"
