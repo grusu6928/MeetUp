@@ -25,7 +25,11 @@
 
    //might convert location to longitude and latitude
 
-
+   /**
+    * Schema: (looker username - eventId matched to - response)
+    * @param username
+    * @param eventId
+    */
    public void addMatch(String username, int eventId) {
      try {
        PreparedStatement prep;
@@ -48,8 +52,16 @@
      } catch(SQLException e) {
        System.out.println(e);
      }
-
    }
+
+   /**
+    * Schema: (event type - activity type - startTime - endTime - location - username)
+    * @param eventType
+    * @param activityType
+    * @param startTime
+    * @param endTime
+    * @param loc
+    */
    public void addLooker(String eventType, String activityType, String startTime, String endTime, String loc) {
      try {
        PreparedStatement prep;
@@ -84,7 +96,16 @@
        prep = conn.prepareStatement("SELECT * from lookers");
        ResultSet rs = prep.executeQuery();
        while(rs.next()) {
-         lookers.add(new LookerNode(rs.getInt(1),rs.getString(3), rs.getString(4), rs.getString(5), ""));
+         int id = rs.getInt(1);
+         String username = rs.getString(7);
+         String event = rs.getString(3);
+         String startTime = rs.getString(4);
+         String endTime = rs.getString(5);
+//         String location = rs.getString(6); // TODO: figure out if we want location for a looker
+
+         LookerNode looker = new LookerNode(id, username, event, startTime, endTime);
+         lookers.add(looker);
+
        }
      } catch (SQLException e) {
        System.out.println(e);
@@ -92,6 +113,15 @@
      return lookers;
    }
 
+   /**
+    * Schema: (event type - activity type - startTime - endTime - location - starter's username - MAXnumPeople)
+    * @param eventType
+    * @param activity
+    * @param startTime
+    * @param endTime
+    * @param location
+    * @param numberOfPeople
+    */
    public void createEvent(String eventType, String activity, String startTime, String endTime, String location,
                            int numberOfPeople) {
      try {
@@ -103,7 +133,7 @@
                + "startT TEXT,"
                + "endT TEXT,"
                + "loc TEXT,"
-               + "starter TEXT,"
+               + "starter TEXT," // maybe rename to starterUsername // TODO: (maybe) make starter a foreign key (that's how it is in lookers table)
                + "numberOfPeople INTEGER,"
                + "PRIMARY KEY (number));");
        prep.executeUpdate();

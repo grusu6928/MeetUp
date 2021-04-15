@@ -5,10 +5,10 @@ import java.time.LocalTime;
 public class StarterNode implements GraphNode {
 
   private int id;
+  private String username;
   private String event;
   private String startTime;
   private String endTime;
-  private String username;
   private String location; // modify data type
   private int capacity;
   private int numAttendees;
@@ -34,7 +34,9 @@ public class StarterNode implements GraphNode {
   public int getId() {
     return this.id;
   }
+
   public String getUsername() {return this.username;}
+
   @Override
   public String getEvent() {
     return this.event;
