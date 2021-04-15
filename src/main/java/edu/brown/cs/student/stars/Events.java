@@ -1,9 +1,6 @@
  package edu.brown.cs.student.stars;
 
- import java.sql.Connection;
- import java.sql.PreparedStatement;
- import java.sql.ResultSet;
- import java.sql.SQLException;
+ import java.sql.*;
  import java.util.ArrayList;
  import java.util.HashMap;
  import java.util.List;
@@ -34,8 +31,8 @@
        PreparedStatement prep;
        prep = conn.prepareStatement("CREATE TABLE IF NOT EXISTS RSVP("
                + "number INTEGER,"
-               + "username TEXT,"
-               + "eventId TEXT,"
+               + "username TEXT UNIQUE," // CHANGED: added UNIQUE
+               + "eventId INTEGER,"
                + "response TEXT,"
                + "FOREIGN KEY (username) REFERENCES lookers(username)"
                + "ON DELETE CASCADE ON UPDATE CASCADE,"
@@ -43,10 +40,11 @@
                + "ON DELETE CASCADE ON UPDATE CASCADE,"
                + "PRIMARY KEY (number));");
        prep.executeUpdate();
-       prep = conn.prepareStatement("INSERT INTO events VALUES(NULL, ?, ?, ?)");
+       prep = conn.prepareStatement("INSERT INTO RSVP VALUES(NULL, ?, ?, ?);");
        prep.setString(1, username);
-       prep.setString(2, Integer.toString(eventId));
+       prep.setInt(2, eventId);
        prep.setString(3, "No response");
+       prep.executeUpdate();
      } catch(SQLException e) {
        System.out.println(e);
      }
@@ -62,7 +60,7 @@
                + "startT TEXT,"
                + "endT TEXT,"
                + "loc TEXT,"
-               + "username TEXT,"
+               + "username TEXT UNIQUE," // CHANGED: added UNIQUE
                + "FOREIGN KEY (username) REFERENCES users(username)"
                + "ON DELETE CASCADE ON UPDATE CASCADE,"
                + "PRIMARY KEY (number));");
@@ -73,7 +71,8 @@
        prep.setString(3, startTime);
        prep.setString(4, endTime);
        prep.setString(5, loc);
-       prep.setString(6, "");
+       prep.setString(6, "a@brown.edu");
+       prep.executeUpdate();
      } catch(SQLException e) {
        System.out.println(e);
      }
@@ -137,8 +136,16 @@
        ResultSet rs = prep.executeQuery();
        while(rs.next()) {
          //TODO: add usernames after sessions are ready
-         Events.add(new StarterNode(rs.getInt(1),rs.getString(3), rs.getString(4), rs.getString(5),
-                 rs.getString(6), rs.getInt(7), ""));
+         int id = rs.getInt(1);
+         String username = rs.getString(7);
+         String event = rs.getString(3);
+         String startTime = rs.getString(4);
+         String endTime = rs.getString(5);
+         String location = rs.getString(6);
+         int capacity = rs.getInt(8);
+
+         StarterNode starter = new StarterNode(id, username, event, startTime, endTime, location, capacity);
+         Events.add(starter);
        }
      } catch (SQLException e) {
        System.out.println(e);

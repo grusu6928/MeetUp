@@ -14,16 +14,18 @@ public class StarterNode implements GraphNode {
   private int numAttendees;
 
 
-  public StarterNode(int id, String event, String startTime,
-                     String endTime, String location, int capacity, String username) {
+  public StarterNode(int id, String username, String event, String startTime,
+                     String endTime, String location, int capacity) {
 
     this.id = id;
+    this.username = username;
     this.event = event;
     this.startTime = startTime;
     this.endTime = endTime;
     this.location = location;
     this.capacity = capacity;
-    this.username = username;
+
+
     this.numAttendees = 0;
 
   }

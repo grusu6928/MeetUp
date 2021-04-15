@@ -42,6 +42,7 @@ public class Graph {
 
     // n x L adjacency matrix: first L rows -> lookers; second S rows -> starters
     this.adjMatrix = new GraphEntry[this.numNodes][this.numLookers];
+
     this.setEdgeWeights();
   }
 
@@ -76,10 +77,15 @@ public class Graph {
       PriorityQueue<GraphEntry<StarterNode>> pq = new PriorityQueue<>(new WeightComparator());
 
       int row = this.centroidIdToRow.get(centroid.getId()); // gets row in adj matrix corresponding to centroid's id
+
       GraphEntry<StarterNode>[] entries = this.adjMatrix[row];
+
+
+
       Collections.addAll(pq, entries);
       starterToLookerEntries.put(centroid, pq);
     }
+
 
     return starterToLookerEntries;
   }
@@ -97,6 +103,7 @@ public class Graph {
 
 
     for (int iter = 0; iter < numIters; iter++) {
+
       Collections.shuffle(this.centroids);
 
       Map<StarterNode, PriorityQueue<GraphEntry<StarterNode>>>
@@ -106,14 +113,19 @@ public class Graph {
       int numMatchedLookers = 0;
       Map<StarterNode, List<LookerNode>> grouping = new HashMap<>();
       // PART 2
-      while (!this.allEventsAtCapacity() || numMatchedLookers < this.numLookers) {
 
-        for (StarterNode event : centroids) {
+
+      while (!this.allEventsAtCapacity() && numMatchedLookers < this.numLookers) {
+
+
+        for (StarterNode event : this.centroids) {
           if (!this.eventAtCapacity(event)) {
 
             PriorityQueue<GraphEntry<StarterNode>> pq = starterToLookerEntries.get(event);
             GraphEntry<StarterNode> entry = pq.poll();
             LookerNode looker = entry.getTo();
+            // NOTE: i don't think entry will ever be null, b/c if numMatchedLookers < this.numLookers
+            // (which it has to be b/c while loop condition), then there's always something to poll
 
             // add looker to an event list
             List<LookerNode> attendees;
@@ -244,6 +256,7 @@ public class Graph {
   private boolean eventAtCapacity(StarterNode event) {
     int currAttendance = event.getNumAttendees();
     int maxCapacity = this.capacityMap.get(event);
+
     if (currAttendance < maxCapacity) {
       return false;
     }
@@ -254,7 +267,9 @@ public class Graph {
 
   private double computeHeuristic(GraphNode n1, GraphNode n2) {
 
-    Friends friendsDB = new Friends();
+
+
+//    Friends friendsDB = new Friends();
 
     // int areFriends = friendsDB.checkFriendShip(n1.getId(), n2.getId()); // no username field, or should change queries to take in ids instead of username
     // int sameEventPref = (n1.getEvent().equals(n2.getEvent())) ? 1 : 0;

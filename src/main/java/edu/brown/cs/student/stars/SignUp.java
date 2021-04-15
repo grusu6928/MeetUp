@@ -15,7 +15,7 @@ public class SignUp {
               + "username TEXT UNIQUE," // CHANGED: I made username unique
               + "password TEXT,"
               + "email TEXT,"
-              + "PRIMARY KEY (number, username));");
+              + "PRIMARY KEY (number);");
       prep.executeUpdate();
       prep = conn.prepareStatement("SELECT * FROM users WHERE username= ? OR email= ?" );
       prep.setString(1, username);

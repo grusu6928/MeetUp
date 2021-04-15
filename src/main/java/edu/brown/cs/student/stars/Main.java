@@ -97,22 +97,22 @@ public final class Main {
    */
   private void runSparkServer(int port) {
     // TODO
-  
-    MyDatabase.connect();
 
+    MyDatabase.connect();
     List<StarterNode> events = Events.getInstance().getAllEvents();
     List<LookerNode> lookers = Events.getInstance().getAllLookers();
+
+
     Graph graph = new Graph(lookers, events);
     //TODO: specify after how long to run the algo.
     Map<StarterNode, List<LookerNode>> result = graph.runAlgorithm();
+
     result.forEach((k,v) -> {
       for(LookerNode l : v) {
         Events.getInstance().addMatch(l.getUsername(), k.getId());
       }
     });
-    //TODO: create table of RSVP with fields below:
-    // id/ username(foreign key for looker)/ eventID(foreign key for starter)/ response(yes/no/no response)
-    // TODO: write to RSVP after running algo.
+
     // TODO: Send updates from RSVP table to front-end.
     // TODO: When to clear the table. (maybe after each event finishes, delete all related data)
 
