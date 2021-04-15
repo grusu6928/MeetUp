@@ -3,14 +3,38 @@ import './App.css';
 import './index.css';
 import FriendsList from './FriendsList';
 // react context global state 
+import axios from 'axios';
+
+const getAttendees = (selectedType, selectedActivity, startTime, endTime, location, numAttendees) => {
+    const toSend = {
+        user: "a@brown.edu"
+    }
+    let config = {
+        headers: {
+          "Content-Type": "application/json",
+          'Access-Control-Allow-Origin': '*',
+          }
+        }
+        axios.post('http://localhost:4567/attendees', toSend, config)
+        .then(response => {
+            console.log("success");
+            this.state.setState({
+                attendeeList: response.data
+            } 
+            )
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      }
+
 
 
 class Submission extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            attendeeCounter: 0,
-            attendeeList: null
+            attendeeList: ['george', 'amin', 'hamzah', 'ermias']
         };
         console.log((this.props.location.state[0]))
     }
@@ -20,9 +44,14 @@ class Submission extends Component {
         }
         return false;
     }
+
+    componentDidMount() {
+         setInterval(
+          () => getAttendees(),
+          60000
+        );
+      }
     
-
-
     render() {
         return (
             <div className="margins">
@@ -37,11 +66,14 @@ class Submission extends Component {
                     <h1 > End Time: {this.props.location.state[0].endTime} </h1> 
                     <h1 > Location: {this.props.location.state[0].location} </h1> 
                     {this.checkAttendees() ? (
-                        <h1 > Attendees: and {this.props.location.state[0].numOfAttendees} more open spots</h1> 
+                        <h1 > Attendees: {this.state.attendeeList.map((attendants, index) => (
+                            <h1>
+                                {attendants}
+                            </h1>
+                        ))} and {this.props.location.state[0].numOfAttendees - this.state.attendeeList.length} more open spots</h1> 
                     ) : (
                         <h1></h1>
                     )}
-                    
                 </header>
                
 

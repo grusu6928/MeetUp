@@ -97,22 +97,22 @@ public final class Main {
    */
   private void runSparkServer(int port) {
     // TODO
-  
-    MyDatabase.connect();
 
-    List<StarterNode> events = Events.getInstance().getAllEvents();
-    List<LookerNode> lookers = Events.getInstance().getAllLookers();
-    Graph graph = new Graph(lookers, events);
-    //TODO: specify after how long to run the algo.
-    Map<StarterNode, List<LookerNode>> result = graph.runAlgorithm();
-    result.forEach((k,v) -> {
-      for(LookerNode l : v) {
-        Events.getInstance().addMatch(l.getUsername(), k.getId());
-      }
-    });
-    //TODO: create table of RSVP with fields below:
-    // id/ username(foreign key for looker)/ eventID(foreign key for starter)/ response(yes/no/no response)
-    // TODO: write to RSVP after running algo.
+    MyDatabase.connect();
+    // List<StarterNode> events = Events.getInstance().getAllEvents();
+    // List<LookerNode> lookers = Events.getInstance().getAllLookers();
+
+
+    // Graph graph = new Graph(lookers, events);
+    // //TODO: specify after how long to run the algo.
+    // Map<StarterNode, List<LookerNode>> result = graph.runAlgorithm();
+    // result.forEach((k,v) -> {
+    //   for(LookerNode l : v) {
+    //     System.out.println(l.getUsername());
+    //     Events.getInstance().addMatch(l.getUsername(), k.getUsername());
+    //   }
+    // });
+
     // TODO: Send updates from RSVP table to front-end.
     // TODO: When to clear the table. (maybe after each event finishes, delete all related data)
 
@@ -141,6 +141,7 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
     Spark.post("/login", new loginAuthHandler());
     Spark.post("/events", new eventsHandler());
     Spark.post("/looker", new lookerHandler());
+    Spark.post("/attendees", new attendeesHandler());
     Spark.post("/logout", new Logout(), freeMarker);
   }
   private static class loginAuthHandler implements Route {
@@ -167,8 +168,6 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
 
       Events eventDB = Events.getInstance();
       eventDB.createEvent(event, activity, startTime, endTime, location, numAttendees);
-
-      // Map<String, Object> variables = ImmutableMap.of("checkin", isAuth);
       return GSON.toJson("success");
     }
   }
@@ -182,11 +181,29 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
       String startTime = data.getString("startTime");
       String endTime = data.getString("endTime");
       String location = data.getString("location");
-
       Events eventDB = Events.getInstance();
       eventDB.addLooker(event, activity, startTime, endTime, location);
-      // Map<String, Object> variables = ImmutableMap.of("checkin", isAuth);
       return GSON.toJson("success");
+    }
+  }
+  private static class attendeesHandler implements Route {
+    @Override
+    public Object handle(Request request, Response response) throws Exception {
+      // request should be name of starter 
+      JSONObject data = new JSONObject(request.body());
+      String starter = data.getString("user");
+      List<StarterNode> events = Events.getInstance().getAllEvents();
+      List<LookerNode> lookers = Events.getInstance().getAllLookers();
+      Graph graph = new Graph(lookers, events);
+      //TODO: specify after how long to run the algo.
+      Map<StarterNode, List<LookerNode>> result = graph.runAlgorithm();
+      result.forEach((k,v) -> {
+        for(LookerNode l : v) {
+          System.out.println(l.getUsername());
+          Events.getInstance().addMatch(l.getUsername(), k.getUsername());
+        }
+      });
+      return GSON.toJson(Events.getInstance().getMatches(starter));
     }
   }
 
