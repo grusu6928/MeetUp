@@ -28,32 +28,46 @@
    /**
     * Schema: (looker username - eventId matched to - response)
     * @param username
-    * @param eventId
+    * @param starter
     */
-   public void addMatch(String username, int eventId) {
+   public void addMatch(String username, String starter) {
      try {
        PreparedStatement prep;
        prep = conn.prepareStatement("CREATE TABLE IF NOT EXISTS RSVP("
                + "number INTEGER,"
                + "username TEXT UNIQUE," // CHANGED: added UNIQUE
-               + "eventId INTEGER,"
+               + "starter TEXT,"
                + "response TEXT,"
                + "FOREIGN KEY (username) REFERENCES lookers(username)"
                + "ON DELETE CASCADE ON UPDATE CASCADE,"
-               + "FOREIGN KEY (eventId) REFERENCES events(number)"
+               + "FOREIGN KEY (starter) REFERENCES events(starter)"
                + "ON DELETE CASCADE ON UPDATE CASCADE,"
                + "PRIMARY KEY (number));");
        prep.executeUpdate();
        prep = conn.prepareStatement("INSERT INTO RSVP VALUES(NULL, ?, ?, ?);");
        prep.setString(1, username);
-       prep.setInt(2, eventId);
+       prep.setString(2, starter);
        prep.setString(3, "No response");
        prep.executeUpdate();
      } catch(SQLException e) {
        System.out.println(e);
      }
    }
-
+   public List<String> getMatches(String starter) {
+     List<String> names= new ArrayList<>();
+     try {
+       PreparedStatement prep;
+       prep = conn.prepareStatement("SELECT username from RSVP where starter = ?;");
+       prep.setString(1, starter);
+       ResultSet rs = prep.executeQuery();
+       while(rs.next()) {
+         names.add(rs.getString(1));
+       }
+     } catch(SQLException e) {
+       System.out.println(e);
+     }
+     return names;
+   }
    /**
     * Schema: (event type - activity type - startTime - endTime - location - username)
     * @param eventType
@@ -133,7 +147,7 @@
                + "startT TEXT,"
                + "endT TEXT,"
                + "loc TEXT,"
-               + "starter TEXT," // maybe rename to starterUsername // TODO: (maybe) make starter a foreign key (that's how it is in lookers table)
+               + "starter TEXT UNIQUE," // maybe rename to starterUsername // TODO: (maybe) make starter a foreign key (that's how it is in lookers table)
                + "numberOfPeople INTEGER,"
                + "PRIMARY KEY (number));");
        prep.executeUpdate();

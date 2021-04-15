@@ -109,7 +109,7 @@ public final class Main {
     result.forEach((k,v) -> {
       for(LookerNode l : v) {
         System.out.println(l.getUsername());
-        Events.getInstance().addMatch(l.getUsername(), k.getId());
+        Events.getInstance().addMatch(l.getUsername(), k.getUsername());
       }
     });
 
