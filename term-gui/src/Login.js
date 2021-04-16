@@ -31,7 +31,6 @@ function Login() {
     requestAuthentication(email, password);
       // if true, then we wanna redirect to another page (home) and save user in session 
   }
-  
   const requestAuthentication = () => {
     const toSend = {
         email: email,
