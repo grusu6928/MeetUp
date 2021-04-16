@@ -99,6 +99,10 @@ public final class Main {
     // TODO
 
     MyDatabase.connect();
+    SignUp s = new SignUp();
+    Login.log("a@brown.edu", "12345");
+    Login.log("a@brown.edu", "123456");
+    System.out.println("reached");
     List<StarterNode> events = Events.getInstance().getAllEvents();
     List<LookerNode> lookers = Events.getInstance().getAllLookers();
 
