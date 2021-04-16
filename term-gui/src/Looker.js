@@ -119,7 +119,7 @@ class Looker extends Component {
         }
         return (
             <div className="margins">
-                <Friend />
+                <FriendsList />
                 <header>
                     <h1 className="home">
                         <a href="/home"> Home </a>
