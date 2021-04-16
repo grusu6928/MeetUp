@@ -192,7 +192,7 @@ public final class Events {
         String location = rs.getString(6);
         int capacity = rs.getInt(8);
         System.out.println("events e");
-        StarterNode starter = new StarterNode(id, event, startTime, endTime, location, capacity, username);
+        StarterNode starter = new StarterNode(id, username, event, startTime, endTime, location, capacity); // changed username to be in slot 2 (used to be at end)
         System.out.println("events f");
         Events.add(starter);
       }

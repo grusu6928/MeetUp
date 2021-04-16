@@ -13,8 +13,8 @@ public class StarterNode implements GraphNode {
   private int capacity;
   private int numAttendees;
 
-  public StarterNode(int id, String event, String startTime,
-                     String endTime, String location, int capacity, String username) {
+  public StarterNode(int id, String username, String event, String startTime,
+                     String endTime, String location, int capacity) {
 
     this.id = id;
     this.username = username;
@@ -65,5 +65,9 @@ public class StarterNode implements GraphNode {
 
   public int getNumAttendees() {
     return this.numAttendees;
+  }
+
+  public void setNumAttendees(int numAttendees) {
+    this.numAttendees = numAttendees;
   }
 }
