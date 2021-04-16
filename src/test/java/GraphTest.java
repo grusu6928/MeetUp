@@ -71,16 +71,16 @@ public class GraphTest {
     setUp();
 
     Map<StarterNode, List<LookerNode>> arrangement = graph.runAlgorithm();
-    System.out.println("arrangement size " + arrangement.size());
+
     int numStarters = arrangement.keySet().size();
     int numMatchedLookers = 0;
     for (List<LookerNode> list : arrangement.values()) {
       numMatchedLookers += list.size();
 
-      System.out.println("NEW GROUP");
-      for (LookerNode l : list) {
-        System.out.println(l.getId());
-      }
+//      System.out.println("NEW GROUP");
+//      for (LookerNode l : list) {
+//        System.out.println(l.getId());
+//      }
     }
     assertEquals(3, numStarters);
     assertEquals(10, numMatchedLookers);
@@ -96,4 +96,5 @@ public class GraphTest {
     // num keys in arrangement = numStarters
     // num values in arrangement = numLookers (MAX)
         // could be less b/c capacity constraints -> CHECK THIS AS SEPARATE CASE
-    // for each grp in arrangement: no looker is repeated
+    // for each grp in arrangement AND across groups: no looker is repeated
+        // hashmap: looker -> count, verify count for all is <= 1

@@ -5,95 +5,194 @@ import org.junit.Before;
 import org.junit.After;
 import org.junit.Test;
 
+import java.time.LocalTime;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 public class GraphFuzzTest {
-//
-//  private Graph graph;
-//  private List<LookerNode> lookers;
-//  private List<StarterNode> starters;
-//
-//  List<String> eventTypes;
-//
-//  @Before
-//  public void setUp() {
-//
-//    // id -> easily increment an int
-//    // username -> generateName()
-//    // event -> generateEvent()
-//    // startTime, endTime -> generateTime() *end after start*
-//
-//    // event
-//    eventTypes = new ArrayList<>();
-//    eventTypes.add("meal");
-//    eventTypes.add("study");
-//    eventTypes.add("sport");
-//    eventTypes.add("chill");
-//    eventTypes.add("prayer");
-//    eventTypes.add("other");
-//
-//
-//
-//    lookers = new ArrayList<>();
-//    starters = new ArrayList<>();
-//
-//    graph = new Graph(lookers, starters);
-//  }
-//
-//  @After
-//  public void tearDown() {
-//    lookers = null;
-//    starters = null;
-//    graph = null;
-//  }
-//
-//  private LookerNode generateLookers() {
-//    int id = 0;
-//    String username = "";
-//
-//  }
-//
-//  private StarterNode generateStarters() {
-//
-//  }
-//
-//  private String generateName() {
-//    int stringLen = ThreadLocalRandom.current().nextInt(0, 20);
-//    StringBuilder randomString = new StringBuilder();
-//    String allPossibleValues = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-//            + "0123456789"
-//            + "abcdefghijklmnopqrstuvxyz";
-//
-//    for (int i = 0; i < stringLen; i++) {
-//      int index = ThreadLocalRandom.current().nextInt(0, allPossibleValues.length());
-//      randomString.append(allPossibleValues.charAt(index));
-//    }
-//
-////    stringSet.add(randomString); // used a set to make sure no repeats
-//    return randomString.toString();
-//  }
-//
-//  private String generateEvent() {
-//    Collections.shuffle(eventTypes);
-//    return eventTypes.get(0);
-//  }
-//
-//  private String generateTime() {
-//    StringBuilder randomTime = new StringBuilder();
-//    String allPossibleValues = "0123456789";
-//
-//    for (int i = 0; i < 5; i++) {
-//      if (i == 2) {
-//        randomTime.append(":");
-//      } else {
-//        int index = ThreadLocalRandom.current().nextInt(0, allPossibleValues.length());
-//        randomTime.append(allPossibleValues.charAt(index));
-//      }
-//    }
-//    return randomTime.toString();
-//  }
-//
+
+  public static final int MAX_LOOKERS = 1000;
+  public static final int MAX_STARTERS = 100;
+  public static final int MAX_CAPACITY = 50;
+
+  private Graph graph;
+  private List<LookerNode> lookers;
+  private List<StarterNode> starters;
+  private List<String> eventTypes;
+  private int summedCapacity;
+
+
+  @Before
+  public void setUp() {
+
+    // event
+    eventTypes = new ArrayList<>();
+    eventTypes.add("meal");
+    eventTypes.add("study");
+    eventTypes.add("sport");
+    eventTypes.add("chill");
+    eventTypes.add("prayer");
+    eventTypes.add("other");
+
+    lookers = new ArrayList<>();
+    starters = new ArrayList<>();
+  }
+
+  private void setUp2(int numLookers, int numStarters) {
+
+    System.out.println("numLookers " + numLookers);
+    System.out.println("numStarters " + numStarters);
+
+    for (int l = 0; l < numLookers; l ++) {
+      this.lookers.add(this.generateLooker(l));
+    }
+    for (int s = 0; s < numStarters; s++) {
+      this.starters.add(this.generateStarter(s));
+    }
+    graph = new Graph(lookers, starters);
+  }
+
+  @After
+  public void tearDown() {
+    lookers = null;
+    starters = null;
+    graph = null;
+  }
+
+  // TODO: change to Junit5 and do repeatedTest
+  @Test
+  public void fuzzTest() {
+
+    int numLookers = this.genRandomNum(0, MAX_LOOKERS);
+    int numStarters = this.genRandomNum(0, MAX_STARTERS);
+    this.setUp2(numLookers, numStarters);
+
+
+    Map<StarterNode, List<LookerNode>> groups = graph.runAlgorithm();
+
+    int numEvents = groups.keySet().size();
+    assertEquals(numStarters, numEvents);
+
+
+    int numMatchedLookers = 0;
+    Map<LookerNode, Integer> lookerCount = new HashMap<>();
+
+    for (List<LookerNode> list : groups.values()) {
+      numMatchedLookers += list.size();
+
+      for (LookerNode l : list) {
+        if (lookerCount.get(l) == null) {
+          lookerCount.put(l, 1);
+        } else {
+          lookerCount.put(l, lookerCount.get(l) + 1);
+        }
+      }
+    }
+
+    assertEquals(Math.min(numLookers, this.summedCapacity), numMatchedLookers);
+
+    assertTrue(lookerCount.values().stream().allMatch(i -> i <= 1));
+
+  }
+
+  private LookerNode generateLooker(int id) {
+
+    int stringLen = ThreadLocalRandom.current().nextInt(0, 20);
+    String username = this.generateName(stringLen);
+    String event = this.generateEvent();
+    String startTime = this.generateStartTime();
+    String endTime = this.generateEndTime(startTime);
+    return new LookerNode(id, username, event, startTime, endTime);
+  }
+
+  private StarterNode generateStarter(int id) {
+    int stringLen = ThreadLocalRandom.current().nextInt(0, 20);
+    String username = this.generateName(stringLen);
+    String event = this.generateEvent();
+    String startTime = this.generateStartTime();
+    String endTime = this.generateEndTime(startTime);
+    int capacity = this.generateCapacity();
+
+    this.summedCapacity += capacity;
+
+    return new StarterNode(id, username, event, startTime, endTime, "", capacity);
+  }
+
+  private String generateName(int len) {
+    StringBuilder randomString = new StringBuilder();
+    String allPossibleValues = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            + "0123456789"
+            + "abcdefghijklmnopqrstuvxyz";
+
+    for (int i = 0; i < len; i++) {
+      int index = ThreadLocalRandom.current().nextInt(0, allPossibleValues.length());
+      randomString.append(allPossibleValues.charAt(index));
+    }
+    return randomString.toString();
+  }
+
+  private String generateEvent() {
+    Collections.shuffle(this.eventTypes);
+    return this.eventTypes.get(0);
+  }
+
+
+  private String generateStartTime() {
+    int hour;
+    int minute;
+    do {
+      hour = this.genRandomNum(0, 24);
+      minute = this.genRandomNum(0, 60);
+    } while(hour == 23 && minute == 59);
+
+    return this.numToString(hour) + ":" + this.numToString(minute);
+  }
+
+
+  private String generateEndTime(String startTime) {
+    LocalTime sTime = LocalTime.parse(startTime);
+
+    int startHour = sTime.getHour();
+    int startMin = sTime.getMinute();
+
+    int endHour = this.genRandomNum(startHour, 24);
+    int endMin;
+
+    if (startHour == endHour && startMin == 59) {
+      endHour = this.genRandomNum(startHour + 1, 24);
+      endMin = this.genRandomNum(0, 60);
+    } else if (startHour == endHour) {
+      endMin = this.genRandomNum(startMin + 1, 60);
+    } else {
+      endMin = this.genRandomNum(0, 60);
+    }
+
+    return this.numToString(endHour) + ":" + this.numToString(endMin);
+  }
+
+
+  private String numToString(int num) {
+    String sNum;
+    if (num < 10) {
+      sNum = String.format("%02d", num);
+    } else {
+      sNum = String.valueOf(num);
+    }
+    return sNum;
+  }
+
+  private int generateCapacity() {
+    return this.genRandomNum(0, MAX_CAPACITY);
+  }
+
+  private int genRandomNum(int low, int high) {
+    Random r = new Random();
+    return r.nextInt(high-low) + low;
+  }
+
 
 
 

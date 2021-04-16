@@ -17,7 +17,7 @@ public class Graph {
 
   private final int numLookers;
   private final int numNodes;
-  private int numIters = 1;
+  private int numIters = 10; // TODO: think about this. the num of diff scatters is the num of diff arrangements
 
 
 
@@ -87,6 +87,16 @@ public class Graph {
   }
 
 
+  private Map<StarterNode, List<LookerNode>> initializeEventsToEmpty() {
+    Map<StarterNode, List<LookerNode>> grouping = new HashMap<>();
+
+    for (StarterNode event: this.centroids) {
+      grouping.put(event, new ArrayList<>());
+    }
+    return grouping;
+  }
+
+
   /**
    * VERY IMPORTANT: this needs to be called at the beg. of each iteration
    * of the algorithm.
@@ -105,8 +115,6 @@ public class Graph {
    */
   public Map<StarterNode, List<LookerNode>> runAlgorithm() {
 
-    System.out.println("ALGORITHM IS RUNNING");
-
     // hold data for every iteration
     List<Map<StarterNode, List<LookerNode>>> potentialGroupings = new ArrayList<>();
     double[] scatters = new double[this.numIters];
@@ -122,29 +130,31 @@ public class Graph {
       this.resetEventAttendance();
 
       int numMatchedLookers = 0;
-      Map<StarterNode, List<LookerNode>> grouping = new HashMap<>();
+
+      // TODO: map each event (starterNode) to empty list
+      Map<StarterNode, List<LookerNode>> grouping = this.initializeEventsToEmpty();
+
 
       // PART 2
       while (!this.allEventsAtCapacity() && numMatchedLookers < this.numLookers) {
 
         for (StarterNode event : this.centroids) {
           PriorityQueue<GraphEntry<StarterNode>> pq = starterToLookerEntries.get(event);
-          
+
           if (!this.eventAtCapacity(event) && pq.size() > 0) {
 
-            System.out.println("pq size " + pq.size());
             GraphEntry<StarterNode> entry = pq.poll();
             LookerNode looker = entry.getTo();
             // NOTE: i don't think entry will ever be null, b/c if numMatchedLookers < this.numLookers
             // (which it has to be b/c while loop condition), then there's always something to poll
 
             // add looker to an event list
-            List<LookerNode> attendees;
-            if (grouping.get(event) == null) {
-              attendees = new ArrayList<>();
-            } else {
-              attendees = grouping.get(event);
-            }
+            List<LookerNode> attendees = grouping.get(event);
+//            if (grouping.get(event) == null) {
+//              attendees = new ArrayList<>();
+//            } else {
+//              attendees = grouping.get(event);
+//            }
             attendees.add(looker);
             grouping.put(event, attendees);
             ////
@@ -158,22 +168,21 @@ public class Graph {
 //            for (PriorityQueue q : queues) {
 //              q.remove(looker);
 //            }
-            System.out.println("before");
+
             for (StarterNode s : starterToLookerEntries.keySet()) {
               PriorityQueue<GraphEntry<StarterNode>> q = starterToLookerEntries.get(s);
               q.removeIf(ge -> ge.getTo().getId() == looker.getId());
               starterToLookerEntries.put(s, q); // re-put in queue
             }
-            System.out.println("after");
+
           }
         }
       }
-      System.out.println("AFTER WHILE LOOP");
+
 
       // done making this iter's grouping
       potentialGroupings.add(grouping);
       scatters[iter] = this.calculateScatter(grouping);
-      System.out.println("scatter " + scatters[iter]);
     }
 
     // after all groups are set
