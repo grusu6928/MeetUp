@@ -11,9 +11,8 @@ import './index.css';
 import React, {useState} from 'react';
 import Lookers from './Lookers';
 import FriendsList from './FriendsList';
-import { AppContext } from "./Contexts";
 import ReactSession from 'react-client-session';
-
+import { AppContext } from './ContextUtil';
 
 function App() {
   const [isAuth, changeAuth] = useState(false);
@@ -25,6 +24,7 @@ function App() {
       </header>
       <BrowserRouter>
         <Switch>
+          <AppContext.Provider value =  {{isAuth, changeAuth}}>
         <Route exact path="/submission" component={Submission}/>
           <Route exact path="/starter"> 
             <Starter />
@@ -38,6 +38,7 @@ function App() {
           <Route exact path="/">
           <Login />
         </Route>
+        </AppContext.Provider>
         </Switch>
       </BrowserRouter>
     </div>

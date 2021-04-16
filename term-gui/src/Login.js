@@ -7,14 +7,13 @@ import { Redirect } from "react-router-dom";
 import { BrowserRouter as Switch, Route, BrowserRouter } from "react-router-dom";
 import Home from './Home';
 import {Link} from 'react-router-dom';
-
-import { useAppContext } from "./Contexts";
+import { useAppContext } from './ContextUtil';
 
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [redirect, setRedirect] = useState(false)
-  // const { userHasAuthenticated } = useAppContext();
+  const { userHasAuthenticated } = useAppContext();
 
   function validateForm() {
     return isValidEmail(email) && isValidPassword(password);
@@ -30,9 +29,8 @@ function Login() {
   function handleSubmit(event) {
     event.preventDefault();
     requestAuthentication(email, password);
-    // if true, then we wanna redirect to another page (home) and save user in session 
+      // if true, then we wanna redirect to another page (home) and save user in session 
   }
-  
   const requestAuthentication = () => {
     const toSend = {
         email: email,
@@ -52,7 +50,8 @@ function Login() {
               // ReactSession.set("username", email);
               // setRedirect(true);
               // window.location.href = "/";
-              console.log("success");
+              // console.log("success");
+              userHasAuthenticated(true);
               return(
                 // TODO: I want to render the home page after successful login. 
             <Home />

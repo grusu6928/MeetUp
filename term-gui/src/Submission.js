@@ -5,9 +5,31 @@ import FriendsList from './FriendsList';
 // react context global state 
 import axios from 'axios';
 
-const getAttendees = (selectedType, selectedActivity, startTime, endTime, location, numAttendees) => {
+
+class Submission extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            attendeeList: ['george', 'amin', 'hamzah', 'ermias']
+        };
+        this.handleAttendeeList = this.handleAttendeeList.bind(this);
+        console.log((this.props.location.state[0]))
+    }
+    handleAttendeeList(newList) {
+        this.setState({
+            attendeeList: newList
+        } 
+        )
+    }
+    checkAttendees() {
+        if (this.props.location.state[0].numOfAttendees != null) {
+            return true;
+        }
+        return false;
+    }
+    getAttendees (selectedType, selectedActivity, startTime, endTime, location, numAttendees) {
     const toSend = {
-        user: "a@brown.edu"
+        user: ""
     }
     let config = {
         headers: {
@@ -18,34 +40,16 @@ const getAttendees = (selectedType, selectedActivity, startTime, endTime, locati
         axios.post('http://localhost:4567/attendees', toSend, config)
         .then(response => {
             console.log("success");
-            this.state.setState({
-                attendeeList: response.data
-            } 
-            )
+            this.handleAttendeeList(response.data)
         })
         .catch(function (error) {
           console.log(error);
         });
       }
 
-class Submission extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            attendeeList: ['george', 'amin', 'hamzah', 'ermias']
-        };
-        console.log((this.props.location.state[0]))
-    }
-    checkAttendees() {
-        if (this.props.location.state[0].numOfAttendees != null) {
-            return true;
-        }
-        return false;
-    }
-
     componentDidMount() {
          setInterval(
-          () => getAttendees(),
+          () => this.getAttendees(),
           10000
         );
       }
