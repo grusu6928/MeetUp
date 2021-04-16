@@ -91,10 +91,3 @@ public class GraphTest {
 
 }
 
-
-// THINGS TO TEST
-    // num keys in arrangement = numStarters
-    // num values in arrangement = numLookers (MAX)
-        // could be less b/c capacity constraints -> CHECK THIS AS SEPARATE CASE
-    // for each grp in arrangement AND across groups: no looker is repeated
-        // hashmap: looker -> count, verify count for all is <= 1

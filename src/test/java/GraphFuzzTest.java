@@ -43,9 +43,6 @@ public class GraphFuzzTest {
 
   private void setUp2(int numLookers, int numStarters) {
 
-    System.out.println("numLookers " + numLookers);
-    System.out.println("numStarters " + numStarters);
-
     for (int l = 0; l < numLookers; l ++) {
       this.lookers.add(this.generateLooker(l));
     }
@@ -63,17 +60,25 @@ public class GraphFuzzTest {
   }
 
   // TODO: change to Junit5 and do repeatedTest
+
+  /**
+   * Runs the graph algorithm on a randomized input of lookers and starters
+   * (random in both their properties and quantity), and ensures the following constraints are met
+   * 1) number of events returned = number of starters
+   * 2) number of lookers matched = min(number of lookers, total capacity summed across all events)
+   * 3) each looker is matched to maximum one event, and only appears once on that event list
+   */
   @Test
   public void fuzzTest() {
 
     int numLookers = this.genRandomNum(0, MAX_LOOKERS);
     int numStarters = this.genRandomNum(0, MAX_STARTERS);
     this.setUp2(numLookers, numStarters);
-
-
     Map<StarterNode, List<LookerNode>> groups = graph.runAlgorithm();
 
     int numEvents = groups.keySet().size();
+
+    // constraint 1
     assertEquals(numStarters, numEvents);
 
 
@@ -82,24 +87,20 @@ public class GraphFuzzTest {
 
     for (List<LookerNode> list : groups.values()) {
       numMatchedLookers += list.size();
-
       for (LookerNode l : list) {
-        if (lookerCount.get(l) == null) {
-          lookerCount.put(l, 1);
-        } else {
-          lookerCount.put(l, lookerCount.get(l) + 1);
-        }
+        lookerCount.merge(l, 1, Integer::sum);
       }
     }
 
+    // constraint 2
     assertEquals(Math.min(numLookers, this.summedCapacity), numMatchedLookers);
 
+    // constraint 3
     assertTrue(lookerCount.values().stream().allMatch(i -> i <= 1));
 
   }
 
   private LookerNode generateLooker(int id) {
-
     int stringLen = ThreadLocalRandom.current().nextInt(0, 20);
     String username = this.generateName(stringLen);
     String event = this.generateEvent();
@@ -152,6 +153,12 @@ public class GraphFuzzTest {
   }
 
 
+  /**
+   * Generates an end time, constrained by start time to ensure
+   * that the end time comes after the start time.
+   * @param startTime start time by which to constrain end time
+   * @return a stochastic end time
+   */
   private String generateEndTime(String startTime) {
     LocalTime sTime = LocalTime.parse(startTime);
 
@@ -169,11 +176,15 @@ public class GraphFuzzTest {
     } else {
       endMin = this.genRandomNum(0, 60);
     }
-
     return this.numToString(endHour) + ":" + this.numToString(endMin);
   }
 
-
+  /**
+   * Converts a number to a string, and if the number is a single digit,
+   * then also pads that number with one leading zero.
+   * @param num number to convert to string
+   * @return number as a string
+   */
   private String numToString(int num) {
     String sNum;
     if (num < 10) {

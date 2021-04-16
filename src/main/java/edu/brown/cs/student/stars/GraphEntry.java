@@ -5,17 +5,13 @@ public class GraphEntry <T extends GraphNode> {
   private T from;
   private LookerNode to;
 
-  // in adjacency matrix
-//  private int row;
-//  private int col;
+
 
   private double weight;
 
-  public GraphEntry(T from, LookerNode to, int row, int col, double weight) {
+  public GraphEntry(T from, LookerNode to, double weight) {
     this.from = from;
     this.to = to;
-//    this.row = row;
-//    this.col = col;
     this.weight = weight;
   }
 

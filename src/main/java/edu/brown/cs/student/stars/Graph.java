@@ -6,14 +6,14 @@ import java.util.*;
 
 public class Graph {
 
-  private GraphEntry[][] adjMatrix;
+  private final GraphEntry[][] adjMatrix;
 
-  private List<LookerNode> lookers;
-  private List<StarterNode> centroids;
+  private final List<LookerNode> lookers;
+  private final List<StarterNode> centroids;
 
-  private Map<Integer, Integer> lookerIdToCol; // looker id -> col in adjMatrix
-  private Map<Integer, Integer> centroidIdToRow; // starter id -> row in adjMatrix
-  private HashMap<StarterNode, Integer> capacityMap; // max capacity at each event
+  private final Map<Integer, Integer> lookerIdToCol; // looker id -> col in adjMatrix
+  private final Map<Integer, Integer> centroidIdToRow; // starter id -> row in adjMatrix
+  private final HashMap<StarterNode, Integer> capacityMap; // max capacity at each event
 
   private final int numLookers;
   private final int numNodes;
@@ -86,7 +86,11 @@ public class Graph {
     return starterToLookerEntries;
   }
 
-
+  /**
+   * At the beginning of each iteration, initializes all events to be
+   * mapped to an empty list of attendees.
+   * @return Map of events to empty attendees' lists
+   */
   private Map<StarterNode, List<LookerNode>> initializeEventsToEmpty() {
     Map<StarterNode, List<LookerNode>> grouping = new HashMap<>();
 
@@ -98,8 +102,8 @@ public class Graph {
 
 
   /**
-   * VERY IMPORTANT: this needs to be called at the beg. of each iteration
-   * of the algorithm.
+   * At the beginning of each iteration, resets each event's attendance
+   * counter to 0.
    */
   private void resetEventAttendance() {
     for (StarterNode event: this.centroids) {
@@ -131,9 +135,8 @@ public class Graph {
 
       int numMatchedLookers = 0;
 
-      // TODO: map each event (starterNode) to empty list
+      // maps each event (starterNode) to empty list
       Map<StarterNode, List<LookerNode>> grouping = this.initializeEventsToEmpty();
-
 
       // PART 2
       while (!this.allEventsAtCapacity() && numMatchedLookers < this.numLookers) {
@@ -150,11 +153,6 @@ public class Graph {
 
             // add looker to an event list
             List<LookerNode> attendees = grouping.get(event);
-//            if (grouping.get(event) == null) {
-//              attendees = new ArrayList<>();
-//            } else {
-//              attendees = grouping.get(event);
-//            }
             attendees.add(looker);
             grouping.put(event, attendees);
             ////
@@ -164,11 +162,6 @@ public class Graph {
 
             // make sure that looker can't attend other events
             // REMOVES POSSIBILITY OF THIS LOOKER BEING IN ANY OTHER GROUP
-//            Collection<PriorityQueue<GraphEntry<StarterNode>>> queues = starterToLookerEntries.values();
-//            for (PriorityQueue q : queues) {
-//              q.remove(looker);
-//            }
-
             for (StarterNode s : starterToLookerEntries.keySet()) {
               PriorityQueue<GraphEntry<StarterNode>> q = starterToLookerEntries.get(s);
               q.removeIf(ge -> ge.getTo().getId() == looker.getId());
@@ -178,7 +171,6 @@ public class Graph {
           }
         }
       }
-
 
       // done making this iter's grouping
       potentialGroupings.add(grouping);
@@ -239,7 +231,8 @@ public class Graph {
         kScatter += this.adjMatrix[centroidRow][col].getWeight();
       }
 
-      // calc scatter btwn everything in lookerCols and everything in lookerCols
+      // calc scatter between everything in lookerCols and everything in lookerCols
+          // skips over self-loops
       for (Integer row: lookerCols) {
         for (Integer col: lookerCols) {
           if (!row.equals(col)) {
@@ -256,8 +249,6 @@ public class Graph {
   }
 
 
-
-
   /**
    * Sets the capacity map, which will be used to keep track
    * of how many spots are left in each starter's event.
@@ -270,7 +261,7 @@ public class Graph {
 
   /**
    * Determines if all events are at full capacity or not.
-   * @return
+   * @return true if all at capacity, false o.w.
    */
   private boolean allEventsAtCapacity() {
     for (StarterNode event : this.centroids) {
@@ -282,9 +273,9 @@ public class Graph {
   }
 
   /**
-   * Determines if an event is at capacity
-   * @param event
-   * @return
+   * Determines if an event is at capacity.
+   * @param event event to check if at capacity
+   * @return true if at capacity, false o.w.
    */
   private boolean eventAtCapacity(StarterNode event) {
     int currAttendance = event.getNumAttendees();
@@ -378,24 +369,17 @@ public class Graph {
       for (int lcol = 0; lcol < this.lookers.size(); lcol++) {
 
         GraphEntry<LookerNode> entry;
-//        if (lrow == lcol) {
-//          entry = new GraphEntry<>(null, null, lrow, lcol, Double.NEGATIVE_INFINITY);
-//        } else {
-//          LookerNode from = this.lookers.get(lrow);
-//          LookerNode to = this.lookers.get(lcol);
-//          double weight = this.computeHeuristic(from, to);
-//          entry = new GraphEntry<>(from, to, lrow, lcol, weight);
-//        }
-
         LookerNode from = this.lookers.get(lrow);
         LookerNode to = this.lookers.get(lcol);
+
+        // sets self-loop weights to negative infinity
         double weight;
         if (lrow == lcol) {
           weight = Double.NEGATIVE_INFINITY;
         } else {
           weight = this.computeHeuristic(from, to);
         }
-        entry = new GraphEntry<>(from, to, lrow, lcol, weight);
+        entry = new GraphEntry<>(from, to, weight);
 
         this.adjMatrix[lrow][lcol] = entry;
       }
@@ -414,7 +398,7 @@ public class Graph {
         StarterNode from = this.centroids.get(srow - rowOffset);
         LookerNode to = this.lookers.get(lcol);
         double weight = this.computeHeuristic(from, to);
-        GraphEntry<StarterNode> entry = new GraphEntry<>(from, to, srow, lcol, weight);
+        GraphEntry<StarterNode> entry = new GraphEntry<>(from, to, weight);
 
         this.adjMatrix[srow][lcol] = entry;
       }
