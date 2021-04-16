@@ -1,15 +1,12 @@
 package edu.brown.cs.student.stars;
 
-
-import java.time.LocalTime;
-
 public class LookerNode implements GraphNode {
 
-  private int id;
-  private String username;
-  private String event;
-  private String startTime;
-  private String endTime;
+  private final int id;
+  private final String username;
+  private final String event;
+  private final String startTime;
+  private final String endTime;
 
 
   public LookerNode(int id, String username, String event, String startTime, String endTime) {
@@ -26,7 +23,10 @@ public class LookerNode implements GraphNode {
     return this.id;
   }
 
-  public String getUsername(){return this.username;}
+  @Override
+  public String getUsername() {
+    return this.username;
+  }
 
   @Override
   public String getEvent() {

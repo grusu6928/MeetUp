@@ -1,20 +1,19 @@
 package edu.brown.cs.student.stars;
 
-import java.time.LocalTime;
 
 public class StarterNode implements GraphNode {
 
-  private int id;
-  private String username;
-  private String event;
-  private String startTime;
-  private String endTime;
-  private String location; // modify data type
-  private int capacity;
+  private final int id;
+  private final String username;
+  private final String event;
+  private final String startTime;
+  private final String endTime;
+  private final String location; // modify data type
+  private final int capacity;
   private int numAttendees;
 
-  public StarterNode(int id, String event, String startTime,
-                     String endTime, String location, int capacity, String username) {
+  public StarterNode(int id, String username, String event, String startTime,
+                     String endTime, String location, int capacity) {
 
     this.id = id;
     this.username = username;
@@ -34,7 +33,10 @@ public class StarterNode implements GraphNode {
     return this.id;
   }
 
-  public String getUsername() {return this.username;}
+  @Override
+  public String getUsername() {
+    return this.username;
+  }
 
   @Override
   public String getEvent() {
@@ -65,5 +67,9 @@ public class StarterNode implements GraphNode {
 
   public int getNumAttendees() {
     return this.numAttendees;
+  }
+
+  public void setNumAttendees(int numAttendees) {
+    this.numAttendees = numAttendees;
   }
 }
