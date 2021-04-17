@@ -12,6 +12,7 @@ import React, {useState} from 'react';
 import Lookers from './Lookers';
 import FriendsList from './FriendsList';
 import ReactSession from 'react-client-session';
+import Signup from './Signup.js'
 import { AppContext } from './ContextUtil';
 
 function App() {
@@ -32,10 +33,13 @@ function App() {
           <Route exact path="/looker" > 
             <Looker/>
           </Route>
+          <Route exact path="/signup" > 
+            <Signup/>
+          </Route>
           <Route exact path="/home"> 
             <Home />
           </Route>
-          <Route exact path="/">
+          <Route exact path="/login">
           <Login />
         </Route>
         </AppContext.Provider>

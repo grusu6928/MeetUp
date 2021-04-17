@@ -103,8 +103,7 @@ public final class Main {
   private void runSparkServer(int port) {
     // TODO
     MyDatabase.connect();
-    SignUp s = new SignUp();
-    s.newUser("a@brown.edu", "123456", "a@brown.edu");
+
 
 
     // TODO: Send updates from RSVP table to front-end.
@@ -136,12 +135,29 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
     Spark.post("/events", new eventsHandler());
     Spark.post("/looker", new lookerHandler());
     Spark.post("/attendees", new attendeesHandler());
+    Spark.post("/signup", new signupHandler());
     Spark.post("/logout", new Logout(), freeMarker);
   }
   private static class loginAuthHandler implements Route {
     @Override
     public Object handle(Request request, Response response) throws Exception {
       JSONObject data = new JSONObject(request.body());
+      return new Gson().toJson(Login.log(data.getString("email"), data.getString("pass")));
+      // Map<String, Object> variables = ImmutableMap.of("checkin", isAuth);
+      // return GSON.toJson(isAuth);
+    }
+  }
+  private static class signupHandler implements Route {
+    @Override
+    public Object handle(Request request, Response response) throws Exception {
+      System.out.println("a");
+      JSONObject data = new JSONObject(request.body());
+      System.out.println("b");
+      SignUp s = new SignUp();
+      System.out.println("c");
+      System.out.println(data);
+      s.newUser(data.getString("email"),data.getString("pass"),data.getString("email"));
+      System.out.println(Login.log(data.getString("email"), data.getString("pass")));
       return new Gson().toJson(Login.log(data.getString("email"), data.getString("pass")));
       // Map<String, Object> variables = ImmutableMap.of("checkin", isAuth);
       // return GSON.toJson(isAuth);

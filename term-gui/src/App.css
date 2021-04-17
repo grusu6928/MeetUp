@@ -147,7 +147,7 @@ a:hover {
 #FL {
   margin-left: -50px;
 }
-.login-div {
+.login-div, .signup-div{
   width: 800px;
   height: 760px;
   border: 20px;

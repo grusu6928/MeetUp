@@ -43,7 +43,7 @@ class Starter extends Component {
           selectedActivity: null,
           startTime: null,
           endTime: null,
-            location: null,
+          location: [],
           numberOfAttendees: null,
           redirect: false,
           address: ""
@@ -60,8 +60,6 @@ class Starter extends Component {
             selectedType: e.target.value
         });
     }    
-    
-    
         handleActivityChange (e){
         this.setState({
             selectedActivity: e.target.value
@@ -120,7 +118,7 @@ class Starter extends Component {
         console.log(address)
         geocodeByAddress(address)
           .then(results => getLatLng(results[0]))
-          .then(latLng => this.setState({location:latLng}))
+          .then(latLng => this.setState({location:[...this.state.location, latLng]}))
           .catch(error => console.error('Error', error));
 
         console.log("location state", this.state.location)
@@ -129,9 +127,6 @@ class Starter extends Component {
       handleChange = address => {
         this.setState({ address });
       };    
-    
-
-
     render() {
         if (this.state.redirect) {
             return (
