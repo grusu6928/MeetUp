@@ -4,7 +4,10 @@ import './index.css';
 import FriendsList from './FriendsList';
 import axios from "axios";
 import {Redirect} from 'react-router-dom'
-
+import PlacesAutocomplete, {
+    geocodeByAddress,
+    getLatLng
+  } from "react-places-autocomplete";  
 
 
 const sendEvent = (selectedType, selectedActivity, startTime, endTime, location, numAttendees) => {
@@ -32,16 +35,18 @@ const sendEvent = (selectedType, selectedActivity, startTime, endTime, location,
       }
 
 class Starter extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
           selectedType: null,
           selectedActivity: null,
           startTime: null,
           endTime: null,
-          location: null,
+          latt: null,
+          long: null,
           numberOfAttendees: null,
-          redirect: false
+          redirect: false,
+          address: ""
         };
 // const [state, changeState] = setState(0)
         this.handleTypeChange = this.handleTypeChange.bind(this);
@@ -54,8 +59,10 @@ class Starter extends Component {
         this.setState({
             selectedType: e.target.value
         });
-    }
-    handleActivityChange (e){
+    }    
+    
+    
+        handleActivityChange (e){
         this.setState({
             selectedActivity: e.target.value
         })
@@ -106,7 +113,20 @@ class Starter extends Component {
         starterForm.reset(); 
         alert ("Thank you for submitting this event, we'll let you know if others join!")
         this.setState({redirect: true});
+    
+        
     }
+    handleSelect = address => {
+        geocodeByAddress(address)
+          .then(results => getLatLng(results[0]))
+          .then(latLng => console.log('Success', latLng))
+          .catch(error => console.error('Error', error));
+      };
+    
+      handleChange = address => {
+        this.setState({ address });
+      };    
+    
 
 
     render() {
@@ -169,11 +189,52 @@ class Starter extends Component {
                         </div>
                         <div className="event">
                             <label for="location" className="text"> Location: </label>
+                            <PlacesAutocomplete
+        value={this.state.address}
+        onChange={this.handleChange}
+        onSelect={this.handleSelect}
+      >
+        {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
+          <div>
+            <input
+              {...getInputProps({
+                placeholder: 'Search Places ...',
+                className: 'location-search-input',
+              })}
+            />
+            <div className="autocomplete-dropdown-container">
+              {loading && <div>Loading...</div>}
+              {console.log(suggestions)}
+              {suggestions.map(suggestion => {
+                const className = suggestion.active
+                  ? 'suggestion-item--active'
+                  : 'suggestion-item';
+                // inline style for demonstration purpose
+                const style = suggestion.active
+                  ? { backgroundColor: '#fafafa', cursor: 'pointer' }
+                  : { backgroundColor: '#ffffff', cursor: 'pointer' };
+                return (
+                  <div
+                    {...getSuggestionItemProps(suggestion, {
+                      className,
+                      style,
+                    })}
+                  >
+                    <span>{suggestion.description}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </PlacesAutocomplete>
+
                             <input id="location" type="text" onChange = {e => this.handleLocation(e)}/>
                         </div>
                         <div className="event">
                             <label for="number" className="text"> Desired number of people: </label>
                             <input id="number" type="number" onChange = {e => this.handleAttendees(e)}/>
+
                         </div>
 
                         
