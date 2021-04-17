@@ -159,6 +159,8 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
       String location = data.getString("location");
       int numAttendees = Integer.parseInt(data.getString("numOfAttendees"));
 
+//      System.out.println("LOCATION" + location);
+
       Events eventDB = Events.getInstance();
       eventDB.createEvent(event, activity, startTime, endTime, location, numAttendees);
       return GSON.toJson("success");
