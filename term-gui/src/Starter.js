@@ -10,13 +10,14 @@ import PlacesAutocomplete, {
   } from "react-places-autocomplete";  
 
 
-const sendEvent = (selectedType, selectedActivity, startTime, endTime, location, numAttendees) => {
+const sendEvent = (selectedType, selectedActivity, startTime, endTime, latitude, longitude, numAttendees) => {
     const toSend = {
         typeOfEvent: selectedType,
         typeOfActivity: selectedActivity,
         startTime: startTime,
         endTime: endTime,
-        location: location,
+        latitude: latitude,
+        longitude: longitude,
         numOfAttendees: numAttendees
     }
     let config = {
@@ -42,8 +43,7 @@ class Starter extends Component {
           selectedActivity: null,
           startTime: null,
           endTime: null,
-          latt: null,
-          long: null,
+            location: null,
           numberOfAttendees: null,
           redirect: false,
           address: ""
@@ -117,10 +117,13 @@ class Starter extends Component {
         
     }
     handleSelect = address => {
+        console.log(address)
         geocodeByAddress(address)
           .then(results => getLatLng(results[0]))
-          .then(latLng => console.log('Success', latLng))
+          .then(latLng => this.setState({location:latLng}))
           .catch(error => console.error('Error', error));
+
+        console.log("location state", this.state.location)
       };
     
       handleChange = address => {

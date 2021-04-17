@@ -184,6 +184,8 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
       // request should be name of starter
       JSONObject data = new JSONObject(request.body());
       String starter = data.getString("user");
+
+
       List<StarterNode> events = Events.getInstance().getAllEvents();
       List<LookerNode> lookers = Events.getInstance().getAllLookers();
 
