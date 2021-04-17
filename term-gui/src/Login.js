@@ -14,7 +14,6 @@ function Login() {
   const [password, setPassword] = useState("");
   const [redirect, setRedirect] = useState(false)
   const { userHasAuthenticated } = useAppContext();
-
   function validateForm() {
     return isValidEmail(email) && isValidPassword(password);
   }
@@ -32,6 +31,7 @@ function Login() {
       // if true, then we wanna redirect to another page (home) and save user in session 
   }
   const requestAuthentication = () => {
+    console.log('reached')
     const toSend = {
         email: email,
         pass: password,
@@ -45,18 +45,17 @@ function Login() {
         axios.post('http://localhost:4567/login', toSend, config)
         .then(response => {
             if(response.data) {
+              localStorage.setItem("user", toSend.email);
+              setEmail(toSend.email);
+              window.location.reload(true);
+
               // TODO 
               // ReactSession.setStoreType("localStorage");
               // ReactSession.set("username", email);
               // setRedirect(true);
               // window.location.href = "/";
               // console.log("success");
-              userHasAuthenticated(true);
-              return(
-                // TODO: I want to render the home page after successful login. 
-            <Home />
-              )
-                
+              console.log(localStorage.getItem("user"))
             } else {
                 // rerender page, with alert
                 setRedirect(false);
@@ -67,9 +66,10 @@ function Login() {
           console.log(error);
         });
       }
-      if (ReactSession != null) {
+      console.log(localStorage.getItem("user"));
+      if (localStorage.getItem("user") !== null) {
         return(
-          <Redirect to='/Home'/>
+          <Home />
         );
       }
       else{
@@ -93,15 +93,9 @@ function Login() {
             onChange={(e) => setPassword(e.target.value)}
           />
         </Form.Group>
-
-          <Link
-              to={{
-                  pathname: "/home",
-              }}>
               <Button block size="lg" type="submit" disabled={!validateForm()}>
                   Login
               </Button>
-          </Link>
       </Form>
     </div>
   );

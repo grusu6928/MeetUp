@@ -97,11 +97,9 @@ public final class Main {
    */
   private void runSparkServer(int port) {
     // TODO
-
     MyDatabase.connect();
     SignUp s = new SignUp();
-    Login.log("a@brown.edu", "12345");
-    Login.log("a@brown.edu", "123456");
+    s.newUser("a@brown.edu", "123456", "a@brown.edu");
     System.out.println("reached");
     List<StarterNode> events = Events.getInstance().getAllEvents();
     List<LookerNode> lookers = Events.getInstance().getAllLookers();
