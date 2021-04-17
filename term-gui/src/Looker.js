@@ -15,6 +15,7 @@ const sendEvent = (selectedType, selectedActivity, startTime, endTime, location,
         startTime: startTime,
         endTime: endTime,
         location: location,
+        user: localStorage.getItem("user")
     }
     let config = {
         headers: {
@@ -40,7 +41,8 @@ class Looker extends Component {
             startTime: null,
             endTime: null,
             location: null,
-            redirect: false
+            redirect: false,
+            user: localStorage.getItem("user")
         };
 
         this.handleTypeChange = this.handleTypeChange.bind(this);
