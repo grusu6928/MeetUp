@@ -60,6 +60,11 @@ public final class Main {
 
   public static final String USERID = "USERID";
 
+  // every 1 minute -> check if these values are hit
+      // if yes -> run the algorithm
+  public static final int LOOKERS_THRESHOLD = 25;
+  public static final int STARTERS_THRESHOLD = 4;
+
 
   /**
    * The initial method called when execution begins.
@@ -102,20 +107,6 @@ public final class Main {
     SignUp s = new SignUp();
     Login.log("a@brown.edu", "12345");
     Login.log("a@brown.edu", "123456");
-    System.out.println("reached");
-    List<StarterNode> events = Events.getInstance().getAllEvents();
-    List<LookerNode> lookers = Events.getInstance().getAllLookers();
-
-
-    Graph graph = new Graph(lookers, events);
-    //TODO: specify after how long to run the algo.
-    Map<StarterNode, List<LookerNode>> result = graph.runAlgorithm();
-    result.forEach((k,v) -> {
-      for(LookerNode l : v) {
-        System.out.println(l.getUsername());
-        Events.getInstance().addMatch(l.getUsername(), k.getUsername());
-      }
-    });
 
     // TODO: Send updates from RSVP table to front-end.
     // TODO: When to clear the table. (maybe after each event finishes, delete all related data)
@@ -191,31 +182,21 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
   private static class attendeesHandler implements Route {
     @Override
     public Object handle(Request request, Response response) throws Exception {
-      // request should be name of starter 
-      System.out.println("beginning");
+      // request should be name of starter
       JSONObject data = new JSONObject(request.body());
-      System.out.println("a");
       String starter = data.getString("user");
-      System.out.println("starter");
-      System.out.println(starter);
-      System.out.println("b");
       List<StarterNode> events = Events.getInstance().getAllEvents();
-      System.out.println("c");
       List<LookerNode> lookers = Events.getInstance().getAllLookers();
-      System.out.println("d");
-      Graph graph = new Graph(lookers, events);
-      System.out.println("e");
+
       //TODO: specify after how long to run the algo.
+      Graph graph = new Graph(lookers, events);
       Map<StarterNode, List<LookerNode>> result = graph.runAlgorithm();
-      System.out.println("f");
       result.forEach((k,v) -> {
         for(LookerNode l : v) {
           System.out.println(l.getUsername());
           Events.getInstance().addMatch(l.getUsername(), k.getUsername());
         }
       });
-      System.out.println(Events.getInstance().getMatches(starter));
-      System.out.println("end");
       return GSON.toJson(Events.getInstance().getMatches(starter));
     }
   }
