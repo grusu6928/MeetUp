@@ -190,14 +190,30 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
       JSONObject data = new JSONObject(request.body());
       System.out.println(data);
       String requestType = data.getString("requestType");
+      String currUser = data.getString("userID");
       String newFriend = data.getString("userToAdd");
       String userToRemove = data.getString("userToremove");
+      Friends friendObj = new Friends();
       switch (requestType) {
         case "query":
+        return GSON.toJson(friendObj.getFriendsList(currUser));
         case "insert":
+        if (friendObj.sent(currUser, newFriend)) {
+          return GSON.toJson("already sent a pending friend request"); 
+        } else if (friendObj.checkFriendShip(currUser, newFriend)) {
+          return GSON.toJson("already friends with this user!"); 
+        } else {
+            friendObj.sendRequest(currUser, newFriend);
+            return GSON.toJson("success");
+        }
         case "kill":
+        if (friendObj.checkFriendShip(currUser, userToRemove)) {
+        friendObj.deleteFriend(currUser, userToRemove);
+        return GSON.toJson("successfullu deleted user");
+        } else {
+          return GSON.toJson("can't delete user you are not friends with");
+        }
         // TODO: call each of teh necessary functions for friends  - return friends list
-
       }
       Events eventDB = Events.getInstance();
       //CHANGE: HardCoded type of event - firs tparameter. 
