@@ -68,9 +68,12 @@ function Signup() {
       console.log(localStorage.getItem("user"));
       if (localStorage.getItem("user") !== null) {
         return(
-          <Home />
-        );
-      }
+                <Redirect
+                to={{
+                    pathname: "/home"
+                }}
+                />
+              );}
       else{
   return (
     <div className="signup-div">
@@ -92,7 +95,7 @@ function Signup() {
             onChange={(e) => setPassword(e.target.value)}
           />
         </Form.Group>
-              <Button block size="lg" type="submit" disabled={!validateForm()}>
+              <Button block size="lg" type="submit" text="Sign Up" disabled={!validateForm()}>
               Signup
               </Button>
       </Form>

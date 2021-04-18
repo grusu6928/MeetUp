@@ -168,7 +168,6 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
     public Object handle(Request request, Response response) throws Exception {
       JSONObject data = new JSONObject(request.body());
       System.out.println(data);
-      String event = data.getString("typeOfEvent");
       String activity = data.getString("typeOfActivity");
       String startTime = data.getString("startTime");
       String endTime = data.getString("endTime");
@@ -178,7 +177,8 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
 //      System.out.println("LOCATION" + location);
 
       Events eventDB = Events.getInstance();
-      eventDB.createEvent(event, activity, startTime, endTime, location, numAttendees);
+      //CHANGE: HardCoded type of event - firs tparameter. 
+      eventDB.createEvent("public", activity, startTime, endTime, location, numAttendees);
       return GSON.toJson("success");
     }
   }
@@ -202,7 +202,7 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
       // request should be name of starter
       JSONObject data = new JSONObject(request.body());
       String starter = data.getString("user");
-
+      System.out.println("starter user " + starter);
 
       List<StarterNode> events = Events.getInstance().getAllEvents();
       List<LookerNode> lookers = Events.getInstance().getAllLookers();

@@ -109,6 +109,15 @@ class Looker extends Component {
 
 
     render() {
+        if(localStorage.getItem("user") == null) {
+            return (
+                <Redirect
+                to={{
+                    pathname: "/",
+                }}
+                />
+                );
+        } else {
         if (this.state.redirect) {
             return (
             <Redirect
@@ -177,6 +186,7 @@ class Looker extends Component {
                 </div>
             </div>
         );
+        }
     }
 }
 export default Looker;

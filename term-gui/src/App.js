@@ -53,7 +53,7 @@ function App() {
           <Route exact path="/home"> 
             <Home />
           </Route>
-          <Route exact path="/login">
+          <Route exact path="/">
           <Login />
         </Route>
         </AppContext.Provider>

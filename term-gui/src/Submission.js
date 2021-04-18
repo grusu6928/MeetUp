@@ -4,6 +4,7 @@ import './index.css';
 import FriendsList from './FriendsList';
 // react context global state 
 import axios from 'axios';
+import { Redirect } from 'react-router-dom';
 
 
 class Submission extends Component {
@@ -13,7 +14,6 @@ class Submission extends Component {
             attendeeList: ['george', 'amin', 'hamzah', 'ermias']
         };
         this.handleAttendeeList = this.handleAttendeeList.bind(this);
-        console.log((this.props.location.state[0]))
     }
     handleAttendeeList(newList) {
         this.setState({
@@ -29,7 +29,7 @@ class Submission extends Component {
     }
     getAttendees (selectedType, selectedActivity, startTime, endTime, location, numAttendees) {
     const toSend = {
-        user: ""
+        user: localStorage.getItem("user"),
     }
     let config = {
         headers: {
@@ -55,6 +55,15 @@ class Submission extends Component {
       }
     
     render() {
+        if(localStorage.getItem("user") == null) {
+            return (
+                <Redirect
+                to={{
+                    pathname: "/",
+                }}
+                />
+                );
+        } else {
         return (
             <div className="margins">
                 <FriendsList />
@@ -128,6 +137,7 @@ class Submission extends Component {
                 </div> */}
             </div>
         );
+            }
     }
 }
 export default Submission;
