@@ -1,6 +1,8 @@
 package edu.brown.cs.student.stars.Graph;
 
-
+/**
+ *
+ */
 public class Starter implements FormSubmission {
 
   private final int id;

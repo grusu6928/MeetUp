@@ -38,7 +38,7 @@ public interface FormSubmission {
 
   /**
    * Returns location inputted on form.
-   * @return location
+   * @return location [latitude, longitude]
    */
   double[] getLocation();
 }
