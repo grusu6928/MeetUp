@@ -1,9 +1,9 @@
 import { AwesomeButton } from "react-awesome-button";
-import "react-awesome-button/dist/styles.css";
+import './App.css';
 
 function Button(props) {
     return (
-        <AwesomeButton type="primary" onPress={props.method}>
+        <AwesomeButton className="button-ting" type="primary" onPress={props.method}>
             {props.text}
         </AwesomeButton>
     );

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import './index.css';
-import FriendsList from './FriendsList';
+import FriendList from './FriendList';
 // react context global state 
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
@@ -36,7 +36,7 @@ class Submission extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            attendeeList: ['george', 'amin', 'hamzah', 'ermias']
+            attendeeList: ['george', 'amin', 'hamzah', 'ermias', 'amin', 'hamzah', 'ermias', 'amin', 'hamzah', 'ermias']
         };
         this.handleAttendeeList = this.handleAttendeeList.bind(this);
     }
@@ -92,7 +92,11 @@ class Submission extends Component {
             5000
           );
       }
-    
+      logout() {
+        localStorage.clear()
+        console.log(localStorage.getItem("user"))
+        this.setState({user: null})
+    }
     render() {
         console.log(this.props.location.state[0])
         if(localStorage.getItem("user") == null) {
@@ -106,26 +110,30 @@ class Submission extends Component {
         } else {
         return (
             <div className="margins">
-                <FriendsList />
+                <FriendList />
                 <header>
                     <h1 className="home">
                         <a href="/home"> Home </a>
                     </h1>
-                    <h1 > Type of Activity: {this.props.location.state[0].typeOfActivity} </h1> 
-                    <h1 > Start Time: {this.props.location.state[0].startTime} </h1> 
-                    <h1 > End Time: {this.props.location.state[0].endTime} </h1> 
-                    <h1 > Location: {this.props.location.state[0].location} </h1> 
-                    {this.checkAttendees() ? (
-                        <h1 > Attendees: {this.state.attendeeList.map((attendants, index) => (
-                            <h1>
-                                {attendants}
-                            </h1>
-                        ))} and {this.props.location.state[0].numOfAttendees - this.state.attendeeList.length} more open spots</h1> 
-                    ) : (
-                        <h1></h1>
-                    )}
+                    <h3 className="logout" onClick={() => this.logout()}>Logout</h3>
                 </header>
-               
+                <p className="event-deets"> Here are your event details: </p>
+                <div className="submission-div">
+                <p className="text"> Event Privacy: <span className="inner-text"> {this.props.location.state[0].typeOfEvent} </span> </p> 
+                    <p className="text"> Type of Activity: <span className="inner-text"> {this.props.location.state[0].typeOfActivity} </span></p> 
+                    <p className="text"> Start Time: <span className="inner-text">{this.props.location.state[0].startTime}</span>  </p> 
+                    <p className="text"> End Time: <span className="inner-text"> {this.props.location.state[0].endTime} </span></p> 
+                    <p className="text"> Location: <span className="inner-text"> {this.props.location.state[0].location} </span></p>
+                    {this.checkAttendees() ? (
+                        <p className="text">  Attendees: <span className="inner-text"> {this.state.attendeeList.map((attendants, index) => (
+                            <p>
+                                {attendants}
+                            </p>
+                        ))} and <span className="text"> {this.props.location.state[0].numOfAttendees - this.state.attendeeList.length} </span> more open spots </span></p> 
+                    ) : (
+                        <p className="text"></p>
+                    )}
+                    </div>
             </div>
         );
             }

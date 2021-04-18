@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import './index.css';
-import FriendsList from './FriendsList';
+import FriendList from './FriendList';
 
 class LookerSubmission extends Component {
     constructor() {
@@ -40,7 +40,7 @@ class LookerSubmission extends Component {
     render() {
         return (
             <div className="margins">
-                <FriendsList />
+                <FriendList />
                 <header>
                     <h1 className="home">
                         <a href="/home"> Home </a>

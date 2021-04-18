@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import './index.css';
-import FriendsList from './FriendsList';
+import FriendList from './FriendList';
 import axios from "axios";
 import {Redirect} from 'react-router-dom'
 import PlacesAutocomplete, {
@@ -170,7 +170,13 @@ class Starter extends Component {
     
       handleChange = address => {
         this.setState({address});
-      };    
+      };  
+      
+      logout() {
+        localStorage.clear()
+        console.log(localStorage.getItem("user"))
+        this.setState({user: null})
+    }
     render() {
       if(localStorage.getItem("user") == null) {
         return (
@@ -208,11 +214,12 @@ class Starter extends Component {
         }
         return (
             <div className="margins">
-                <FriendsList />
+                <FriendList />
                 <header>
                     <h1 className="home">
                         <a href="/home"> Home </a>
                     </h1>
+                    <h3 className="logout" onClick={() => this.logout()}>Logout</h3>
                     <h1 className="welcome"> Provide your event details: </h1> 
                 </header>
                 <div className="form-div">

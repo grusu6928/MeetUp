@@ -1,5 +1,4 @@
 import './App.css';
-
 import { BrowserRouter as Switch, Route, BrowserRouter } from "react-router-dom";
 import './index.css';
 import React, {useEffect, useState} from 'react';
@@ -50,6 +49,7 @@ function FriendList({ friend, index }) {
 
 return (
       <div className="friends-div">
+        <FriendForm addFriend={addFriend} request = {requestFriends} />
         {friends.map((friend, index) => (
           <Friend
             key={index}
@@ -59,7 +59,6 @@ return (
             request = {requestFriends}
           />
         ))}
-        <FriendForm addFriend={addFriend} request = {requestFriends} />
       </div>
   );
 }

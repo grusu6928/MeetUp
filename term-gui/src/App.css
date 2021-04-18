@@ -121,6 +121,9 @@ a:hover {
   font-weight: bold;
 }
 
+.inner-text {
+  font-weight: normal;
+}
 .submit {
   margin: 10px;
   padding: 5px;
@@ -147,7 +150,8 @@ a:hover {
 #FL {
   margin-left: -50px;
 }
-.login-div, .signup-div{
+
+.signup-div {
   width: 800px;
   height: 760px;
   border: 20px;
@@ -161,4 +165,103 @@ a:hover {
 
 ul {
   list-style: none;
+}
+
+.input {
+  margin-top: 8px;
+  border-style: hidden;
+  height: 20px;
+  border-radius: 10px;
+  border-color: white;
+}
+
+.friend {
+  margin-top: 5px;
+}
+
+.x-button {
+  border-radius: 50%;
+  border-style: none;
+  font-family: "Courier New", Courier, monospace;
+}
+
+.meet-up {
+  font-weight: 100px;
+  padding-top: 100px;
+  font-size: 50px;
+  margin-left: 20px;
+}
+.login {
+  font-weight: 300;
+  font-size: 25px;
+  padding-top: 50px;
+}
+
+.login-div {
+  background-color: white;
+  border-radius: 20px;
+  margin-left: 200px;
+  width: 400px;
+}
+
+.password {
+  margin-left: -28px;
+}
+
+.margins1 {
+  margin-top: -50px;
+  width: 800px;
+  height: 760px;
+  border: 20px;
+  border-color: white;
+  background-color: lightblue;
+  border-radius: 20px;
+}
+
+.button-ting {
+  border-radius: 10px;
+  padding: 8px;
+  background-color: rgb(231, 231, 231);
+  border-style: hidden;
+}
+
+.signup-text {
+  padding-bottom: 10px;
+  padding-right: 10px;
+}
+
+.signup-button:hover {
+  opacity: 100%;
+}
+
+.logout {
+  margin-left: 650px;
+  padding-top: 10px;
+  margin-top: 20px;
+  color: black;
+  font-weight: 130;
+  font-size: 25px;
+}
+
+.logout:hover {
+  opacity: 55%;
+}
+
+.submission-div {
+  background-color: white;
+  border-radius: 20px;
+  margin-left: 150px;
+  height: 500px;
+  width: 500px;
+  font-size: 20px;
+  position: relative;
+  max-height: 100%;
+  overflow: auto;
+}
+
+.event-deets {
+  font-weight: 60px;
+  padding-top: 50px;
+  font-size: 30px;
+  margin-left: 20px;
 }
