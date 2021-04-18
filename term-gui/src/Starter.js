@@ -33,9 +33,10 @@ const sendEvent = (selectedActivity, startTime, endTime, location, capacity) => 
           console.log(error);
         });
       }
+
   const sendEndTime = (reqType, currUser, endTime) => {
     const toSend = {
-        requestType: reqType
+        requestType: reqType,
         user: currUser,
         endTime: endTime
     }
@@ -45,8 +46,9 @@ const sendEvent = (selectedActivity, startTime, endTime, location, capacity) => 
           'Access-Control-Allow-Origin': '*',
           }
         }
-        axios.post('http://localhost:4567/endTime', toSend, config)
+        axios.post('http://localhost:4567/endtime', toSend, config)
         .then(response => {
+          console.log("starter sendEndTime response " + response.data)
             if (reqType === ("get")) {
               return response.data;
             } else if (reqType === "set") {
@@ -110,7 +112,7 @@ class Starter extends Component {
       }
       if (this.state.currentDateTime.getHours >= endTime.getHours && this.state.currentDateTime.getMinutes() >= endTime.getMinutes) {
           console.log("removed")
-        localStorage.removeItem("endTime");
+        sendEndTime("set", localStorage.getItem("user"), null);
       }
     }
     handleSubmit (e){
@@ -134,9 +136,8 @@ class Starter extends Component {
         console.log(localStorage.getItem("data").typeOfActivity)
         sendEvent(this.state.selectedActivity, this.state.startTime, this.state.endTime,
             this.state.location, this.state.numberOfAttendees);
-            localStorage.setItem("endTime", this.state.endTime);
-            sendEndTime("set", localStorage.getItem("user"), localStorage.getItem("endTime"));
-
+            console.log("state of endTime: " + this.state.endTime)
+        sendEndTime("set", localStorage.getItem("user"), this.state.endTime);
         const starterForm = document.getElementById('starter-form')
         starterForm.reset(); 
         alert ("Thank you for submitting this event, we'll let you know if others join!")

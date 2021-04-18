@@ -219,13 +219,18 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
     @Override
     public Object handle(Request request, Response response) throws Exception {
       JSONObject data = new JSONObject(request.body());
-      String requestType = data.getString("request");
-      String username = data.getString("currentUser");
+      System.out.println("data " + data);
+      String requestType = data.getString("requestType");
+      System.out.println("requestType " + requestType);
+      String username = data.getString("user");
+      System.out.println("username " + username);
       String endTime = data.getString("endTime");
-      if(request.equals("get")) {
+      System.out.println("endTime " + endTime);
+      if(requestType.equals("get")) {
+        System.out.println("inside");
         return GSON.toJson(Events.getInstance().getEndTime(username));
       }
-      if(request.equals("set")) {
+      if(requestType.equals("set")) {
         Events.getInstance().setEndTime(endTime, username);
         return GSON.toJson("sucess");
       }

@@ -6,6 +6,31 @@ import FriendsList from './FriendsList';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 
+const sendEndTime = (reqType, currUser, endTime) => {
+    const toSend = {
+        requestType: reqType,
+        user: currUser,
+        endTime: endTime
+    }
+    let config = {
+        headers: {
+          "Content-Type": "application/json",
+          'Access-Control-Allow-Origin': '*',
+          }
+        }
+        axios.post('http://localhost:4567/endtime', toSend, config)
+        .then(response => {
+            console.log("submission sendEndTime response " + response.data)
+            if (reqType === ("get")) {
+              return response.data;
+            } else if (reqType === "set") {
+              console.log(response.data)
+            }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      }
 
 class Submission extends Component {
     constructor(props) {
@@ -55,14 +80,14 @@ class Submission extends Component {
         setInterval(
             () =>  {
                 let currentDateTime = new Date()
-                let endTime= localStorage.getItem("endTime")
+                let endTime = sendEndTime("get", localStorage.getItem("user"), null)
+                console.log("endTime: " + endTime)
                 if(endTime !== null) {
                     let hoursMinutes = endTime.split(":")
                     if (currentDateTime.getHours() >= parseInt(hoursMinutes[0]) && currentDateTime.getMinutes() >= parseInt(hoursMinutes[1])) {
-                        localStorage.removeItem("endTime");
+                        sendEndTime("set", localStorage.getItem("user"), null)
                       }       
-                }
-                   
+                }   
           },
             5000
           );
@@ -101,54 +126,6 @@ class Submission extends Component {
                     )}
                 </header>
                
-
-                {/* <div className="form-div">
-                    <form id="starter-form" onSubmit={this.handleSubmit}>
-                        <div class="event">
-                            <p className="text"> Type of event: </p>
-                            <input type="radio" value="public" checked={this.state.selectedType === 'public'} onChange={this.handleTypeChange} />
-                            <label for="public"> Public </label>
-                            <input type="radio" value="private" checked={this.state.selectedType === 'private'} onChange={this.handleTypeChange} />
-                            <label for="private"> Private </label>
-                        </div>
-                        <div className="event">
-                            <p className="text"> What are you up for?</p>
-                            <div>
-                                <input type="radio" value="meal" checked={this.state.selectedActivity === 'meal'} onChange={this.handleActivityChange} />
-                                <label for="meal"> Meal </label>
-                                <input type="radio" value="study" checked={this.state.selectedActivity === 'study'} onChange={this.handleActivityChange} />
-                                <label for="study"> Study </label>
-                            </div>
-                            <div>
-                                <input type="radio" value="sport" checked={this.state.selectedActivity === 'sport'} onChange={this.handleActivityChange} />
-                                <label for="sport"> Sport </label>
-                                <input type="radio" value="chill" checked={this.state.selectedActivity === 'chill'} onChange={this.handleActivityChange} />
-                                <label for="chill"> Chill </label>
-                            </div>
-                            <div>
-                                <input type="radio" value="prayer" checked={this.state.selectedActivity === 'prayer'} onChange={this.handleActivityChange} />
-                                <label for="prayer"> Prayer </label>
-                                <input type="radio" value="other" checked={this.state.selectedActivity === 'other'} onChange={this.handleActivityChange} />
-                                <label for="other"> Other </label>
-                            </div>
-                        </div>
-                        <div className="event">
-                            <label for="start-time" className="text"> When are you free? </label>
-                            <br />
-                            <br />
-                            from:
-                            <input id="start-time" type="time" />
-                            to:
-                            <input id="end-time" type="time" />
-                        </div>
-                        <br />
-                        <div className="event">
-                            <label for="location" className="text"> Location: </label>
-                            <input id="location" type="text" />
-                        </div>
-                        <button className="submit" type="submit"> Submit</button>
-                    </form>
-                </div> */}
             </div>
         );
             }
