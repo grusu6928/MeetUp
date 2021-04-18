@@ -176,13 +176,15 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
       String endTime = data.getString("endTime");
       JSONArray location = data.getJSONArray("location");
 
-      double latitude = location.getJSONObject(0).getDouble("lat");
-      double longitude = location.getJSONObject(1).getDouble("lng");
+
+      double latitude = location.getDouble(0);
+      double longitude = location.getDouble(1);
 
       int capacity = Integer.parseInt(data.getString("capacity"));
 
       Events.getInstance().createEvent(username, activity, startTime, endTime,
               latitude, longitude, capacity);
+
       return GSON.toJson("success");
     }
   }
@@ -217,8 +219,8 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
       String endTime = data.getString("endTime");
       JSONArray location = data.getJSONArray("location");
 
-      double latitude = location.getJSONObject(0).getDouble("lat");
-      double longitude = location.getJSONObject(1).getDouble("lng");
+      double latitude = location.getDouble(0);
+      double longitude = location.getDouble(1);
 
       Events.getInstance().addLooker(username, activity, startTime, endTime, latitude, longitude);
       return GSON.toJson("success");
@@ -230,7 +232,6 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
       // request should be name of starter
       JSONObject data = new JSONObject(request.body());
       String starter = data.getString("user");
-      System.out.println("starter user " + starter);
 
       Events database = Events.getInstance();
 
