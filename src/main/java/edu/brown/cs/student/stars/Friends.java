@@ -147,12 +147,12 @@ import java.util.List;
         prep.setString(4, u1);
         ResultSet rs = prep.executeQuery();
         if(rs.next()) {
-          return 1;
+          return true;
         }
-        return 0;
+        return false;
       } catch(SQLException e){
         System.out.println(e);
-        return 0;
+        return false;
       }
     }
 
