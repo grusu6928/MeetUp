@@ -45,6 +45,7 @@ import freemarker.template.Configuration;
 import org.json.JSONObject;
 import com.google.gson.Gson;
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -249,10 +250,9 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
 
       // TODO: clear database tables
         database.clearTables();
-
-      return GSON.toJson(database.getMatches(starter));
+        return GSON.toJson(database.getMatches(starter));
       } else {
-        return GSON.toJson("We are working on matching you with other users!");
+        return GSON.toJson(new ArrayList<>());
       }
     }
   }

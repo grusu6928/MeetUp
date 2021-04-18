@@ -27,7 +27,7 @@ class Submission extends Component {
         }
         return false;
     }
-    getAttendees (selectedType, selectedActivity, startTime, endTime, location, numAttendees) {
+    getAttendees () {
     const toSend = {
         user: localStorage.getItem("user"),
     }

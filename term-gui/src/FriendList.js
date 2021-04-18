@@ -27,10 +27,10 @@ function FriendList({ friend, index }) {
         // 1 = add friend
         // 2 = kill friend
         const toSend = {
-            // requestType = reqType,
-            // userID: localStorage.getItem("user"),
-            // userToAdd: newFriend,
-            // userToRemove: removeFriend
+            requestType: reqType,
+            userID: localStorage.getItem("user"),
+            userToAdd: newFriend,
+            userToRemove: removeFriend
         }
         let config = {
             headers: {
