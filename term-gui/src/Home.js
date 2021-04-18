@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import Button from './Button';
-import FriendsList from './FriendsList';
+import FriendList from './FriendList';
 import './index.css';
 import Login from './Login';
 import {Redirect} from 'react-router-dom'
@@ -36,13 +36,13 @@ class Home extends Component {
             console.log(localStorage.getItem("user"));
             return (
                 <div className="margins">
-                    <FriendsList />
+                    <FriendList />
                     <header>
                         <h1 className="home">
                             <a href="/"> Home </a>
                         </h1>
+                        <h3 className="logout" onClick={() => this.logout()}>Logout</h3>
                         <h1 className="welcome"> Welcome to MeetUp! </h1>
-                        <button onClick={() => this.logout()}>Logout</button>
                     </header>
                     <h3>
                         <div className="starter">

@@ -9,10 +9,7 @@ function Friend({ friend, index, removeFriend, request }) {
         // can use this for logged on/logged off 
         // style={{ textDecoration: todo.isCompleted ? "line-through" : "" }}
       >
-        {friend.friend}
-        <div>
-          <button onClick={() => removeFriend(index)}>x</button>
-        </div>
+        {friend.friend} <button class="x-button" onClick={() => removeFriend(index)}>x</button>
       </div>
     );
   }

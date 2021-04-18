@@ -1,7 +1,7 @@
 import React, { Component, useEffect } from 'react';
 import './App.css';
 import './index.css';
-import FriendsList from './FriendsList';
+import FriendList from './FriendList';
 import axios from "axios";
 import {Redirect} from 'react-router-dom'
 import Friend from './Friend';
@@ -43,7 +43,6 @@ class Looker extends Component {
             user: localStorage.getItem("user")
         };
 
-        this.handleTypeChange = this.handleTypeChange.bind(this);
         this.handleActivityChange = this.handleActivityChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         let data = []
@@ -52,12 +51,6 @@ class Looker extends Component {
     componentDidMount() {
     }
     
-
-    handleTypeChange (e){
-        this.setState({
-            selectedType: e.target.value
-        });
-    }
     handleActivityChange (e){
         this.setState({
             selectedActivity: e.target.value
@@ -105,6 +98,11 @@ class Looker extends Component {
         this.setState({redirect: true});
     }
 
+    logout() {
+        localStorage.clear()
+        console.log(localStorage.getItem("user"))
+        this.setState({user: null})
+    }
 
     render() {
         if(localStorage.getItem("user") == null) {
@@ -128,22 +126,16 @@ class Looker extends Component {
         }
         return (
             <div className="margins">
-                <FriendsList />
+                <FriendList />
                 <header>
                     <h1 className="home">
                         <a href="/home"> Home </a>
                     </h1>
+                    <h3 className="logout" onClick={() => this.logout()}>Logout</h3>
                     <h1 className="welcome"> Provide your event preferences: </h1>
                 </header>
                 <div className="form-div">
                     <form id="starter-form" onSubmit={this.handleSubmit}>
-                        <div class="event">
-                            <p className="text"> Type of event: </p>
-                            <input type="radio" value="public" checked={this.state.selectedType === 'public'} onChange={ e => this.handleTypeChange(e)} />
-                            <label for="public"> Public </label>
-                            <input type="radio" value="private" checked={this.state.selectedType === 'private'} onChange={ e => this.handleTypeChange(e)} />
-                            <label for="private"> Private </label>
-                        </div>
                         <div className="event">
                             <p className="text"> What are you up for?</p>
                             <div>
