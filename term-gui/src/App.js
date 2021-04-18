@@ -8,7 +8,7 @@ import Looker from './Looker';
 import LookerSubmission from './LookerSubmission.js';
 import Login from './Login';
 import './index.css';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Lookers from './Lookers';
 import FriendsList from './FriendsList';
 import ReactSession from 'react-client-session';
@@ -21,6 +21,10 @@ import { AppContext } from './ContextUtil';
 function App() {
   const [isAuth, changeAuth] = useState(false);
   const [friends, setFriends] = useState([])
+
+    setInterval(() => {
+        console.log("friends" + friends[0]);
+    }, 4000)
 
   return (
     <div className="App">
@@ -35,7 +39,7 @@ function App() {
             friend={friend}
           />
         ))}
-        <FriendForm friendsList ={friends}/>
+        <FriendForm friendsList ={friends} setFriends = {setFriends}/>
         </div>
       <BrowserRouter>
         <Switch>
