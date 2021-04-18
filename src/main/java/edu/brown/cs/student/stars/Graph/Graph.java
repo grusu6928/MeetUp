@@ -291,7 +291,7 @@ public class Graph {
 
 
 
-  private double computeHeuristic(Event n1, Event n2) {
+  private double computeHeuristic(FormSubmission n1, FormSubmission n2) {
 
 
     int areFriends = Friends.getInstance().checkFriendShip(n1.getUsername(), n2.getUsername()) ? 1 : 0;

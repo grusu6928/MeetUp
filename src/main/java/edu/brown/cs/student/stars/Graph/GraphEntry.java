@@ -5,7 +5,7 @@ package edu.brown.cs.student.stars.Graph;
  * for the edge between the from and to nodes of the entry.
  * @param <T>
  */
-public class GraphEntry <T extends Event> {
+public class GraphEntry <T extends FormSubmission> {
 
   private T from;
   private Looker to;

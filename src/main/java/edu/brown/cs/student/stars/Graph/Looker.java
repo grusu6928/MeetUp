@@ -1,6 +1,6 @@
 package edu.brown.cs.student.stars.Graph;
 
-public class Looker implements Event {
+public class Looker implements FormSubmission {
 
   private final int id;
   private final String username;

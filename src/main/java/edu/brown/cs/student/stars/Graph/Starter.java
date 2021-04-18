@@ -1,7 +1,7 @@
 package edu.brown.cs.student.stars.Graph;
 
 
-public class Starter implements Event {
+public class Starter implements FormSubmission {
 
   private final int id;
   private final String username;
