@@ -133,6 +133,7 @@ public final class Events {
                           double latitude, double longitude, int capacity) {
     try {
       PreparedStatement prep;
+      System.out.println("before event c=query");
       prep = conn.prepareStatement("CREATE TABLE IF NOT EXISTS events("
               + "number INTEGER,"
               + "username TEXT UNIQUE," // TODO: make starter username a foreign key (that's how it is in lookers table)
@@ -144,6 +145,7 @@ public final class Events {
               + "capacity INTEGER,"
               + "PRIMARY KEY (number));");
       prep.executeUpdate();
+      System.out.println("after event c=query");
       prep = conn.prepareStatement("INSERT INTO events VALUES(NULL, ?, ?, ?, ?, ?, ?, ?);");
       prep.setString(1, username);
       prep.setString(2, activity);
@@ -152,7 +154,9 @@ public final class Events {
       prep.setDouble(5, latitude);
       prep.setDouble(6, longitude);
       prep.setInt(7, capacity);
+      System.out.println("before insert");
       prep.executeUpdate();
+      System.out.println("after insert");
     } catch(SQLException e) {
       System.out.println(e);
   }
