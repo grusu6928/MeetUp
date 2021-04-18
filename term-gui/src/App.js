@@ -13,16 +13,30 @@ import Lookers from './Lookers';
 import FriendsList from './FriendsList';
 import ReactSession from 'react-client-session';
 import Signup from './Signup.js'
+import Friend from './Friend.js'
+import FriendForm from './FriendForm'
+
 import { AppContext } from './ContextUtil';
 
 function App() {
   const [isAuth, changeAuth] = useState(false);
+  const [friends, setFriends] = useState([])
 
   return (
     <div className="App">
       <header>
         <title> MeetUp </title>
       </header>
+      <div className="friends-div">
+        {friends.map((friend, index) => (
+          <Friend
+            key={index}
+            index={index}
+            friend={friend}
+          />
+        ))}
+        <FriendForm friendsList ={friends}/>
+        </div>
       <BrowserRouter>
         <Switch>
           <AppContext.Provider value =  {{isAuth, changeAuth}}>

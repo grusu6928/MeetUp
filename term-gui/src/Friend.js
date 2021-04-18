@@ -4,6 +4,7 @@ import './App.css';
 
 function Friend({ friend, index }) {
     const [friends, setFriends] = useState([])
+    
     const removeFriend = index => {
         const newFriends = [...friends];
         newFriends.splice(index, 1);
@@ -16,7 +17,7 @@ function Friend({ friend, index }) {
         // can use this for logged on/logged off 
         // style={{ textDecoration: todo.isCompleted ? "line-through" : "" }}
       >
-        {friend.text}
+        {friends}
         <div>
           <button onClick={() => removeFriend(index)}>x</button>
         </div>
