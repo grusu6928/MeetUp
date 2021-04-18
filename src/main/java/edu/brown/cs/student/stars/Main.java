@@ -5,9 +5,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import edu.brown.cs.student.stars.Login;
+import edu.brown.cs.student.stars.Database.*;
+import edu.brown.cs.student.stars.Graph.Graph;
+import edu.brown.cs.student.stars.Graph.Looker;
+import edu.brown.cs.student.stars.Graph.Starter;
 import freemarker.template.Configuration;
-import jdk.jfr.Event;
 import org.json.JSONArray;
 import spark.ExceptionHandler;
 import spark.Request;
@@ -15,41 +17,15 @@ import spark.Response;
 import spark.Spark;
 import spark.template.freemarker.FreeMarkerEngine;
 
-import spark.ExceptionHandler;
-import spark.ModelAndView;
-import spark.QueryParamsMap;
-import spark.Request;
-import spark.Response;
 import spark.Route;
-import spark.Spark;
-import spark.TemplateViewRoute;
-import spark.template.freemarker.FreeMarkerEngine;
 // new imports
-import spark.ExceptionHandler;
-import spark.ModelAndView;
-import spark.QueryParamsMap;
-import spark.Request;
-import spark.Response;
-import spark.Route;
-import spark.Spark;
-import spark.TemplateViewRoute;
-import spark.template.freemarker.FreeMarkerEngine;
 
-import com.google.common.collect.ImmutableMap;
-import freemarker.template.Configuration;
 import com.google.gson.Gson;
 import org.json.JSONObject;
 
-import com.google.common.collect.ImmutableMap;
-import freemarker.template.Configuration;
-import org.json.JSONObject;
-import com.google.gson.Gson;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import com.google.common.collect.ImmutableMap;
 
 /**
  * The Main class of our project. This is where execution begins.
@@ -234,13 +210,13 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
       if (database.getNumEvents() >= STARTERS_THRESHOLD &&
               database.getNumLookers() >= LOOKERS_THRESHOLD) {
 
-      List<StarterNode> events = database.getAllEvents();
-      List<LookerNode> lookers = database.getAllLookers();
+      List<Starter> events = database.getAllEvents();
+      List<Looker> lookers = database.getAllLookers();
 
       Graph graph = new Graph(lookers, events);
-      Map<StarterNode, List<LookerNode>> result = graph.runAlgorithm();
+      Map<Starter, List<Looker>> result = graph.runAlgorithm();
       result.forEach((k,v) -> {
-        for(LookerNode l : v) {
+        for(Looker l : v) {
           database.addMatch(l.getUsername(), k.getUsername());
         }
       });

@@ -1,4 +1,4 @@
-package edu.brown.cs.student.stars;
+package edu.brown.cs.student.stars.Database;
 
 import spark.ModelAndView;
 import spark.Request;

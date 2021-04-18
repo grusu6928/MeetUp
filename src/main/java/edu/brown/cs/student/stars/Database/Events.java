@@ -1,6 +1,7 @@
-package edu.brown.cs.student.stars;
+package edu.brown.cs.student.stars.Database;
 
- import org.json.JSONArray;
+ import edu.brown.cs.student.stars.Graph.Looker;
+ import edu.brown.cs.student.stars.Graph.Starter;
 
  import java.sql.*;
  import java.util.ArrayList;
@@ -101,8 +102,8 @@ public final class Events {
       System.out.println(e);
     }
   }
-  public List<LookerNode> getAllLookers() {
-    List<LookerNode> lookers = new ArrayList<>();
+  public List<Looker> getAllLookers() {
+    List<Looker> lookers = new ArrayList<>();
     try {
       PreparedStatement prep;
       prep = conn.prepareStatement("SELECT * from lookers");
@@ -116,7 +117,7 @@ public final class Events {
         double latitude = rs.getDouble(6);
         double longitude = rs.getDouble(7);
 
-        LookerNode looker = new LookerNode(id, username, event, startTime, endTime, latitude, longitude);
+        Looker looker = new Looker(id, username, event, startTime, endTime, latitude, longitude);
         lookers.add(looker);
 
       }
@@ -163,8 +164,8 @@ public final class Events {
   }
 
 
-  public List<StarterNode> getAllEvents() {
-    List<StarterNode> Events = new ArrayList<>();
+  public List<Starter> getAllEvents() {
+    List<Starter> Events = new ArrayList<>();
     try {
       PreparedStatement prep;
       prep = conn.prepareStatement("SELECT * from events");
@@ -181,7 +182,7 @@ public final class Events {
         double longitude = rs.getDouble(7);
         int capacity = rs.getInt(8);
 
-        StarterNode starter = new StarterNode(id, username, activity, startTime,
+        Starter starter = new Starter(id, username, activity, startTime,
                 endTime, longitude, latitude, capacity);
         Events.add(starter);
       }

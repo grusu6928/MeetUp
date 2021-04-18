@@ -1,6 +1,6 @@
-package edu.brown.cs.student.stars;
+package edu.brown.cs.student.stars.Graph;
 
-public class LookerNode implements GraphNode {
+public class Looker implements Event {
 
   private final int id;
   private final String username;
@@ -10,9 +10,19 @@ public class LookerNode implements GraphNode {
   private final double latitude;
   private final double longitude;
 
-
-  public LookerNode(int id, String username, String activity, String startTime,
-                    String endTime, double latitude, double longitude) {
+  /**
+   * Initializes a Looker object - a user who submitted their preferences
+   * and is looking to be matched to an event.
+   * @param id unique id
+   * @param username unique username
+   * @param activity
+   * @param startTime
+   * @param endTime
+   * @param latitude
+   * @param longitude
+   */
+  public Looker(int id, String username, String activity, String startTime,
+                String endTime, double latitude, double longitude) {
     this.id = id;
     this.username = username;
     this.activity = activity;

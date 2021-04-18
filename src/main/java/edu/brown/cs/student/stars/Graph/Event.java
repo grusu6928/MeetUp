@@ -1,10 +1,9 @@
-package edu.brown.cs.student.stars;
+package edu.brown.cs.student.stars.Graph;
 
-import java.time.LocalTime;
 
-public interface GraphNode {
+public interface Event {
 
-  int getId(); // unique
+  int getId();
   String getUsername();
   String getActivity();
   String getStartTime();

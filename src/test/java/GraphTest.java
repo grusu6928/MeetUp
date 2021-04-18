@@ -1,6 +1,6 @@
-//import edu.brown.cs.student.stars.Graph;
-//import edu.brown.cs.student.stars.LookerNode;
-//import edu.brown.cs.student.stars.StarterNode;
+//import edu.brown.cs.student.stars.Graph.Graph;
+//import edu.brown.cs.student.stars.Graph.LookerNode;
+//import edu.brown.cs.student.stars.Graph.StarterNode;
 //import org.junit.After;
 //import org.junit.Before;
 //import org.junit.Test;

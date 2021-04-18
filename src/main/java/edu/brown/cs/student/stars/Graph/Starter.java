@@ -1,7 +1,7 @@
-package edu.brown.cs.student.stars;
+package edu.brown.cs.student.stars.Graph;
 
 
-public class StarterNode implements GraphNode {
+public class Starter implements Event {
 
   private final int id;
   private final String username;
@@ -13,8 +13,8 @@ public class StarterNode implements GraphNode {
   private final int capacity;
   private int numAttendees;
 
-  public StarterNode(int id, String username, String activity, String startTime,
-                     String endTime, double latitude, double longitude, int capacity) {
+  public Starter(int id, String username, String activity, String startTime,
+                 String endTime, double latitude, double longitude, int capacity) {
 
     this.id = id;
     this.username = username;

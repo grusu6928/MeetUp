@@ -1,6 +1,4 @@
-package edu.brown.cs.student.stars;
-import edu.brown.cs.student.stars.MyDatabase;
-import org.eclipse.jetty.util.Loader;
+package edu.brown.cs.student.stars.Database;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

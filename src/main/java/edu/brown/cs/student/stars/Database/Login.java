@@ -1,14 +1,10 @@
-package edu.brown.cs.student.stars;
-
-import spark.*;
+package edu.brown.cs.student.stars.Database;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Login {
   //copied from here:
