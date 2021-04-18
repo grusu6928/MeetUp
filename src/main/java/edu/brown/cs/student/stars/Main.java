@@ -8,6 +8,7 @@ import java.io.StringWriter;
 import edu.brown.cs.student.stars.Login;
 import freemarker.template.Configuration;
 import jdk.jfr.Event;
+import org.json.JSONArray;
 import spark.ExceptionHandler;
 import spark.Request;
 import spark.Response;
@@ -63,7 +64,7 @@ public final class Main {
   // every 1 minute -> check if these values are hit
       // if yes -> run the algorithm
   public static final int LOOKERS_THRESHOLD = 25;
-  public static final int STARTERS_THRESHOLD = 4;
+  public static final int STARTERS_THRESHOLD = 3;
 
 
   /**
@@ -207,13 +208,12 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
     @Override
     public Object handle(Request request, Response response) throws Exception {
       JSONObject data = new JSONObject(request.body());
+      String username = data.getString("username");
       String event = data.getString("typeOfEvent");
-      String activity = data.getString("typeOfActivity");
       String startTime = data.getString("startTime");
       String endTime = data.getString("endTime");
-      String location = data.getString("location");
-      Events eventDB = Events.getInstance();
-      eventDB.addLooker(event, activity, startTime, endTime, location);
+      JSONArray location = data.getJSONArray("location");
+      Events.getInstance().addLooker(username, event, startTime, endTime, location);
       return GSON.toJson("success");
     }
   }

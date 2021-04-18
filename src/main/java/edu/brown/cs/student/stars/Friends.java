@@ -1,6 +1,5 @@
 package edu.brown.cs.student.stars;
 
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -8,8 +7,24 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
- public class Friends {
-      Connection conn = MyDatabase.conn;
+public final class Friends {
+
+
+   private static Friends friends = null;
+   private Connection conn;
+
+   Friends() {
+     conn = MyDatabase.conn;
+   }
+
+
+   public static Friends getInstance() {
+     if (friends == null) {
+       friends = new Friends();
+     }
+     return friends;
+   }
+
     public Boolean sent(String username1, String username2) {
       try {
         PreparedStatement prep;

@@ -8,10 +8,9 @@ import Friend from './Friend';
 
 
 
-const sendEvent = (selectedType, selectedActivity, startTime, endTime, location, numAttendees) => {
+const sendEvent = (selectedEvent, startTime, endTime, location) => {
     const toSend = {
-        typeOfEvent: selectedType,
-        typeOfActivity: selectedActivity,
+        typeOfEvent: selectedEvent,
         startTime: startTime,
         endTime: endTime,
         location: location,
@@ -89,14 +88,14 @@ class Looker extends Component {
         console.log(this.state.endTime);
         console.log(this.state.location);
         this.data = [
-            {typeOfEvent: this.state.selectedType,
+            {
                 typeOfActivity: this.state.selectedActivity,
                 startTime: this.state.startTime,
                 endTime: this.state.endTime,
                 location: this.state.location,
             }
         ]
-        sendEvent(this.state.selectedType, this.state.selectedActivity, this.state.startTime, this.state.endTime,
+        sendEvent(this.state.selectedActivity, this.state.startTime, this.state.endTime,
             this.state.location);
        
         //TODO: lookerForm?

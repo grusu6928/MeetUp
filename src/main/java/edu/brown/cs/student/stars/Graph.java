@@ -288,11 +288,8 @@ public class Graph {
 
   private double computeHeuristic(GraphNode n1, GraphNode n2) {
 
-//    Friends friendsDB = new Friends();
-
     // no username field, or should change queries to take in ids instead of username
-//    int areFriends = friendsDB.checkFriendShip(n1.getId(), n2.getId());
-    int areFriends = 1;
+    int areFriends = Friends.getInstance().checkFriendShip(n1.getUsername(), n2.getUsername()) ? 1 : 0;
     int sameEventPref = (n1.getEvent().equals(n2.getEvent())) ? 1 : 0;
     double timeCompat = this.timeOverlap(n1.getStartTime(), n1.getEndTime(),
             n2.getStartTime(), n2.getEndTime());

@@ -1,8 +1,9 @@
 package edu.brown.cs.student.stars;
 
+ import org.json.JSONArray;
+
  import java.sql.*;
  import java.util.ArrayList;
- import java.util.HashMap;
  import java.util.List;
 
 // NOTE: CHANGED TO SINGLETON CLASS
@@ -70,13 +71,8 @@ public final class Events {
   }
   /**
    * Schema: (event type - activity type - startTime - endTime - location - username)
-   * @param eventType
-   * @param activityType
-   * @param startTime
-   * @param endTime
-   * @param loc
    */
-  public void addLooker(String eventType, String activityType, String startTime, String endTime, String loc) {
+  public void addLooker(String username, String eventType, String startTime, String endTime, JSONArray location) {
     try {
       PreparedStatement prep;
       prep = conn.prepareStatement("CREATE TABLE IF NOT EXISTS lookers("
@@ -92,12 +88,11 @@ public final class Events {
               + "PRIMARY KEY (number));");
       prep.executeUpdate();
       prep = conn.prepareStatement("INSERT INTO lookers VALUES(NULL, ?, ?, ?, ?, ?, ?);");
-      prep.setString(1, eventType);
-      prep.setString(2, activityType);
+      prep.setString(1, username);
+      prep.setString(2, eventType);
       prep.setString(3, startTime);
       prep.setString(4, endTime);
-      prep.setString(5, loc);
-      prep.setString(6, "a@brown.edu");
+      prep.setString(5, location);
       prep.executeUpdate();
     } catch(SQLException e) {
       System.out.println(e);
@@ -174,15 +169,12 @@ public final class Events {
 
   public List<StarterNode> getAllEvents() {
     List<StarterNode> Events = new ArrayList<>();
-    System.out.println("events a");
     try {
       PreparedStatement prep;
       prep = conn.prepareStatement("SELECT * from events");
-      System.out.println("events b");
       ResultSet rs = prep.executeQuery();
-      System.out.println("events c");
       while(rs.next()) {
-        System.out.println("events d");
+
         //TODO: add usernames after sessions are ready
         int id = rs.getInt(1);
         String username = rs.getString(7);
@@ -191,9 +183,7 @@ public final class Events {
         String endTime = rs.getString(5);
         String location = rs.getString(6);
         int capacity = rs.getInt(8);
-        System.out.println("events e");
         StarterNode starter = new StarterNode(id, username, event, startTime, endTime, location, capacity); // changed username to be in slot 2 (used to be at end)
-        System.out.println("events f");
         Events.add(starter);
       }
     } catch (SQLException e) {
@@ -201,6 +191,22 @@ public final class Events {
     }
     return Events;
   }
+
+  public int getNumEvents() {
+    int numRows = 0;
+    try {
+      PreparedStatement prep;
+      prep = conn.prepareStatement("SELECT COUNT(*) from events");
+      ResultSet rs = prep.executeQuery();
+      while(rs.next()) {
+        numRows = rs.getInt(1);
+      }
+    } catch (SQLException e) {
+      System.out.println(e);
+    }
+    return numRows;
+  }
+
 //   public List<Event> getEventsOfType(String type) {
 //     List<Event> Events = new ArrayList<>();
 //     try {
