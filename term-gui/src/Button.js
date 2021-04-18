@@ -4,7 +4,7 @@ import "react-awesome-button/dist/styles.css";
 function Button(props) {
     return (
         <AwesomeButton type="primary" onPress={props.method}>
-            Submit
+            {props.text}
         </AwesomeButton>
     );
   }

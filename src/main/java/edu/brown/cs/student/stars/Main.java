@@ -8,6 +8,7 @@ import java.io.StringWriter;
 import edu.brown.cs.student.stars.Login;
 import freemarker.template.Configuration;
 import jdk.jfr.Event;
+import org.json.JSONArray;
 import spark.ExceptionHandler;
 import spark.Request;
 import spark.Response;
@@ -44,6 +45,7 @@ import freemarker.template.Configuration;
 import org.json.JSONObject;
 import com.google.gson.Gson;
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -63,7 +65,7 @@ public final class Main {
   // every 1 minute -> check if these values are hit
       // if yes -> run the algorithm
   public static final int LOOKERS_THRESHOLD = 25;
-  public static final int STARTERS_THRESHOLD = 4;
+  public static final int STARTERS_THRESHOLD = 3;
 
 
   /**
@@ -103,8 +105,7 @@ public final class Main {
   private void runSparkServer(int port) {
     // TODO
     MyDatabase.connect();
-    SignUp s = new SignUp();
-    s.newUser("a@brown.edu", "123456", "a@brown.edu");
+
 
 
     // TODO: Send updates from RSVP table to front-end.
@@ -136,6 +137,8 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
     Spark.post("/events", new eventsHandler());
     Spark.post("/looker", new lookerHandler());
     Spark.post("/attendees", new attendeesHandler());
+    Spark.post("/friends", new friendsHandler());
+    Spark.post("/signup", new signupHandler());
     Spark.post("/logout", new Logout(), freeMarker);
   }
   private static class loginAuthHandler implements Route {
@@ -147,20 +150,58 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
       // return GSON.toJson(isAuth);
     }
   }
+  private static class signupHandler implements Route {
+    @Override
+    public Object handle(Request request, Response response) throws Exception {
+      JSONObject data = new JSONObject(request.body());
+      SignUp s = new SignUp();
+      s.newUser(data.getString("email"),data.getString("pass"),data.getString("email"));
+      System.out.println(Login.log(data.getString("email"), data.getString("pass")));
+      return new Gson().toJson(Login.log(data.getString("email"), data.getString("pass")));
+      // Map<String, Object> variables = ImmutableMap.of("checkin", isAuth);
+      // return GSON.toJson(isAuth);
+    }
+  }
   private static class eventsHandler implements Route {
     @Override
     public Object handle(Request request, Response response) throws Exception {
       JSONObject data = new JSONObject(request.body());
-      System.out.println(data);
-      String event = data.getString("typeOfEvent");
-      String activity = data.getString("typeOfActivity");
+      String username = data.getString("user");
+      String activity = data.getString("activity");
       String startTime = data.getString("startTime");
       String endTime = data.getString("endTime");
-      String location = data.getString("location");
-      int numAttendees = Integer.parseInt(data.getString("numOfAttendees"));
+      JSONArray location = data.getJSONArray("location");
 
+
+      double latitude = location.getDouble(0);
+      double longitude = location.getDouble(1);
+
+      int capacity = Integer.parseInt(data.getString("capacity"));
+
+      Events.getInstance().createEvent(username, activity, startTime, endTime,
+              latitude, longitude, capacity);
+
+      return GSON.toJson("success");
+    }
+  }
+  private static class friendsHandler implements Route {
+    @Override
+    public Object handle(Request request, Response response) throws Exception {
+      JSONObject data = new JSONObject(request.body());
+      System.out.println(data);
+      String requestType = data.getString("requestType");
+      String newFriend = data.getString("userToAdd");
+      String userToRemove = data.getString("userToremove");
+      switch (requestType) {
+        case "query":
+        case "insert":
+        case "kill":
+        // TODO: call each of teh necessary functions for friends  - return friends list
+
+      }
       Events eventDB = Events.getInstance();
-      eventDB.createEvent(event, activity, startTime, endTime, location, numAttendees);
+      //CHANGE: HardCoded type of event - firs tparameter. 
+//      eventDB.createEvent("public", activity, startTime, endTime, location, numAttendees);
       return GSON.toJson("success");
     }
   }
@@ -168,13 +209,16 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
     @Override
     public Object handle(Request request, Response response) throws Exception {
       JSONObject data = new JSONObject(request.body());
-      String event = data.getString("typeOfEvent");
-      String activity = data.getString("typeOfActivity");
+      String username = data.getString("user");
+      String activity = data.getString("activity");
       String startTime = data.getString("startTime");
       String endTime = data.getString("endTime");
-      String location = data.getString("location");
-      Events eventDB = Events.getInstance();
-      eventDB.addLooker(event, activity, startTime, endTime, location);
+      JSONArray location = data.getJSONArray("location");
+
+      double latitude = location.getDouble(0);
+      double longitude = location.getDouble(1);
+
+      Events.getInstance().addLooker(username, activity, startTime, endTime, latitude, longitude);
       return GSON.toJson("success");
     }
   }
@@ -184,19 +228,29 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
       // request should be name of starter
       JSONObject data = new JSONObject(request.body());
       String starter = data.getString("user");
-      List<StarterNode> events = Events.getInstance().getAllEvents();
-      List<LookerNode> lookers = Events.getInstance().getAllLookers();
 
-      //TODO: specify after how long to run the algo.
+      Events database = Events.getInstance();
+
+      if (database.getNumEvents() >= STARTERS_THRESHOLD &&
+              database.getNumLookers() >= LOOKERS_THRESHOLD) {
+
+      List<StarterNode> events = database.getAllEvents();
+      List<LookerNode> lookers = database.getAllLookers();
+
       Graph graph = new Graph(lookers, events);
       Map<StarterNode, List<LookerNode>> result = graph.runAlgorithm();
       result.forEach((k,v) -> {
         for(LookerNode l : v) {
-          System.out.println(l.getUsername());
-          Events.getInstance().addMatch(l.getUsername(), k.getUsername());
+          database.addMatch(l.getUsername(), k.getUsername());
         }
       });
-      return GSON.toJson(Events.getInstance().getMatches(starter));
+
+      // TODO: clear database tables
+        database.clearTables();
+        return GSON.toJson(database.getMatches(starter));
+      } else {
+        return GSON.toJson(new ArrayList<>());
+      }
     }
   }
 

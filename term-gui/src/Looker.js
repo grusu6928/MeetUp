@@ -8,14 +8,13 @@ import Friend from './Friend';
 
 
 
-const sendEvent = (selectedType, selectedActivity, startTime, endTime, location, numAttendees) => {
+const sendEvent = (activity, startTime, endTime, location) => {
     const toSend = {
-        typeOfEvent: selectedType,
-        typeOfActivity: selectedActivity,
+        user: localStorage.getItem("user"),
+        activity: activity,
         startTime: startTime,
         endTime: endTime,
-        location: location,
-        user: localStorage.getItem("user")
+        location: location
     }
     let config = {
         headers: {
@@ -36,7 +35,6 @@ class Looker extends Component {
     constructor() {
         super();
         this.state = {
-            selectedType: null,
             selectedActivity: null,
             startTime: null,
             endTime: null,
@@ -89,14 +87,14 @@ class Looker extends Component {
         console.log(this.state.endTime);
         console.log(this.state.location);
         this.data = [
-            {typeOfEvent: this.state.selectedType,
+            {
                 typeOfActivity: this.state.selectedActivity,
                 startTime: this.state.startTime,
                 endTime: this.state.endTime,
                 location: this.state.location,
             }
         ]
-        sendEvent(this.state.selectedType, this.state.selectedActivity, this.state.startTime, this.state.endTime,
+        sendEvent(this.state.selectedActivity, this.state.startTime, this.state.endTime,
             this.state.location);
        
         //TODO: lookerForm?
@@ -109,6 +107,15 @@ class Looker extends Component {
 
 
     render() {
+        if(localStorage.getItem("user") == null) {
+            return (
+                <Redirect
+                to={{
+                    pathname: "/",
+                }}
+                />
+                );
+        } else {
         if (this.state.redirect) {
             return (
             <Redirect
@@ -177,6 +184,7 @@ class Looker extends Component {
                 </div>
             </div>
         );
+        }
     }
 }
 export default Looker;

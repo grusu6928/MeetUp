@@ -9,7 +9,7 @@ import Home from './Home';
 import {Link} from 'react-router-dom';
 import { useAppContext } from './ContextUtil';
 
-function Login() {
+function Signup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [redirect, setRedirect] = useState(false)
@@ -42,19 +42,18 @@ function Login() {
           'Access-Control-Allow-Origin': '*',
           }
         }
-        axios.post('http://localhost:4567/login', toSend, config)
+        axios.post('http://localhost:4567/signup', toSend, config)
         .then(response => {
             if(response.data) {
               localStorage.setItem("user", toSend.email);
               setEmail(toSend.email);
               window.location.reload(true);
-
               // TODO 
               // ReactSession.setStoreType("localStorage");
               // ReactSession.set("username", email);
               // setRedirect(true);
               // window.location.href = "/";
-              // console.log("success");
+            console.log("success");
               console.log(localStorage.getItem("user"))
             } else {
                 // rerender page, with alert
@@ -69,18 +68,15 @@ function Login() {
       console.log(localStorage.getItem("user"));
       if (localStorage.getItem("user") !== null) {
         return(
-          <Redirect
-          to={{
-              pathname: "/home"
-          }}
-          />
-        );}
+                <Redirect
+                to={{
+                    pathname: "/home"
+                }}
+                />
+              );}
       else{
   return (
-    <div className="login-div">
-      <h1>
-        Login
-      </h1>
+    <div className="signup-div">
       <Form onSubmit={handleSubmit}>
         <Form.Group size="lg" controlId="email">
           <Form.Label>Email</Form.Label>
@@ -99,17 +95,12 @@ function Login() {
             onChange={(e) => setPassword(e.target.value)}
           />
         </Form.Group>
-              <Button block size="lg" type="submit" text= "login" disabled={!validateForm()}>
-                  Login
+              <Button block size="lg" type="submit" text="Sign Up" disabled={!validateForm()}>
+              Signup
               </Button>
       </Form>
-      <a href="/signup">
-              <Button block size="lg" type="submit" text="sign up">
-                  Sign Up
-              </Button>
-              </a>
     </div>
   );
       }
 }
-export default Login;
+export default Signup;

@@ -4,6 +4,7 @@ import './index.css';
 import FriendsList from './FriendsList';
 // react context global state 
 import axios from 'axios';
+import { Redirect } from 'react-router-dom';
 
 
 class Submission extends Component {
@@ -13,7 +14,6 @@ class Submission extends Component {
             attendeeList: ['george', 'amin', 'hamzah', 'ermias']
         };
         this.handleAttendeeList = this.handleAttendeeList.bind(this);
-        console.log((this.props.location.state[0]))
     }
     handleAttendeeList(newList) {
         this.setState({
@@ -27,9 +27,9 @@ class Submission extends Component {
         }
         return false;
     }
-    getAttendees (selectedType, selectedActivity, startTime, endTime, location, numAttendees) {
+    getAttendees () {
     const toSend = {
-        user: ""
+        user: localStorage.getItem("user"),
     }
     let config = {
         headers: {
@@ -52,9 +52,32 @@ class Submission extends Component {
           () => this.getAttendees(),
           10000
         );
+        setInterval(
+            () =>  {
+                let currentDateTime = new Date()
+                let endTime= localStorage.getItem("endTime")
+                if(endTime !== null) {
+                    let hoursMinutes = endTime.split(":")
+                    if (currentDateTime.getHours() >= parseInt(hoursMinutes[0]) && currentDateTime.getMinutes() >= parseInt(hoursMinutes[1])) {
+                        localStorage.removeItem("endTime");
+                      }       
+                }
+                   
+          },
+            5000
+          );
       }
     
     render() {
+        if(localStorage.getItem("user") == null) {
+            return (
+                <Redirect
+                to={{
+                    pathname: "/",
+                }}
+                />
+                );
+        } else {
         return (
             <div className="margins">
                 <FriendsList />
@@ -62,7 +85,6 @@ class Submission extends Component {
                     <h1 className="home">
                         <a href="/home"> Home </a>
                     </h1>
-                    <h1 > Event Privacy: {this.props.location.state[0].typeOfEvent} </h1> 
                     <h1 > Type of Activity: {this.props.location.state[0].typeOfActivity} </h1> 
                     <h1 > Start Time: {this.props.location.state[0].startTime} </h1> 
                     <h1 > End Time: {this.props.location.state[0].endTime} </h1> 
@@ -128,6 +150,7 @@ class Submission extends Component {
                 </div> */}
             </div>
         );
+            }
     }
 }
 export default Submission;

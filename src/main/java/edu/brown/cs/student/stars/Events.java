@@ -1,8 +1,9 @@
 package edu.brown.cs.student.stars;
 
+ import org.json.JSONArray;
+
  import java.sql.*;
  import java.util.ArrayList;
- import java.util.HashMap;
  import java.util.List;
 
 // NOTE: CHANGED TO SINGLETON CLASS
@@ -70,34 +71,31 @@ public final class Events {
   }
   /**
    * Schema: (event type - activity type - startTime - endTime - location - username)
-   * @param eventType
-   * @param activityType
-   * @param startTime
-   * @param endTime
-   * @param loc
    */
-  public void addLooker(String eventType, String activityType, String startTime, String endTime, String loc) {
+  public void addLooker(String username, String eventType, String startTime,
+                        String endTime, double latitude, double longitude) {
+
     try {
       PreparedStatement prep;
       prep = conn.prepareStatement("CREATE TABLE IF NOT EXISTS lookers("
               + "number INTEGER,"
+              + "username TEXT UNIQUE,"
               + "eventT TEXT,"
-              + "activityType TEXT,"
               + "startT TEXT,"
               + "endT TEXT,"
-              + "loc TEXT,"
-              + "username TEXT UNIQUE," // CHANGED: added UNIQUE
+              + "latitude DOUBLE,"
+              + "longitude DOUBLE,"
               + "FOREIGN KEY (username) REFERENCES users(username)"
               + "ON DELETE CASCADE ON UPDATE CASCADE,"
               + "PRIMARY KEY (number));");
       prep.executeUpdate();
       prep = conn.prepareStatement("INSERT INTO lookers VALUES(NULL, ?, ?, ?, ?, ?, ?);");
-      prep.setString(1, eventType);
-      prep.setString(2, activityType);
+      prep.setString(1, username);
+      prep.setString(2, eventType);
       prep.setString(3, startTime);
       prep.setString(4, endTime);
-      prep.setString(5, loc);
-      prep.setString(6, "a@brown.edu");
+      prep.setDouble(5, latitude);
+      prep.setDouble(6, longitude);
       prep.executeUpdate();
     } catch(SQLException e) {
       System.out.println(e);
@@ -111,13 +109,14 @@ public final class Events {
       ResultSet rs = prep.executeQuery();
       while(rs.next()) {
         int id = rs.getInt(1);
-        String username = rs.getString(7);
+        String username = rs.getString(2);
         String event = rs.getString(3);
         String startTime = rs.getString(4);
         String endTime = rs.getString(5);
-//         String location = rs.getString(6); // TODO: figure out if we want location for a looker
+        double latitude = rs.getDouble(6);
+        double longitude = rs.getDouble(7);
 
-        LookerNode looker = new LookerNode(id, username, event, startTime, endTime);
+        LookerNode looker = new LookerNode(id, username, event, startTime, endTime, latitude, longitude);
         lookers.add(looker);
 
       }
@@ -129,71 +128,61 @@ public final class Events {
 
   /**
    * Schema: (event type - activity type - startTime - endTime - location - starter's username - MAXnumPeople)
-   * @param eventType
-   * @param activity
-   * @param startTime
-   * @param endTime
-   * @param location
-   * @param numberOfPeople
    */
-  public void createEvent(String eventType, String activity, String startTime, String endTime, String location,
-                          int numberOfPeople) {
+  public void createEvent(String username, String activity, String startTime, String endTime,
+                          double latitude, double longitude, int capacity) {
     try {
       PreparedStatement prep;
+      System.out.println("before event c=query");
       prep = conn.prepareStatement("CREATE TABLE IF NOT EXISTS events("
               + "number INTEGER,"
-              + "eventT TEXT,"
+              + "username TEXT UNIQUE," // TODO: make starter username a foreign key (that's how it is in lookers table)
               + "activityType TEXT,"
               + "startT TEXT,"
               + "endT TEXT,"
-              + "loc TEXT,"
-              + "starter TEXT UNIQUE," // maybe rename to starterUsername // TODO: (maybe) make starter a foreign key (that's how it is in lookers table)
-              + "numberOfPeople INTEGER,"
+              + "latitude DOUBLE,"
+              + "longitude DOUBLE,"
+              + "capacity INTEGER,"
               + "PRIMARY KEY (number));");
       prep.executeUpdate();
+      System.out.println("after event c=query");
       prep = conn.prepareStatement("INSERT INTO events VALUES(NULL, ?, ?, ?, ?, ?, ?, ?);");
-      prep.setString(1, eventType);
+      prep.setString(1, username);
       prep.setString(2, activity);
       prep.setString(3, startTime);
       prep.setString(4, endTime);
-      prep.setString(5, location);
-      prep.setString(6, "");
-      prep.setString(7, Integer.toString(numberOfPeople));
+      prep.setDouble(5, latitude);
+      prep.setDouble(6, longitude);
+      prep.setInt(7, capacity);
+      System.out.println("before insert");
       prep.executeUpdate();
+      System.out.println("after insert");
     } catch(SQLException e) {
       System.out.println(e);
   }
   }
-//   private int id;
-//   private String event;
-//   private String startTime;
-//   private String endTime;
-//
-//   private String location; // modify data type
-//   private int capacity;
+
 
   public List<StarterNode> getAllEvents() {
     List<StarterNode> Events = new ArrayList<>();
-    System.out.println("events a");
     try {
       PreparedStatement prep;
       prep = conn.prepareStatement("SELECT * from events");
-      System.out.println("events b");
       ResultSet rs = prep.executeQuery();
-      System.out.println("events c");
       while(rs.next()) {
-        System.out.println("events d");
+
         //TODO: add usernames after sessions are ready
         int id = rs.getInt(1);
-        String username = rs.getString(7);
-        String event = rs.getString(3);
+        String username = rs.getString(2);
+        String activity = rs.getString(3);
         String startTime = rs.getString(4);
         String endTime = rs.getString(5);
-        String location = rs.getString(6);
+        double latitude = rs.getDouble(6);
+        double longitude = rs.getDouble(7);
         int capacity = rs.getInt(8);
-        System.out.println("events e");
-        StarterNode starter = new StarterNode(id, username, event, startTime, endTime, location, capacity); // changed username to be in slot 2 (used to be at end)
-        System.out.println("events f");
+
+        StarterNode starter = new StarterNode(id, username, activity, startTime,
+                endTime, longitude, latitude, capacity);
         Events.add(starter);
       }
     } catch (SQLException e) {
@@ -201,22 +190,51 @@ public final class Events {
     }
     return Events;
   }
-//   public List<Event> getEventsOfType(String type) {
-//     List<Event> Events = new ArrayList<>();
-//     try {
-//       PreparedStatement prep;
-//       prep = conn.prepareStatement("SELECT * from events WHERE eventT= type");
-//       ResultSet rs = prep.executeQuery();
-//       while(rs.next()) {
-//         Events.add(new Event(rs.getString(2), rs.getString(3), rs.getString(4),
-//                 rs.getString(5), rs.getString(6), rs.getString(7),
-//                 rs.getInt(8)));
-//       }
-//     } catch (SQLException e) {
-//       System.out.println(e);
-//     }
-//     return Events;
-//   }
-  //TODO: return events within time.
-  //TODO: return events in radius r from current location.
+
+  // TODO: get rid of redundancies in genNumEvents and getNumLookers
+  public int getNumEvents() {
+    int numRows = 0;
+    try {
+      PreparedStatement prep;
+      prep = conn.prepareStatement("SELECT COUNT(*) from events");
+      ResultSet rs = prep.executeQuery();
+      while(rs.next()) {
+        numRows = rs.getInt(1);
+      }
+    } catch (SQLException e) {
+      System.out.println(e);
+    }
+    return numRows;
+  }
+
+  public int getNumLookers() {
+    int numRows = 0;
+    try {
+      PreparedStatement prep;
+      prep = conn.prepareStatement("SELECT COUNT(*) from lookers");
+      ResultSet rs = prep.executeQuery();
+      while(rs.next()) {
+        numRows = rs.getInt(1);
+      }
+    } catch (SQLException e) {
+      System.out.println(e);
+    }
+    return numRows;
+  }
+
+  public void clearTables() {
+    try {
+      PreparedStatement prep = conn.prepareStatement("DROP TABLE events");
+      prep.executeUpdate();
+      PreparedStatement prep1 = conn.prepareStatement("DROP TABLE lookers");
+      prep1.executeUpdate();
+      PreparedStatement prep2 = conn.prepareStatement("DROP TABLE RSVP");
+      prep2.executeUpdate();
+
+    } catch (SQLException e) {
+      System.out.println(e);
+    }
+
+
+  }
 }

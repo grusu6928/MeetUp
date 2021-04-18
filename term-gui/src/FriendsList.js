@@ -4,8 +4,12 @@ import './App.css';
 import Button from "./Button.js";
 import TextInput from './TextInput';
 import { AppContext } from './ContextUtil';
-
-
+/**
+ * TODO: 
+ * This needs to be renamed into AttendeesList
+ * @param {*} props 
+ * @returns 
+ */
 function FriendsList(props) {
     const [friendList, setFL] = useState([])
 

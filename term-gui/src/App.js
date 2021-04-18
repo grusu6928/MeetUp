@@ -8,10 +8,14 @@ import Looker from './Looker';
 import LookerSubmission from './LookerSubmission.js';
 import Login from './Login';
 import './index.css';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Lookers from './Lookers';
-import FriendsList from './FriendsList';
+import FriendList from './FriendList';
 import ReactSession from 'react-client-session';
+import Signup from './Signup.js'
+import Friend from './Friend.js'
+import FriendForm from './FriendForm'
+
 import { AppContext } from './ContextUtil';
 
 function App() {
@@ -22,6 +26,7 @@ function App() {
       <header>
         <title> MeetUp </title>
       </header>
+      <FriendList />
       <BrowserRouter>
         <Switch>
           <AppContext.Provider value =  {{isAuth, changeAuth}}>
@@ -31,6 +36,9 @@ function App() {
           </Route>
           <Route exact path="/looker" > 
             <Looker/>
+          </Route>
+          <Route exact path="/signup" > 
+            <Signup/>
           </Route>
           <Route exact path="/home"> 
             <Home />

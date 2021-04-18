@@ -10,14 +10,14 @@ import PlacesAutocomplete, {
   } from "react-places-autocomplete";  
 
 
-const sendEvent = (selectedType, selectedActivity, startTime, endTime, location, numAttendees) => {
+const sendEvent = (selectedActivity, startTime, endTime, location, capacity) => {
     const toSend = {
-        typeOfEvent: selectedType,
-        typeOfActivity: selectedActivity,
+        user: localStorage.getItem("user"),
+        activity: selectedActivity,
         startTime: startTime,
         endTime: endTime,
-        location: location,
-        numOfAttendees: numAttendees
+        location: location, // 2D ARRAY [lat, long]
+        capacity: capacity
     }
     let config = {
         headers: {
@@ -38,30 +38,19 @@ class Starter extends Component {
     constructor(props) {
         super(props);
         this.state = {
-          selectedType: null,
           selectedActivity: null,
           startTime: null,
           endTime: null,
-          latt: null,
-          long: null,
+          location: [], // or null
           numberOfAttendees: null,
           redirect: false,
-          address: ""
+          address: "", // name of location
+          currentDateTime: new Date()
         };
-// const [state, changeState] = setState(0)
-        this.handleTypeChange = this.handleTypeChange.bind(this);
         this.handleActivityChange = this.handleActivityChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         let data = [];
       }
-    
-    handleTypeChange (e){
-        this.setState({
-            selectedType: e.target.value
-        });
-    }    
-    
-    
         handleActivityChange (e){
         this.setState({
             selectedActivity: e.target.value
@@ -87,9 +76,21 @@ class Starter extends Component {
             numberOfAttendees: e.target.value
         })
     }
+    checkEventTime() {
+      let hour = parseInt(this.state.endTime.split(":")[0])
+      let minutes = parseInt(this.state.endTime.split(":")[1])
+      let endTime;
+      console.log(typeof(this.state.currentDateTime))
+      if (this.state.currentDateTime !== null || typeof(this.state.currentDateTime) !== 'undefined'){
+        endTime = new Date(this.state.currentDateTime.getFullYear(), this.state.currentDateTime.getMonth(), this.state.currentDateTime.getDay(), hour, minutes, 0.0, 0.0)
+      }
+      if (this.state.currentDateTime.getHours >= endTime.getHours && this.state.currentDateTime.getMinutes() >= endTime.getMinutes) {
+          console.log("removed")
+        localStorage.removeItem("endTime");
+      }
+    }
     handleSubmit (e){
         e.preventDefault();
-            console.log(this.state.selectedType);
             console.log(this.state.selectedActivity);
             console.log(this.state.startTime);
             console.log(this.state.endTime);
@@ -97,39 +98,77 @@ class Starter extends Component {
             console.log(this.state.numberOfAttendees);
 
         this.data = [
-            {typeOfEvent: this.state.selectedType,
+            {
             typeOfActivity: this.state.selectedActivity,
             startTime: this.state.startTime,
             endTime: this.state.endTime,
-            location: this.state.location,
+            location: this.state.address,
             numOfAttendees: this.state.numberOfAttendees
             }
         ]
-        sendEvent(this.state.selectedType, this.state.selectedActivity, this.state.startTime, this.state.endTime,
+        localStorage.setItem("data", this.data)
+        sendEvent(this.state.selectedActivity, this.state.startTime, this.state.endTime,
             this.state.location, this.state.numberOfAttendees);
-        // this.history.push('/starter-submission');
+            localStorage.setItem("endTime", this.state.endTime);
+            console.log(localStorage.getItem("endTime"))
 
         const starterForm = document.getElementById('starter-form')
         starterForm.reset(); 
         alert ("Thank you for submitting this event, we'll let you know if others join!")
         this.setState({redirect: true});
-    
-        
     }
+    componentDidMount() { 
+      setInterval(
+        () =>  {this.setState({currentDateTime: new Date()});
+        if (this.state.endTime != null) {
+          this.checkEventTime();
+        }  
+      },
+        5000
+      );
+      this.setState({currentDateTime: new Date()})
+    }
+    componentWillUnmount() {
+      clearInterval(this.interval);
+    }
+
+
+
     handleSelect = address => {
+        console.log(address)
         geocodeByAddress(address)
           .then(results => getLatLng(results[0]))
-          .then(latLng => console.log('Success', latLng))
+          .then(latLng => this.setState({location: [latLng["lat"], latLng["lng"]]}))
           .catch(error => console.error('Error', error));
+          this.setState({address});
+        console.log("location state", this.state.location)
       };
     
       handleChange = address => {
-        this.setState({ address });
+        this.setState({address});
       };    
-    
-
-
     render() {
+      if(localStorage.getItem("user") == null) {
+        return (
+            <Redirect
+            to={{
+                pathname: "/",
+            }}
+            />
+            );
+    } else {
+      if(localStorage.getItem("endTime")) {
+        console.log(localStorage.getItem("data"))
+        console.log("endtime redirect")
+        return (
+          <Redirect
+          to={{
+              pathname: "/submission",
+              state: localStorage.getItem("data")
+          }}
+          />
+          );
+      }
         if (this.state.redirect) {
             return (
             <Redirect
@@ -151,13 +190,7 @@ class Starter extends Component {
                 </header>
                 <div className="form-div">
                     <form id="starter-form" onSubmit={this.handleSubmit}>
-                        <div class="event">
-                            <p className="text"> Type of event: </p>
-                            <input type="radio" value="public" checked={this.state.selectedType === 'public'} onChange={ e => this.handleTypeChange(e)}/>
-                            <label for="public"> Public </label>
-                            <input type="radio" value="private" checked={this.state.selectedType === 'private'} onChange={this.handleTypeChange.bind(this)}/>
-                            <label for="private"> Private </label>
-                        </div>
+                        
                         <div className="event">
                             <p className="text"> What are you up for?</p>
                             <div>
@@ -221,6 +254,7 @@ class Starter extends Component {
                     })}
                   >
                     <span>{suggestion.description}</span>
+                    {console.log("address" + this.state.address)}
                   </div>
                 );
               })}
@@ -228,11 +262,9 @@ class Starter extends Component {
           </div>
         )}
       </PlacesAutocomplete>
-
-                            <input id="location" type="text" onChange = {e => this.handleLocation(e)}/>
                         </div>
                         <div className="event">
-                            <label for="number" className="text"> Desired number of people: </label>
+                            <label for="number" className="text"> Max Capacity: </label>
                             <input id="number" type="number" onChange = {e => this.handleAttendees(e)}/>
 
                         </div>
@@ -250,6 +282,7 @@ class Starter extends Component {
                 </div>
             </div>
         );
+                          }
     }
 }
 

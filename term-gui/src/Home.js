@@ -4,6 +4,7 @@ import Button from './Button';
 import FriendsList from './FriendsList';
 import './index.css';
 import Login from './Login';
+import {Redirect} from 'react-router-dom'
 
 class Home extends Component {
     componentDidMount() {
@@ -22,12 +23,17 @@ class Home extends Component {
     }
     render() {
         if(localStorage.getItem("user") == null) {
-            return(<Login />);
+            return (
+                <Redirect
+                to={{
+                    pathname: "/",
+                }}
+                />
+                );
         }
         else {
             console.log("hi")
             console.log(localStorage.getItem("user"));
-
             return (
                 <div className="margins">
                     <FriendsList />

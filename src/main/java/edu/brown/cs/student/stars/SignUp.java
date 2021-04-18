@@ -26,6 +26,7 @@ public class SignUp {
   public void newUser(String username, String password, String email) {
     Connection conn = MyDatabase.conn;
     try {
+      System.out.println("a");
       SecureRandom random = new SecureRandom();
       byte[] salt = new byte[16];
       random.nextBytes(salt);
@@ -35,6 +36,7 @@ public class SignUp {
       String passwordString = bytesToHex(hashedPassword);
       String saltString = bytesToHex(salt);
       PreparedStatement prep;
+      System.out.println("b");
       prep = conn.prepareStatement("CREATE TABLE IF NOT EXISTS users("
               + "number INTEGER,"
               + "username TEXT,"
@@ -42,21 +44,29 @@ public class SignUp {
               + "email TEXT,"
               + "salt TEXT,"
               + "PRIMARY KEY (number));");
+      
+      System.out.println("c");
       prep.executeUpdate();
-      System.out.println("reached here");
+      System.out.println("d");
       prep = conn.prepareStatement("SELECT * FROM users WHERE username= ? OR email= ?" );
+      System.out.println("e");
       prep.setString(1, username);
+      System.out.println("f");
       prep.setString(2, email);
+      System.out.println("g");
       ResultSet rs = prep.executeQuery();
+      System.out.println("h");
       if(rs.next()) {
         System.out.println("ERROR: account with this username already exists");
       }
       else {
+        System.out.println("i");
         prep = conn.prepareStatement("INSERT INTO users VALUES(NULL, ?, ?, ?, ?);");
         prep.setString(1, username);
         prep.setString(2, passwordString);
         prep.setString(3,email);
         prep.setString(4, saltString);
+        System.out.println("j");
         prep.executeUpdate();
         System.out.println("created account successfully");
       }
