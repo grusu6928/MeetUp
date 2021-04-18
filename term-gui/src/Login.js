@@ -69,12 +69,18 @@ function Login() {
       console.log(localStorage.getItem("user"));
       if (localStorage.getItem("user") !== null) {
         return(
-          <Home />
-        );
-      }
+          <Redirect
+          to={{
+              pathname: "/home"
+          }}
+          />
+        );}
       else{
   return (
     <div className="login-div">
+      <h1>
+        Login
+      </h1>
       <Form onSubmit={handleSubmit}>
         <Form.Group size="lg" controlId="email">
           <Form.Label>Email</Form.Label>
@@ -93,10 +99,15 @@ function Login() {
             onChange={(e) => setPassword(e.target.value)}
           />
         </Form.Group>
-              <Button block size="lg" type="submit" disabled={!validateForm()}>
+              <Button block size="lg" type="submit" text= "login" disabled={!validateForm()}>
                   Login
               </Button>
       </Form>
+      <a href="/signup">
+              <Button block size="lg" type="submit" text="sign up">
+                  Sign Up
+              </Button>
+              </a>
     </div>
   );
       }

@@ -10,13 +10,12 @@ import PlacesAutocomplete, {
   } from "react-places-autocomplete";  
 
 
-const sendEvent = (selectedType, selectedActivity, startTime, endTime, location, numAttendees) => {
+const sendEvent = (selectedActivity, startTime, endTime, location, numAttendees) => {
     const toSend = {
-        typeOfEvent: selectedType,
         typeOfActivity: selectedActivity,
         startTime: startTime,
         endTime: endTime,
-        location: location,
+        location: location, // 2D ARRAY [lat, long]
         numOfAttendees: numAttendees
     }
     let config = {
@@ -38,27 +37,19 @@ class Starter extends Component {
     constructor(props) {
         super(props);
         this.state = {
-          selectedType: null,
           selectedActivity: null,
           startTime: null,
           endTime: null,
           location: [],
           numberOfAttendees: null,
           redirect: false,
-          address: ""
+          address: "" // name of location
         };
-// const [state, changeState] = setState(0)
-        this.handleTypeChange = this.handleTypeChange.bind(this);
         this.handleActivityChange = this.handleActivityChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         let data = [];
       }
     
-    handleTypeChange (e){
-        this.setState({
-            selectedType: e.target.value
-        });
-    }    
         handleActivityChange (e){
         this.setState({
             selectedActivity: e.target.value
@@ -86,7 +77,6 @@ class Starter extends Component {
     }
     handleSubmit (e){
         e.preventDefault();
-            console.log(this.state.selectedType);
             console.log(this.state.selectedActivity);
             console.log(this.state.startTime);
             console.log(this.state.endTime);
@@ -94,15 +84,15 @@ class Starter extends Component {
             console.log(this.state.numberOfAttendees);
 
         this.data = [
-            {typeOfEvent: this.state.selectedType,
+            {
             typeOfActivity: this.state.selectedActivity,
             startTime: this.state.startTime,
             endTime: this.state.endTime,
-            location: this.state.location,
+            location: this.state.address,
             numOfAttendees: this.state.numberOfAttendees
             }
         ]
-        sendEvent(this.state.selectedType, this.state.selectedActivity, this.state.startTime, this.state.endTime,
+        sendEvent(this.state.selectedActivity, this.state.startTime, this.state.endTime,
             this.state.location, this.state.numberOfAttendees);
         // this.history.push('/starter-submission');
 
@@ -116,9 +106,9 @@ class Starter extends Component {
         console.log(address)
         geocodeByAddress(address)
           .then(results => getLatLng(results[0]))
-          .then(latLng => this.setState({location:[...this.state.location, latLng]}))
+          .then(latLng => this.setState({location: [latLng["lat"], latLng["lng"]]}))
           .catch(error => console.error('Error', error));
-
+          this.setState({address});
         console.log("location state", this.state.location)
       };
     
@@ -147,13 +137,7 @@ class Starter extends Component {
                 </header>
                 <div className="form-div">
                     <form id="starter-form" onSubmit={this.handleSubmit}>
-                        <div class="event">
-                            <p className="text"> Type of event: </p>
-                            <input type="radio" value="public" checked={this.state.selectedType === 'public'} onChange={ e => this.handleTypeChange(e)}/>
-                            <label for="public"> Public </label>
-                            <input type="radio" value="private" checked={this.state.selectedType === 'private'} onChange={this.handleTypeChange.bind(this)}/>
-                            <label for="private"> Private </label>
-                        </div>
+                        
                         <div className="event">
                             <p className="text"> What are you up for?</p>
                             <div>
@@ -217,6 +201,7 @@ class Starter extends Component {
                     })}
                   >
                     <span>{suggestion.description}</span>
+                    {console.log("address" + this.state.address)}
                   </div>
                 );
               })}
@@ -224,11 +209,9 @@ class Starter extends Component {
           </div>
         )}
       </PlacesAutocomplete>
-
-                            <input id="location" type="text" onChange = {e => this.handleLocation(e)}/>
                         </div>
                         <div className="event">
-                            <label for="number" className="text"> Desired number of people: </label>
+                            <label for="number" className="text"> Max Capacity: </label>
                             <input id="number" type="number" onChange = {e => this.handleAttendees(e)}/>
 
                         </div>

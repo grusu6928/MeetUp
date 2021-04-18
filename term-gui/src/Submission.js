@@ -29,7 +29,7 @@ class Submission extends Component {
     }
     getAttendees (selectedType, selectedActivity, startTime, endTime, location, numAttendees) {
     const toSend = {
-        user: ""
+        user: localStorage.getItem("user"),
     }
     let config = {
         headers: {
