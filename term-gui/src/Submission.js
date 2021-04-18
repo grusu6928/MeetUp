@@ -71,7 +71,6 @@ class Submission extends Component {
                     <h1 className="home">
                         <a href="/home"> Home </a>
                     </h1>
-                    <h1 > Event Privacy: {this.props.location.state[0].typeOfEvent} </h1> 
                     <h1 > Type of Activity: {this.props.location.state[0].typeOfActivity} </h1> 
                     <h1 > Start Time: {this.props.location.state[0].startTime} </h1> 
                     <h1 > End Time: {this.props.location.state[0].endTime} </h1> 

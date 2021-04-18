@@ -44,7 +44,8 @@ class Starter extends Component {
           location: [], // or null
           numberOfAttendees: null,
           redirect: false,
-          address: "" // name of location
+          address: "", // name of location
+          currentDateTime: new Date()
         };
         this.handleActivityChange = this.handleActivityChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -76,6 +77,18 @@ class Starter extends Component {
             numberOfAttendees: e.target.value
         })
     }
+    checkEventTime() {
+      let hour = parseInt(this.state.endTime.split(":")[0])
+      let minutes = parseInt(this.state.endTime.split(":")[1])
+      let endTime;
+      console.log(typeof(this.state.currentDateTime))
+      if (this.state.currentDateTime !== null || typeof(this.state.currentDateTime) !== 'undefined'){
+        endTime = new Date(this.state.currentDateTime.getFullYear(), this.state.currentDateTime.getMonth(), this.state.currentDateTime.getDay(), hour, minutes, 0.0, 0.0)
+      }
+      if (this.state.currentDateTime > endTime) {
+        localStorage.removeItem("endTime");
+      }
+    }
     handleSubmit (e){
         e.preventDefault();
             console.log(this.state.selectedActivity);
@@ -93,15 +106,31 @@ class Starter extends Component {
             numOfAttendees: this.state.numberOfAttendees
             }
         ]
+        localStorage.setItem("data", this.data)
         sendEvent(this.state.selectedActivity, this.state.startTime, this.state.endTime,
             this.state.location, this.state.numberOfAttendees);
-        // this.history.push('/starter-submission');
+            localStorage.setItem("endTime", this.state.endTime);
+            console.log(localStorage.getItem("endTime"))
 
         const starterForm = document.getElementById('starter-form')
         starterForm.reset(); 
         alert ("Thank you for submitting this event, we'll let you know if others join!")
         this.setState({redirect: true});
     }
+    componentDidMount() { 
+      setInterval(
+        () =>  {this.setState({currentDateTime: new Date()});
+        if (this.state.endTime != null) {
+          this.checkEventTime();
+        }  
+      },
+        5000
+      );
+    }
+    componentWillUnmount() {
+      clearInterval(this.interval);
+    }
+     
 
     handleSelect = address => {
         console.log(address)
@@ -126,6 +155,18 @@ class Starter extends Component {
             />
             );
     } else {
+      if(localStorage.getItem("endTime")) {
+        console.log(localStorage.getItem("data"))
+        console.log("endtime redirect")
+        return (
+          <Redirect
+          to={{
+              pathname: "/submission",
+              state: localStorage.getItem("data")
+          }}
+          />
+          );
+      }
         if (this.state.redirect) {
             return (
             <Redirect
