@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import './App.css';
 
-function Friend({ friend, index, removeFriend }) {
+function Friend({ friend, index, removeFriend, request }) {
     return (
       <div
         className="friend"

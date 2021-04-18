@@ -196,6 +196,7 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
         case "query":
         case "insert":
         case "kill":
+        // TODO: call each of teh necessary functions for friends  - return friends list
 
       }
       Events eventDB = Events.getInstance();
