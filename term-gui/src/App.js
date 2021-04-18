@@ -10,7 +10,7 @@ import Login from './Login';
 import './index.css';
 import React, {useEffect, useState} from 'react';
 import Lookers from './Lookers';
-import FriendsList from './FriendsList';
+import FriendList from './FriendList';
 import ReactSession from 'react-client-session';
 import Signup from './Signup.js'
 import Friend from './Friend.js'
@@ -20,27 +20,13 @@ import { AppContext } from './ContextUtil';
 
 function App() {
   const [isAuth, changeAuth] = useState(false);
-  const [friends, setFriends] = useState([])
-
-    setInterval(() => {
-        console.log("friends" + friends[0]);
-    }, 4000)
 
   return (
     <div className="App">
       <header>
         <title> MeetUp </title>
       </header>
-      <div className="friends-div">
-        {friends.map((friend, index) => (
-          <Friend
-            key={index}
-            index={index}
-            friend={friend}
-          />
-        ))}
-        <FriendForm friendsList ={friends} setFriends = {setFriends}/>
-        </div>
+      <FriendList />
       <BrowserRouter>
         <Switch>
           <AppContext.Provider value =  {{isAuth, changeAuth}}>

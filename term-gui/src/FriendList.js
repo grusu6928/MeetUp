@@ -9,17 +9,31 @@ import FriendForm from './FriendForm'
 
 
 function FriendList({ friend, index }) {
-    return (
-        <div
-          className="friend-list"
-          // can use this for logged on/logged off 
-          // style={{ textDecoration: todo.isCompleted ? "line-through" : "" }}
-        >
-          {friends}
-          <div>
-            <button onClick={() => removeFriend(index)}>x</button>
-          </div>
-        </div>
-      );
-    }
+    const [friends, setFriends] = useState([])
+    
+    const removeFriend = index => {
+        const newFriends = [...friends];
+        newFriends.splice(index, 1);
+        setFriends(newFriends);
+      };
+
+      const addFriend = friend => {
+        const newFriends = [...friends, { friend }];
+        setFriends(newFriends);
+      };
+
+return (
+      <div className="friends-div">
+        {friends.map((friend, index) => (
+          <Friend
+            key={index}
+            index={index}
+            friend={friend}
+            removeFriend={removeFriend}
+          />
+        ))}
+        <FriendForm addFriend={addFriend} />
+      </div>
+  );
+}
 export default FriendList

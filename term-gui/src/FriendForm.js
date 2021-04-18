@@ -2,15 +2,8 @@ import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import './App.css';
 
-function FriendForm( {friendsList, setFriends}) {
+function FriendForm( {addFriend}) {
     const [value, setValue] = useState("");
-    // const [friends, setFriends] = useState(friendsList)
-
-  
-    const addFriend = friend => {
-      const newFriends = [...friendsList, { friend }];
-      setFriends(newFriends);
-    };
 
     const handleSubmit = e => {
       e.preventDefault();
