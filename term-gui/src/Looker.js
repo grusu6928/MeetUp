@@ -106,11 +106,11 @@ class Looker extends Component {
                 typeOfActivity: this.state.selectedActivity,
                 startTime: this.state.startTime,
                 endTime: this.state.endTime,
-                location: this.state.location,
+                location: this.state.address,
             }
         ]
-        localStorage.setItem("data", this.data)
-        sendEvent(this.state.selectedActivity, this.state.startTime, this.state.endTime,
+    localStorage.setItem("data", JSON.stringify(this.data))        
+    sendEvent(this.state.selectedActivity, this.state.startTime, this.state.endTime,
             this.state.location);
         localStorage.setItem("endTime", this.state.endTime);
        
@@ -167,7 +167,7 @@ class Looker extends Component {
                   <Redirect
                   to={{
                       pathname: "/submission",
-                      state: localStorage.getItem("data")
+                      state: JSON.parse(localStorage.getItem("data"))
                   }}
                   />
                   );

@@ -158,12 +158,10 @@ class Starter extends Component {
             />
             );
     } else {
-    
       if(localStorage.getItem("endTime")) {
         console.log(localStorage.getItem("data"))
         console.log("endtime redirect")
         console.log("activity" + this.selectedActivity);
-
         return (
           <Redirect
           to={{
