@@ -116,6 +116,15 @@ class Starter extends Component {
         this.setState({address});
       };    
     render() {
+      if(localStorage.getItem("user") == null) {
+        return (
+            <Redirect
+            to={{
+                pathname: "/",
+            }}
+            />
+            );
+    } else {
         if (this.state.redirect) {
             return (
             <Redirect
@@ -229,6 +238,7 @@ class Starter extends Component {
                 </div>
             </div>
         );
+                          }
     }
 }
 
