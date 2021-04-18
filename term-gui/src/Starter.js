@@ -96,7 +96,6 @@ class Starter extends Component {
             console.log(this.state.endTime);
             console.log(this.state.location);
             console.log(this.state.numberOfAttendees);
-
         this.data = [
             {
             typeOfActivity: this.state.selectedActivity,
@@ -106,7 +105,9 @@ class Starter extends Component {
             numOfAttendees: this.state.numberOfAttendees
             }
         ]
-        localStorage.setItem("data", this.data)
+        console.log("State activity" + this.state.selectedActivity)
+        localStorage.setItem("data", JSON.stringify(this.data))
+        console.log(localStorage.getItem("data").typeOfActivity)
         sendEvent(this.state.selectedActivity, this.state.startTime, this.state.endTime,
             this.state.location, this.state.numberOfAttendees);
             localStorage.setItem("endTime", this.state.endTime);
@@ -157,19 +158,24 @@ class Starter extends Component {
             />
             );
     } else {
+    
       if(localStorage.getItem("endTime")) {
         console.log(localStorage.getItem("data"))
         console.log("endtime redirect")
+        console.log("activity" + this.selectedActivity);
+
         return (
           <Redirect
           to={{
               pathname: "/submission",
-              state: localStorage.getItem("data")
+              state: JSON.parse(localStorage.getItem("data"))
           }}
           />
           );
       }
         if (this.state.redirect) {
+            console.log(localStorage.getItem("data")[0])
+            console.log("this redirected")
             return (
             <Redirect
             to={{

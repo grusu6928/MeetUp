@@ -69,6 +69,7 @@ class Submission extends Component {
       }
     
     render() {
+        console.log(this.props.location.state[0])
         if(localStorage.getItem("user") == null) {
             return (
                 <Redirect
