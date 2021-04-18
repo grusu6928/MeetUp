@@ -51,7 +51,6 @@ class Starter extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         let data = [];
       }
-    
         handleActivityChange (e){
         this.setState({
             selectedActivity: e.target.value
@@ -85,7 +84,8 @@ class Starter extends Component {
       if (this.state.currentDateTime !== null || typeof(this.state.currentDateTime) !== 'undefined'){
         endTime = new Date(this.state.currentDateTime.getFullYear(), this.state.currentDateTime.getMonth(), this.state.currentDateTime.getDay(), hour, minutes, 0.0, 0.0)
       }
-      if (this.state.currentDateTime > endTime) {
+      if (this.state.currentDateTime.getHours >= endTime.getHours && this.state.currentDateTime.getMinutes() >= endTime.getMinutes) {
+          console.log("removed")
         localStorage.removeItem("endTime");
       }
     }
@@ -96,7 +96,6 @@ class Starter extends Component {
             console.log(this.state.endTime);
             console.log(this.state.location);
             console.log(this.state.numberOfAttendees);
-
         this.data = [
             {
             typeOfActivity: this.state.selectedActivity,
@@ -106,7 +105,9 @@ class Starter extends Component {
             numOfAttendees: this.state.numberOfAttendees
             }
         ]
-        localStorage.setItem("data", this.data)
+        console.log("State activity" + this.state.selectedActivity)
+        localStorage.setItem("data", JSON.stringify(this.data))
+        console.log(localStorage.getItem("data").typeOfActivity)
         sendEvent(this.state.selectedActivity, this.state.startTime, this.state.endTime,
             this.state.location, this.state.numberOfAttendees);
             localStorage.setItem("endTime", this.state.endTime);
@@ -126,11 +127,13 @@ class Starter extends Component {
       },
         5000
       );
+      this.setState({currentDateTime: new Date()})
     }
     componentWillUnmount() {
       clearInterval(this.interval);
     }
-     
+
+
 
     handleSelect = address => {
         console.log(address)
@@ -158,16 +161,19 @@ class Starter extends Component {
       if(localStorage.getItem("endTime")) {
         console.log(localStorage.getItem("data"))
         console.log("endtime redirect")
+        console.log("activity" + this.selectedActivity);
         return (
           <Redirect
           to={{
               pathname: "/submission",
-              state: localStorage.getItem("data")
+              state: JSON.parse(localStorage.getItem("data"))
           }}
           />
           );
       }
         if (this.state.redirect) {
+            console.log(localStorage.getItem("data")[0])
+            console.log("this redirected")
             return (
             <Redirect
             to={{

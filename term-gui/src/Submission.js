@@ -52,9 +52,24 @@ class Submission extends Component {
           () => this.getAttendees(),
           10000
         );
+        setInterval(
+            () =>  {
+                let currentDateTime = new Date()
+                let endTime= localStorage.getItem("endTime")
+                if(endTime !== null) {
+                    let hoursMinutes = endTime.split(":")
+                    if (currentDateTime.getHours() >= parseInt(hoursMinutes[0]) && currentDateTime.getMinutes() >= parseInt(hoursMinutes[1])) {
+                        localStorage.removeItem("endTime");
+                      }       
+                }
+                   
+          },
+            5000
+          );
       }
     
     render() {
+        console.log(this.props.location.state[0])
         if(localStorage.getItem("user") == null) {
             return (
                 <Redirect
