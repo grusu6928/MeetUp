@@ -5,6 +5,11 @@ import FriendsList from './FriendsList';
 import axios from "axios";
 import {Redirect} from 'react-router-dom'
 import Friend from './Friend';
+import PlacesAutocomplete, {
+    geocodeByAddress,
+    getLatLng
+  } from "react-places-autocomplete";  
+
 
 
 
@@ -40,7 +45,9 @@ class Looker extends Component {
             endTime: null,
             location: null,
             redirect: false,
-            user: localStorage.getItem("user")
+            address: "",
+            user: localStorage.getItem("user"),
+            currentDateTime: new Date()
         };
 
         this.handleTypeChange = this.handleTypeChange.bind(this);
@@ -48,11 +55,6 @@ class Looker extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         let data = []
     }
-
-    componentDidMount() {
-    }
-    
-
     handleTypeChange (e){
         this.setState({
             selectedType: e.target.value
@@ -78,6 +80,19 @@ class Looker extends Component {
             location: e.target.value
         })
     }
+    checkEventTime() {
+        let hour = parseInt(this.state.endTime.split(":")[0])
+        let minutes = parseInt(this.state.endTime.split(":")[1])
+        let endTime;
+        console.log(typeof(this.state.currentDateTime))
+        if (this.state.currentDateTime !== null || typeof(this.state.currentDateTime) !== 'undefined'){
+          endTime = new Date(this.state.currentDateTime.getFullYear(), this.state.currentDateTime.getMonth(), this.state.currentDateTime.getDay(), hour, minutes, 0.0, 0.0)
+        }
+        if (this.state.currentDateTime.getHours >= endTime.getHours && this.state.currentDateTime.getMinutes() >= endTime.getMinutes) {
+            console.log("removed")
+          localStorage.removeItem("endTime");
+        }
+      }
 
     handleSubmit (e){
         e.preventDefault();
@@ -94,8 +109,10 @@ class Looker extends Component {
                 location: this.state.location,
             }
         ]
+        localStorage.setItem("data", this.data)
         sendEvent(this.state.selectedActivity, this.state.startTime, this.state.endTime,
             this.state.location);
+        localStorage.setItem("endTime", this.state.endTime);
        
         //TODO: lookerForm?
         const starterForm = document.getElementById('starter-form')
@@ -104,6 +121,33 @@ class Looker extends Component {
         // window.location.href = "/starter-submission"
         this.setState({redirect: true});
     }
+    componentDidMount() { 
+        setInterval(
+          () =>  {this.setState({currentDateTime: new Date()});
+          if (this.state.endTime != null) {
+            this.checkEventTime();
+          }  
+        },
+          5000
+        );
+        this.setState({currentDateTime: new Date()})
+      }
+      componentWillUnmount() {
+        clearInterval(this.interval);
+      }
+      handleSelect = address => {
+        console.log(address)
+        geocodeByAddress(address)
+          .then(results => getLatLng(results[0]))
+          .then(latLng => this.setState({location: [latLng["lat"], latLng["lng"]]}))
+          .catch(error => console.error('Error', error));
+          this.setState({address});
+        console.log("location state", this.state.location)
+      };
+    
+      handleChange = address => {
+        this.setState({address});
+      };  
 
 
     render() {
@@ -116,6 +160,18 @@ class Looker extends Component {
                 />
                 );
         } else {
+            if(localStorage.getItem("endTime")) {
+                console.log(localStorage.getItem("data"))
+                console.log("endtime redirect")
+                return (
+                  <Redirect
+                  to={{
+                      pathname: "/submission",
+                      state: localStorage.getItem("data")
+                  }}
+                  />
+                  );
+              }
         if (this.state.redirect) {
             return (
             <Redirect
@@ -177,7 +233,46 @@ class Looker extends Component {
                         <br />
                         <div className="event">
                             <label for="location" className="text"> Location: </label>
-                            <input id="location" type="text" onChange = {e => this.handleLocation(e)} />
+                            <PlacesAutocomplete
+                        value={this.state.address}
+                        onChange={this.handleChange}
+                        onSelect={this.handleSelect}
+      >
+        {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
+          <div>
+            <input
+              {...getInputProps({
+                placeholder: 'Search Places ...',
+                className: 'location-search-input',
+              })}
+            />
+            <div className="autocomplete-dropdown-container">
+              {loading && <div>Loading...</div>}
+              {console.log(suggestions)}
+              {suggestions.map(suggestion => {
+                const className = suggestion.active
+                  ? 'suggestion-item--active'
+                  : 'suggestion-item';
+                // inline style for demonstration purpose
+                const style = suggestion.active
+                  ? { backgroundColor: '#fafafa', cursor: 'pointer' }
+                  : { backgroundColor: '#ffffff', cursor: 'pointer' };
+                return (
+                  <div
+                    {...getSuggestionItemProps(suggestion, {
+                      className,
+                      style,
+                    })}
+                  >
+                    <span>{suggestion.description}</span>
+                    {console.log("address" + this.state.address)}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </PlacesAutocomplete>
                         </div>
                         <button className="submit" type="submit" onSubmit = {this.handleSubmit}> Submit</button>
                     </form>
