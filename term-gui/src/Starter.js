@@ -44,7 +44,8 @@ class Starter extends Component {
           location: [], // or null
           numberOfAttendees: null,
           redirect: false,
-          address: "" // name of location
+          address: "", // name of location
+          currentDateTime: Date().toLocaleString()
         };
         this.handleActivityChange = this.handleActivityChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -95,13 +96,22 @@ class Starter extends Component {
         ]
         sendEvent(this.state.selectedActivity, this.state.startTime, this.state.endTime,
             this.state.location, this.state.numberOfAttendees);
-        // this.history.push('/starter-submission');
+            localStorage.setItem("endTime", this.state.endTime);
 
         const starterForm = document.getElementById('starter-form')
         starterForm.reset(); 
         alert ("Thank you for submitting this event, we'll let you know if others join!")
         this.setState({redirect: true});
     }
+    componentDidMount() { 
+      setInterval(
+        () =>  {this.setState({currentDateTime: Date().toLocaleString()});
+        },
+        5000
+      );
+      console.log(this.state.currentDateTime)
+    }
+     
 
     handleSelect = address => {
         console.log(address)

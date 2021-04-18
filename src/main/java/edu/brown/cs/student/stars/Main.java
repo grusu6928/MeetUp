@@ -153,12 +153,8 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
   private static class signupHandler implements Route {
     @Override
     public Object handle(Request request, Response response) throws Exception {
-      System.out.println("a");
       JSONObject data = new JSONObject(request.body());
-      System.out.println("b");
       SignUp s = new SignUp();
-      System.out.println("c");
-      System.out.println(data);
       s.newUser(data.getString("email"),data.getString("pass"),data.getString("email"));
       System.out.println(Login.log(data.getString("email"), data.getString("pass")));
       return new Gson().toJson(Login.log(data.getString("email"), data.getString("pass")));
