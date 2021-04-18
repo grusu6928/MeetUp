@@ -296,6 +296,8 @@ public class Graph {
     int sameEventPref = (n1.getEvent().equals(n2.getEvent())) ? 1 : 0;
     double timeCompat = this.timeOverlap(n1.getStartTime(), n1.getEndTime(),
             n2.getStartTime(), n2.getEndTime());
+    double locationDist = new HaversineDistanceCalculator().calcHaversineDistance(n1.getLocation(), n2.getLocation());
+    // TODO: how to normalize location dist
 
     // Skip location for now
     return (1.0 / 3.0) * (areFriends + sameEventPref + timeCompat);

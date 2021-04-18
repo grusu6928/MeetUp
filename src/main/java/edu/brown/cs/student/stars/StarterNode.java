@@ -53,9 +53,11 @@ public class StarterNode implements GraphNode {
     return this.endTime;
   }
 
-  public String getLocation() {
-    return this.location;
+  @Override
+  public double[] getLocation() {
+    return new double[0];
   }
+
 
   public int getCapacity() {
     return this.capacity;

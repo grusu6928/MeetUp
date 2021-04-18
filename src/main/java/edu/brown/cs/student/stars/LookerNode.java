@@ -43,4 +43,10 @@ public class LookerNode implements GraphNode {
     return this.endTime;
   }
 
+  @Override
+  public double[] getLocation() {
+    return new double[0];
+  }
+
+
 }
