@@ -135,6 +135,7 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
     Spark.post("/events", new eventsHandler());
     Spark.post("/looker", new lookerHandler());
     Spark.post("/attendees", new attendeesHandler());
+    Spark.post("/friends", new friendsHandler());
     Spark.post("/signup", new signupHandler());
     Spark.post("/logout", new Logout(), freeMarker);
   }
@@ -176,6 +177,26 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
 
 //      System.out.println("LOCATION" + location);
 
+      Events eventDB = Events.getInstance();
+      //CHANGE: HardCoded type of event - firs tparameter. 
+      eventDB.createEvent("public", activity, startTime, endTime, location, numAttendees);
+      return GSON.toJson("success");
+    }
+  }
+  private static class friendsHandler implements Route {
+    @Override
+    public Object handle(Request request, Response response) throws Exception {
+      JSONObject data = new JSONObject(request.body());
+      System.out.println(data);
+      String requestType = data.getString("requestType");
+      String newFriend = data.getString("userToAdd");
+      String userToRemove = data.getString("userToremove");
+      switch (requestType) {
+        case "query":
+        case "insert":
+        case "kill":
+
+      }
       Events eventDB = Events.getInstance();
       //CHANGE: HardCoded type of event - firs tparameter. 
       eventDB.createEvent("public", activity, startTime, endTime, location, numAttendees);
