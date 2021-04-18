@@ -288,16 +288,16 @@ public class Graph {
 
   private double computeHeuristic(GraphNode n1, GraphNode n2) {
 
-    // no username field, or should change queries to take in ids instead of username
+
     int areFriends = Friends.getInstance().checkFriendShip(n1.getUsername(), n2.getUsername()) ? 1 : 0;
-    int sameEventPref = (n1.getEvent().equals(n2.getEvent())) ? 1 : 0;
+    int sameActivityPref = (n1.getActivity().equals(n2.getActivity())) ? 1 : 0;
     double timeCompat = this.timeOverlap(n1.getStartTime(), n1.getEndTime(),
             n2.getStartTime(), n2.getEndTime());
     double locationDist = new HaversineDistanceCalculator().calcHaversineDistance(n1.getLocation(), n2.getLocation());
     // TODO: how to normalize location dist
 
     // Skip location for now
-    return (1.0 / 3.0) * (areFriends + sameEventPref + timeCompat);
+    return (1.0 / 3.0) * (areFriends + sameActivityPref + timeCompat);
   }
 
   /**
@@ -355,6 +355,9 @@ public class Graph {
    * Fills in the adjacency matrix with GraphEntries.
    */
   private void setEdgeWeights() {
+    // TODO: HAVE an initial LOOP TO CALCULATE haversineDist, cache [row, col] -> dist
+      // TODO: use this comp to get min & max so can normalize dist
+    // THEN -> do the existing loops in these methods.
     this.setLookersToLookers();
     this.setStartersToLookers();
   }

@@ -5,24 +5,25 @@ public class StarterNode implements GraphNode {
 
   private final int id;
   private final String username;
-  private final String event;
+  private final String activity;
   private final String startTime;
   private final String endTime;
-  private final String location; // modify data type
+  private final double latitude;
+  private final double longitude;
   private final int capacity;
   private int numAttendees;
 
-  public StarterNode(int id, String username, String event, String startTime,
-                     String endTime, String location, int capacity) {
+  public StarterNode(int id, String username, String activity, String startTime,
+                     String endTime, double latitude, double longitude, int capacity) {
 
     this.id = id;
     this.username = username;
-    this.event = event;
+    this.activity = activity;
     this.startTime = startTime;
     this.endTime = endTime;
-    this.location = location;
+    this.latitude = latitude;
+    this.longitude = longitude;
     this.capacity = capacity;
-
 
     this.numAttendees = 0;
 
@@ -39,8 +40,8 @@ public class StarterNode implements GraphNode {
   }
 
   @Override
-  public String getEvent() {
-    return this.event;
+  public String getActivity() {
+    return this.activity;
   }
 
   @Override
@@ -55,7 +56,7 @@ public class StarterNode implements GraphNode {
 
   @Override
   public double[] getLocation() {
-    return new double[0];
+    return new double[]{this.latitude, this.longitude};
   }
 
 

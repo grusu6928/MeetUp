@@ -3,6 +3,7 @@ import './App.css';
 import { BrowserRouter as Switch, Route, BrowserRouter } from "react-router-dom";
 import './index.css';
 import React, {useEffect, useState} from 'react';
+import axios from "axios";
 import ReactSession from 'react-client-session';
 import Friend from './Friend.js'
 import FriendForm from './FriendForm'
@@ -10,7 +11,7 @@ import FriendForm from './FriendForm'
 
 function FriendList({ friend, index }) {
     const [friends, setFriends] = useState([])
-    
+
     const removeFriend = index => {
         const newFriends = [...friends];
         newFriends.splice(index, 1);
@@ -22,14 +23,14 @@ function FriendList({ friend, index }) {
         setFriends(newFriends);
       };
       const requestFriends = (reqType, newFriend, removeFriend) => {
-        // 0 = query friends 
-        // 1 = add friend 
+        // 0 = query friends
+        // 1 = add friend
         // 2 = kill friend
         const toSend = {
-            requestType = reqType,
-            userID: localStorage.getItem("user"),
-            userToAdd: newFriend,
-            userToRemove: removeFriend
+            // requestType = reqType,
+            // userID: localStorage.getItem("user"),
+            // userToAdd: newFriend,
+            // userToRemove: removeFriend
         }
         let config = {
             headers: {

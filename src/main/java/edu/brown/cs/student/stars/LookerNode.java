@@ -4,17 +4,22 @@ public class LookerNode implements GraphNode {
 
   private final int id;
   private final String username;
-  private final String event;
+  private final String activity;
   private final String startTime;
   private final String endTime;
+  private final double latitude;
+  private final double longitude;
 
 
-  public LookerNode(int id, String username, String event, String startTime, String endTime) {
+  public LookerNode(int id, String username, String activity, String startTime,
+                    String endTime, double latitude, double longitude) {
     this.id = id;
     this.username = username;
-    this.event = event;
+    this.activity = activity;
     this.startTime = startTime;
     this.endTime = endTime;
+    this.latitude = latitude;
+    this.longitude = longitude;
   }
 
 
@@ -29,8 +34,8 @@ public class LookerNode implements GraphNode {
   }
 
   @Override
-  public String getEvent() {
-    return this.event;
+  public String getActivity() {
+    return this.activity;
   }
 
   @Override
@@ -45,7 +50,7 @@ public class LookerNode implements GraphNode {
 
   @Override
   public double[] getLocation() {
-    return new double[0];
+    return new double[]{this.latitude, this.longitude};
   }
 
 

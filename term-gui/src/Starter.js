@@ -10,13 +10,14 @@ import PlacesAutocomplete, {
   } from "react-places-autocomplete";  
 
 
-const sendEvent = (selectedActivity, startTime, endTime, location, numAttendees) => {
+const sendEvent = (selectedActivity, startTime, endTime, location, capacity) => {
     const toSend = {
-        typeOfActivity: selectedActivity,
+        user: localStorage.getItem("user"),
+        activity: selectedActivity,
         startTime: startTime,
         endTime: endTime,
         location: location, // 2D ARRAY [lat, long]
-        numOfAttendees: numAttendees
+        capacity: capacity
     }
     let config = {
         headers: {
@@ -40,7 +41,7 @@ class Starter extends Component {
           selectedActivity: null,
           startTime: null,
           endTime: null,
-          location: [],
+          location: [], // or null
           numberOfAttendees: null,
           redirect: false,
           address: "" // name of location

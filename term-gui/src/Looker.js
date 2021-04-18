@@ -8,13 +8,13 @@ import Friend from './Friend';
 
 
 
-const sendEvent = (selectedEvent, startTime, endTime, location) => {
+const sendEvent = (activity, startTime, endTime, location) => {
     const toSend = {
-        typeOfEvent: selectedEvent,
+        user: localStorage.getItem("user"),
+        activity: activity,
         startTime: startTime,
         endTime: endTime,
-        location: location,
-        user: localStorage.getItem("user")
+        location: location
     }
     let config = {
         headers: {
@@ -35,7 +35,6 @@ class Looker extends Component {
     constructor() {
         super();
         this.state = {
-            selectedType: null,
             selectedActivity: null,
             startTime: null,
             endTime: null,

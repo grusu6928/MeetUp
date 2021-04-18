@@ -169,18 +169,19 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
     @Override
     public Object handle(Request request, Response response) throws Exception {
       JSONObject data = new JSONObject(request.body());
-      System.out.println(data);
-      String activity = data.getString("typeOfActivity");
+      String username = data.getString("user");
+      String activity = data.getString("activity");
       String startTime = data.getString("startTime");
       String endTime = data.getString("endTime");
-      String location = data.getString("location");
-      int numAttendees = Integer.parseInt(data.getString("numOfAttendees"));
+      JSONArray location = data.getJSONArray("location");
 
-//      System.out.println("LOCATION" + location);
+      double latitude = location.getJSONObject(0).getDouble("lat");
+      double longitude = location.getJSONObject(1).getDouble("lng");
 
-      Events eventDB = Events.getInstance();
-      //CHANGE: HardCoded type of event - firs tparameter. 
-      eventDB.createEvent("public", activity, startTime, endTime, location, numAttendees);
+      int capacity = Integer.parseInt(data.getString("capacity"));
+
+      Events.getInstance().createEvent(username, activity, startTime, endTime,
+              latitude, longitude, capacity);
       return GSON.toJson("success");
     }
   }
@@ -201,7 +202,7 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
       }
       Events eventDB = Events.getInstance();
       //CHANGE: HardCoded type of event - firs tparameter. 
-      eventDB.createEvent("public", activity, startTime, endTime, location, numAttendees);
+//      eventDB.createEvent("public", activity, startTime, endTime, location, numAttendees);
       return GSON.toJson("success");
     }
   }
@@ -209,12 +210,16 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
     @Override
     public Object handle(Request request, Response response) throws Exception {
       JSONObject data = new JSONObject(request.body());
-      String username = data.getString("username");
-      String event = data.getString("typeOfEvent");
+      String username = data.getString("user");
+      String activity = data.getString("activity");
       String startTime = data.getString("startTime");
       String endTime = data.getString("endTime");
       JSONArray location = data.getJSONArray("location");
-      Events.getInstance().addLooker(username, event, startTime, endTime, location);
+
+      double latitude = location.getJSONObject(0).getDouble("lat");
+      double longitude = location.getJSONObject(1).getDouble("lng");
+
+      Events.getInstance().addLooker(username, activity, startTime, endTime, latitude, longitude);
       return GSON.toJson("success");
     }
   }
@@ -226,19 +231,29 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
       String starter = data.getString("user");
       System.out.println("starter user " + starter);
 
-      List<StarterNode> events = Events.getInstance().getAllEvents();
-      List<LookerNode> lookers = Events.getInstance().getAllLookers();
+      Events database = Events.getInstance();
 
-      //TODO: specify after how long to run the algo.
+      if (database.getNumEvents() >= STARTERS_THRESHOLD &&
+              database.getNumLookers() >= LOOKERS_THRESHOLD) {
+
+      List<StarterNode> events = database.getAllEvents();
+      List<LookerNode> lookers = database.getAllLookers();
+
       Graph graph = new Graph(lookers, events);
       Map<StarterNode, List<LookerNode>> result = graph.runAlgorithm();
       result.forEach((k,v) -> {
         for(LookerNode l : v) {
-          System.out.println(l.getUsername());
-          Events.getInstance().addMatch(l.getUsername(), k.getUsername());
+          database.addMatch(l.getUsername(), k.getUsername());
         }
       });
-      return GSON.toJson(Events.getInstance().getMatches(starter));
+
+      // TODO: clear database tables
+        database.clearTables();
+
+      return GSON.toJson(database.getMatches(starter));
+      } else {
+        return GSON.toJson("We are working on matching you with other users!");
+      }
     }
   }
 

@@ -6,7 +6,7 @@ public interface GraphNode {
 
   int getId(); // unique
   String getUsername();
-  String getEvent();
+  String getActivity();
   String getStartTime();
   String getEndTime();
   double[] getLocation();
