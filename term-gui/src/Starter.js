@@ -33,6 +33,30 @@ const sendEvent = (selectedActivity, startTime, endTime, location, capacity) => 
           console.log(error);
         });
       }
+  const sendEndTime = (reqType, currUser, endTime) => {
+    const toSend = {
+        requestType: reqType
+        user: currUser,
+        endTime: endTime
+    }
+    let config = {
+        headers: {
+          "Content-Type": "application/json",
+          'Access-Control-Allow-Origin': '*',
+          }
+        }
+        axios.post('http://localhost:4567/endTime', toSend, config)
+        .then(response => {
+            if (reqType === ("get")) {
+              return response.data;
+            } else if (reqType === "set") {
+              console.log(response.data)
+            }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      }
 
 class Starter extends Component {
     constructor(props) {
@@ -111,7 +135,7 @@ class Starter extends Component {
         sendEvent(this.state.selectedActivity, this.state.startTime, this.state.endTime,
             this.state.location, this.state.numberOfAttendees);
             localStorage.setItem("endTime", this.state.endTime);
-            console.log(localStorage.getItem("endTime"))
+            sendEndTime("set", localStorage.getItem("user"), localStorage.getItem("endTime"));
 
         const starterForm = document.getElementById('starter-form')
         starterForm.reset(); 
@@ -132,16 +156,14 @@ class Starter extends Component {
     componentWillUnmount() {
       clearInterval(this.interval);
     }
-
-
-
+    
     handleSelect = address => {
         console.log(address)
         geocodeByAddress(address)
           .then(results => getLatLng(results[0]))
           .then(latLng => this.setState({location: [latLng["lat"], latLng["lng"]]}))
           .catch(error => console.error('Error', error));
-          this.setState({address});
+          
         console.log("location state", this.state.location)
       };
     
@@ -158,7 +180,7 @@ class Starter extends Component {
             />
             );
     } else {
-      if(localStorage.getItem("endTime")) {
+      if(sendEndTime("get", localStorage.getItem("user"), null) != null) {
         console.log(localStorage.getItem("data"))
         console.log("endtime redirect")
         console.log("activity" + this.selectedActivity);

@@ -42,7 +42,7 @@ public final class Events {
       prep = conn.prepareStatement("SELECT endTime where username = ?");
       prep.setString(1, user);
       ResultSet rs = prep.executeQuery();
-      if(rs.next()) {
+      if(rs.next() && !rs.wasNull()) {
         return rs.getString(1);
       }
     } catch (SQLException throwables) {
