@@ -36,7 +36,7 @@ class Submission extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            attendeeList: ['george', 'amin', 'hamzah', 'ermias', 'amin', 'hamzah', 'ermias', 'amin', 'hamzah', 'ermias']
+            attendeeList: this.props.location.state[0].attendeeList//['george', 'amin', 'hamzah', 'ermias', 'amin', 'hamzah', 'ermias', 'amin', 'hamzah', 'ermias']
         };
         this.handleAttendeeList = this.handleAttendeeList.bind(this);
     }

@@ -90,7 +90,7 @@ class Looker extends Component {
             address: "",
             user: localStorage.getItem("user"),
             currentDateTime: new Date(),
-            attendeeList: []
+            attendeeList: [] 
         };
 
         this.handleActivityChange = this.handleActivityChange.bind(this);
@@ -177,6 +177,7 @@ class Looker extends Component {
                 startTime: this.state.startTime,
                 endTime: this.state.endTime,
                 location: this.state.address,
+                attendeeList: this.state.attendeeList
             }
         ]
     localStorage.setItem("data", JSON.stringify(this.data))        
