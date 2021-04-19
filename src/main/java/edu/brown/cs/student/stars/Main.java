@@ -243,6 +243,8 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
 
 
   private static class attendeesHandler implements Route {
+
+    boolean algoHasRun = false;
     @Override
     public Object handle(Request request, Response response) throws Exception {
       // request should be name of starter
@@ -250,17 +252,12 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
       String user = data.getString("user");
       String typeOfUser = data.getString("userType");
       Events database = Events.getInstance();
+
       if (database.getNumEvents() >= STARTERS_THRESHOLD &&
               database.getNumLookers() >= LOOKERS_THRESHOLD) {
       List<Starter> events = database.getAllEvents();
       List<Looker> lookers = database.getAllLookers();
 
-//      for (Starter event : events) {
-//        System.out.println(event.getUsername());
-//      }
-//      for (Looker looker : lookers) {
-//        System.out.println(looker.getUsername());
-//      }
       Graph graph = new Graph(lookers, events);
       Map<Starter, List<Looker>> result = graph.runAlgorithm();
       result.forEach((k,v) -> {
@@ -268,22 +265,29 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
           database.addMatch(l.getUsername(), k.getUsername());
         }
       });
+
       List<String> matches;
       if (typeOfUser.equals("starter")) {
         matches = database.getMatches(user);
       } else {
         matches = database.getLookerMatches(user);
       }
+
       if (matches.size() == 0) {
         return GSON.toJson(new ArrayList<>(Collections.singletonList("Sorry but we weren't able to find you any matches")));
       } else {
         return GSON.toJson(matches);
       }
-      } else {
+      }  else {
         return GSON.toJson(new ArrayList<>(Collections.singletonList("We are working on matching you with other users!")));
       }
     }
+
+
   }
+
+
+
 
   /**
    * Display an error page when an exception occurs in the server.

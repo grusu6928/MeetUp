@@ -72,7 +72,7 @@ public final class Events {
       PreparedStatement prep;
       prep = conn.prepareStatement("CREATE TABLE IF NOT EXISTS RSVP("
               + "number INTEGER,"
-              + "username TEXT UNIQUE," // CHANGED: added UNIQUE
+              + "username TEXT," // CHANGED: added UNIQUE
               + "starter TEXT,"
               + "response TEXT,"
 //              + "FOREIGN KEY (username) REFERENCES lookers(username)"
@@ -200,10 +200,11 @@ public final class Events {
               + "latitude DOUBLE,"
               + "longitude DOUBLE,"
               + "capacity INTEGER,"
+              + "ranAlgo TEXT,"
               + "PRIMARY KEY (number));");
       prep.executeUpdate();
       System.out.println("after event c=query");
-      prep = conn.prepareStatement("INSERT INTO events VALUES(NULL, ?, ?, ?, ?, ?, ?, ?);");
+      prep = conn.prepareStatement("INSERT INTO events VALUES(NULL, ?, ?, ?, ?, ?, ?, ?, ?);");
       prep.setString(1, username);
       prep.setString(2, activity);
       prep.setString(3, startTime);
@@ -211,6 +212,7 @@ public final class Events {
       prep.setDouble(5, latitude);
       prep.setDouble(6, longitude);
       prep.setInt(7, capacity);
+      prep.setString(8, "no");
       System.out.println("before insert");
       prep.executeUpdate();
       System.out.println("after insert");
@@ -225,6 +227,7 @@ public final class Events {
     try {
       PreparedStatement prep;
       prep = conn.prepareStatement("SELECT * from events");
+//      prep.setString(1, "no");
       ResultSet rs = prep.executeQuery();
       while(rs.next()) {
 
@@ -242,6 +245,9 @@ public final class Events {
                 endTime, longitude, latitude, capacity);
         Events.add(starter);
       }
+//      prep = conn.prepareStatement("UPDATE events SET ranAlgo = ?");
+//      prep.setString(1, "yes");
+//      prep.executeQuery();
     } catch (SQLException e) {
       System.out.println(e);
     }

@@ -36,21 +36,21 @@ class Submission extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            attendeeList: []//['george', 'amin', 'hamzah', 'ermias', 'amin', 'hamzah', 'ermias', 'amin', 'hamzah', 'ermias']
+            attendeeList: [],
+            algoStr: ""
         };
         this.handleAttendeeList = this.handleAttendeeList.bind(this);
     }
-    handleAttendeeList(newList) {
+    handleAttendeeList(newList, str) {
         this.setState({
-            attendeeList: newList
+            attendeeList: newList,
+            algoStr: str
         } 
         )
     }
     checkAttendees() {
-        if (this.props.location.state[0].numOfAttendees != null) {
-            return true;
-        }
-        return false;
+        return this.props.location.state[0].numOfAttendees != null;
+
     }
     
 getAttendees () {
@@ -67,7 +67,8 @@ getAttendees () {
         axios.post('http://localhost:4567/attendees', toSend, config)
         .then(response => {
             console.log("success");
-            this.handleAttendeeList(response.data)
+            this.handleAttendeeList(response.data, response.data[0])
+            console.log("str " + response.data[0])
         })
         .catch(function (error) {
           console.log(error);
@@ -75,10 +76,16 @@ getAttendees () {
       }
 
     componentDidMount() {
+        console.log("before initial")
+        this.getAttendees()
+        console.log("after initial")
          setInterval(
           () => {
-            console.log("called")  
-            this.getAttendees()},
+              if (this.state.algoStr === "We are working on matching you with other users!") {
+                  console.log("called")
+                  this.getAttendees()
+              }
+            },
           5000
         );
         // setInterval(
