@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import './index.css';
-import FriendsList from './FriendsList';
+import FriendList from './FriendList';
 import axios from "axios";
 import {Redirect} from 'react-router-dom'
 import PlacesAutocomplete, {
@@ -28,6 +28,32 @@ const sendEvent = (selectedActivity, startTime, endTime, location, capacity) => 
         axios.post('http://localhost:4567/events', toSend, config)
         .then(response => {
             console.log("success");
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+      }
+
+  const sendEndTime = (reqType, currUser, endTime) => {
+    const toSend = {
+        requestType: reqType,
+        user: currUser,
+        endTime: endTime
+    }
+    let config = {
+        headers: {
+          "Content-Type": "application/json",
+          'Access-Control-Allow-Origin': '*',
+          }
+        }
+        axios.post('http://localhost:4567/endtime', toSend, config)
+        .then(response => {
+          console.log("starter sendEndTime response " + response.data)
+            if (reqType === ("get")) {
+              return response.data;
+            } else if (reqType === "set") {
+              console.log(response.data)
+            }
         })
         .catch(function (error) {
           console.log(error);
@@ -86,7 +112,7 @@ class Starter extends Component {
       }
       if (this.state.currentDateTime.getHours >= endTime.getHours && this.state.currentDateTime.getMinutes() >= endTime.getMinutes) {
           console.log("removed")
-        localStorage.removeItem("endTime");
+        sendEndTime("set", localStorage.getItem("user"), null);
       }
     }
     handleSubmit (e){
@@ -110,9 +136,8 @@ class Starter extends Component {
         console.log(localStorage.getItem("data").typeOfActivity)
         sendEvent(this.state.selectedActivity, this.state.startTime, this.state.endTime,
             this.state.location, this.state.numberOfAttendees);
-            localStorage.setItem("endTime", this.state.endTime);
-            console.log(localStorage.getItem("endTime"))
-
+            console.log("state of endTime: " + this.state.endTime)
+        sendEndTime("set", localStorage.getItem("user"), this.state.endTime);
         const starterForm = document.getElementById('starter-form')
         starterForm.reset(); 
         alert ("Thank you for submitting this event, we'll let you know if others join!")
@@ -132,22 +157,26 @@ class Starter extends Component {
     componentWillUnmount() {
       clearInterval(this.interval);
     }
-
-
-
+    
     handleSelect = address => {
         console.log(address)
         geocodeByAddress(address)
           .then(results => getLatLng(results[0]))
           .then(latLng => this.setState({location: [latLng["lat"], latLng["lng"]]}))
           .catch(error => console.error('Error', error));
-          this.setState({address});
+          
         console.log("location state", this.state.location)
       };
     
       handleChange = address => {
         this.setState({address});
-      };    
+      };  
+      
+      logout() {
+        localStorage.clear()
+        console.log(localStorage.getItem("user"))
+        this.setState({user: null})
+    }
     render() {
       if(localStorage.getItem("user") == null) {
         return (
@@ -158,7 +187,7 @@ class Starter extends Component {
             />
             );
     } else {
-      if(localStorage.getItem("endTime")) {
+      if(sendEndTime("get", localStorage.getItem("user"), null) != null) {
         console.log(localStorage.getItem("data"))
         console.log("endtime redirect")
         console.log("activity" + this.selectedActivity);
@@ -185,11 +214,12 @@ class Starter extends Component {
         }
         return (
             <div className="margins">
-                <FriendsList />
+                <FriendList />
                 <header>
                     <h1 className="home">
                         <a href="/home"> Home </a>
                     </h1>
+                    <h3 className="logout" onClick={() => this.logout()}>Logout</h3>
                     <h1 className="welcome"> Provide your event details: </h1> 
                 </header>
                 <div className="form-div">

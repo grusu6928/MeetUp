@@ -41,6 +41,7 @@ public class SignUp {
               + "password TEXT,"
               + "email TEXT,"
               + "salt TEXT,"
+              + "endTime TEXT,"
               + "PRIMARY KEY (number));");
       
       System.out.println("c");
@@ -59,7 +60,7 @@ public class SignUp {
       }
       else {
         System.out.println("i");
-        prep = conn.prepareStatement("INSERT INTO users VALUES(NULL, ?, ?, ?, ?);");
+        prep = conn.prepareStatement("INSERT INTO users VALUES(NULL, ?, ?, ?, ?, NULL);");
         prep.setString(1, username);
         prep.setString(2, passwordString);
         prep.setString(3,email);

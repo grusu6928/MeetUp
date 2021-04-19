@@ -24,9 +24,38 @@ public final class Events {
       }
       return events;
     }
-
   //might convert location to longitude and latitude
-
+  public void setEndTime(String endtime, String user) {
+      try {
+        PreparedStatement prep;
+        System.out.println("set a");
+        prep = conn.prepareStatement("UPDATE users SET endTime = ? WHERE username = ?");
+        System.out.println("set b");
+        prep.setString(1, endtime);
+        System.out.println("set c");
+        prep.setString(2, user);
+        System.out.println("set d");
+        prep.executeUpdate();
+        System.out.println("after Exectute update in set");
+      } catch (SQLException throwables) {
+        throwables.printStackTrace();
+      }
+  }
+  public String getEndTime(String user) {
+    try {
+      PreparedStatement prep;
+      prep = conn.prepareStatement("SELECT endTime where username = ?");
+      prep.setString(1, user);
+      ResultSet rs = prep.executeQuery();
+      System.out.println("after Exectute update in get");
+      if(rs.next() && !rs.wasNull()) {
+        return rs.getString(1);
+      }
+    } catch (SQLException throwables) {
+      throwables.printStackTrace();
+    }
+    return null;
+  }
   /**
    * Schema: (looker username - eventId matched to - response)
    * @param username

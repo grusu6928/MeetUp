@@ -8,6 +8,8 @@ import { BrowserRouter as Switch, Route, BrowserRouter } from "react-router-dom"
 import Home from './Home';
 import {Link} from 'react-router-dom';
 import { useAppContext } from './ContextUtil';
+import './App.css';
+
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -77,13 +79,15 @@ function Login() {
         );}
       else{
   return (
-    <div className="login-div">
-      <h1>
+    <div className="margins1">
+      <p className="meet-up"> MeetUp!</p>
+      <div className="login-div">
+        <h1 className="login">
         Login
       </h1>
       <Form onSubmit={handleSubmit}>
         <Form.Group size="lg" controlId="email">
-          <Form.Label>Email</Form.Label>
+          <Form.Label>Email: </Form.Label>
           <Form.Control
             autoFocus
             type="email"
@@ -91,23 +95,28 @@ function Login() {
             onChange={(e) => setEmail(e.target.value)}
           />
         </Form.Group>
+        <br/>
         <Form.Group size="lg" controlId="password">
-          <Form.Label>Password</Form.Label>
+          <Form.Label class="password">Password: </Form.Label>
           <Form.Control
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
         </Form.Group>
-              <Button block size="lg" type="submit" text= "login" disabled={!validateForm()}>
+        <br/>
+              <Button class="login-button" type="submit" text= "Login" disabled={!validateForm()}>
                   Login
               </Button>
       </Form>
-      <a href="/signup">
-              <Button block size="lg" type="submit" text="sign up">
-                  Sign Up
+      <p className="signup-text"> New to MeetUp?   
+      <a class="signup-button" href="/signup">
+              <Button type="submit" text="Create an Account">
+                 Sign Up
               </Button>
               </a>
+              </p>
+      </div>
     </div>
   );
       }

@@ -26,7 +26,6 @@ function App() {
       <header>
         <title> MeetUp </title>
       </header>
-      <FriendList />
       <BrowserRouter>
         <Switch>
           <AppContext.Provider value =  {{isAuth, changeAuth}}>

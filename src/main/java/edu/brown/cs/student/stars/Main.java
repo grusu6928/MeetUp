@@ -115,6 +115,7 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
     Spark.post("/attendees", new attendeesHandler());
     Spark.post("/friends", new friendsHandler());
     Spark.post("/signup", new signupHandler());
+    Spark.post("/endtime", new endTimeHandler());
     Spark.post("/logout", new Logout(), freeMarker);
   }
   private static class loginAuthHandler implements Route {
@@ -169,7 +170,7 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
       String currUser = data.getString("userID");
       String newFriend = data.getString("userToAdd");
       String userToRemove = data.getString("userToremove");
-      Friends friendObj = new Friends();
+      Friends friendObj = Friends.getInstance();
       switch (requestType) {
         case "query":
         return GSON.toJson(friendObj.getFriendsList(currUser));
@@ -214,6 +215,29 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
       return GSON.toJson("success");
     }
   }
+  private static class endTimeHandler implements Route {
+    @Override
+    public Object handle(Request request, Response response) throws Exception {
+      JSONObject data = new JSONObject(request.body());
+      System.out.println("data " + data);
+      String requestType = data.getString("requestType");
+      System.out.println("requestType " + requestType);
+      String username = data.getString("user");
+      System.out.println("username " + username);
+      String endTime = data.getString("endTime");
+      System.out.println("endTime " + endTime);
+      if(requestType.equals("get")) {
+        System.out.println("inside");
+        return GSON.toJson(Events.getInstance().getEndTime(username));
+      }
+      if(requestType.equals("set")) {
+        Events.getInstance().setEndTime(endTime, username);
+        return GSON.toJson("sucess");
+      }
+      return GSON.toJson("Invalid request");
+    }
+  }
+
   private static class attendeesHandler implements Route {
     @Override
     public Object handle(Request request, Response response) throws Exception {

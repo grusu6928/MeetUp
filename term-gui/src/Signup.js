@@ -76,10 +76,15 @@ function Signup() {
               );}
       else{
   return (
-    <div className="signup-div">
+    <div className="margins1">
+      <p className="meet-up"> MeetUp!</p>
+      <div className="login-div">
+        <h1 className="login">
+        Sign Up
+      </h1>
       <Form onSubmit={handleSubmit}>
         <Form.Group size="lg" controlId="email">
-          <Form.Label>Email</Form.Label>
+          <Form.Label>Email: </Form.Label>
           <Form.Control
             autoFocus
             type="email"
@@ -87,18 +92,28 @@ function Signup() {
             onChange={(e) => setEmail(e.target.value)}
           />
         </Form.Group>
+        <br/>
         <Form.Group size="lg" controlId="password">
-          <Form.Label>Password</Form.Label>
+          <Form.Label>Password: </Form.Label>
           <Form.Control
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
         </Form.Group>
-              <Button block size="lg" type="submit" text="Sign Up" disabled={!validateForm()}>
+        <br/>
+              <Button class="login-button" type="submit" text="Sign Up" disabled={!validateForm()}>
               Signup
               </Button>
       </Form>
+      <p className="signup-text"> Already have an account?   
+      <a class="signup-button" href="/">
+              <Button type="submit" text="Login">
+                 Login
+              </Button>
+              </a>
+              </p>
+      </div>
     </div>
   );
       }
