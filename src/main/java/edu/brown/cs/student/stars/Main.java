@@ -40,8 +40,8 @@ public final class Main {
 
   // every 1 minute -> check if these values are hit
       // if yes -> run the algorithm
-  public static final int LOOKERS_THRESHOLD = 3;
-  public static final int STARTERS_THRESHOLD = 1;
+  public static final int LOOKERS_THRESHOLD = 6;
+  public static final int STARTERS_THRESHOLD = 3;
 
 
   /**
