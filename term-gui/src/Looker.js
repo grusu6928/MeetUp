@@ -33,31 +33,26 @@ const sendEvent = (activity, startTime, endTime, location) => {
         });
 }
 
-const sendEndTime = (reqType, currUser, endTime) => {
+const sendEndTime = (reqType, currUser, endTime) => new Promise((resolve, reject)=>{
     const toSend = {
-        requestType: reqType,
-        user: currUser,
-        endTime: endTime
-    }
-    let config = {
-        headers: {
-            "Content-Type": "application/json",
-            'Access-Control-Allow-Origin': '*',
+      requestType: reqType,
+      user: currUser,
+      endTime: endTime
+  }
+  let config = {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'Access-Control-Allow-Origin': '*',
         }
-    }
-    axios.post('http://localhost:4567/endtime', toSend, config)
-        .then(response => {
-            console.log("starter sendEndTime response " + response.data)
-            if (reqType === ("get")) {
-                return response.data;
-            } else if (reqType === "set") {
-                console.log(response.data)
-            }
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
-}
+      }
+      axios.post('http://localhost:4567/endtime', toSend, config)  
+    .then(response => {
+         resolve(response)
+    })
+    .catch(error => {
+         reject(error)
+    });
+});
 const queryRSVP = (currUser) => {
     const toSend = {
         user: currUser,
@@ -163,7 +158,7 @@ class Looker extends Component {
         }
         if (this.state.currentDateTime.getHours >= endTime.getHours && this.state.currentDateTime.getMinutes() >= endTime.getMinutes) {
             console.log("removed")
-            sendEndTime("set", localStorage.getItem("user"), null);
+          sendEndTime("set", localStorage.getItem("user"), null);
         }
       }
 
@@ -182,7 +177,7 @@ class Looker extends Component {
                 endTime: this.state.endTime,
                 location: this.state.address,
                 attendeeList: this.state.attendeeList,
-                userType: this.state.userType
+                userType: "looker"
             }
         ]
     localStorage.setItem("data", JSON.stringify(this.data))        
@@ -247,7 +242,19 @@ class Looker extends Component {
                 }}
                 />
                 );
-        } else {
+        }
+        sendEndTime("get", localStorage.getItem("user"), null).then(response =>{
+            let splited= response.data.split(":");
+            console.log(splited)
+            if (this.state.currentDateTime.getHours() <= parseInt(splited[0]) && this.state.currentDateTime.getMinutes() <= parseInt(splited[1])) {
+              console.log("here")
+              this.setState({redirect: true});
+          }
+         })
+         .catch(error => {
+            console.log(error)
+         })
+     ;
             // if(sendEndTime("get", localStorage.getItem("user"), null) !== null) {
             //     console.log(localStorage.getItem("data"))
             //     console.log("endtime redirect")
@@ -265,7 +272,7 @@ class Looker extends Component {
             <Redirect
             to={{
                 pathname: "/submission",
-                state: this.data
+                state: JSON.parse(localStorage.getItem("data"))
             }}
             />
             );
@@ -363,5 +370,5 @@ class Looker extends Component {
         );
         }
     }
-}
+
 export default Looker;
