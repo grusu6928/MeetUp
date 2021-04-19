@@ -97,7 +97,39 @@ class Looker extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         let data = []
     }
-
+    getAttendees () {
+        const toSend = {
+            user: localStorage.getItem("user"),
+            userType: "looker"
+        }
+        let config = {
+            headers: {
+              "Content-Type": "application/json",
+              'Access-Control-Allow-Origin': '*',
+              }
+            }
+            axios.post('http://localhost:4567/attendees', toSend, config)
+            .then(response => {
+                console.log("success");
+                this.handleAttendeeList(response.data)
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+          }
+    
+        componentDidMount() {
+             setInterval(
+              () => this.getAttendees(),
+              10000
+            );
+        }
+    handleAttendeeList(newList) {
+        this.setState({
+            attendeeList: newList
+        } 
+        )
+    }
     handleActivityChange (e){
         this.setState({
             selectedActivity: e.target.value

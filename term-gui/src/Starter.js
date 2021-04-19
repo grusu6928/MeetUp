@@ -128,7 +128,8 @@ class Starter extends Component {
             startTime: this.state.startTime,
             endTime: this.state.endTime,
             location: this.state.address,
-            numOfAttendees: this.state.numberOfAttendees
+            numOfAttendees: this.state.numberOfAttendees,
+            attendeeList: this.state.attendeeList
             }
         ]
         console.log("State activity" + this.state.selectedActivity)
@@ -300,18 +301,8 @@ class Starter extends Component {
                         <div className="event">
                             <label for="number" className="text"> Max Capacity: </label>
                             <input id="number" type="number" onChange = {e => this.handleAttendees(e)}/>
-
                         </div>
-
-                        
-                        {/* <Link */}
-                            {/* to={{
-                                pathname: "/starter-submission",
-                                state: this.data // your data array of objects
-                            }}> */}
                             <button className="submit" type="submit" onSubmit = {this.handleSubmit}> Submit</button>
-                        {/* </Link> */}
-
                     </form>
                 </div>
             </div>

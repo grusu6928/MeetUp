@@ -52,31 +52,32 @@ class Submission extends Component {
         }
         return false;
     }
-    getAttendees () {
-    const toSend = {
-        user: localStorage.getItem("user"),
-    }
-    let config = {
-        headers: {
-          "Content-Type": "application/json",
-          'Access-Control-Allow-Origin': '*',
-          }
-        }
-        axios.post('http://localhost:4567/attendees', toSend, config)
-        .then(response => {
-            console.log("success");
-            this.handleAttendeeList(response.data)
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-      }
+    
+// getAttendees () {
+//     const toSend = {
+//         user: localStorage.getItem("user"),
+//     }
+//     let config = {
+//         headers: {
+//           "Content-Type": "application/json",
+//           'Access-Control-Allow-Origin': '*',
+//           }
+//         }
+//         axios.post('http://localhost:4567/attendees', toSend, config)
+//         .then(response => {
+//             console.log("success");
+//             this.handleAttendeeList(response.data)
+//         })
+//         .catch(function (error) {
+//           console.log(error);
+//         });
+//       }
 
-    componentDidMount() {
-         setInterval(
-          () => this.getAttendees(),
-          10000
-        );
+//     componentDidMount() {
+//          setInterval(
+//           () => this.getAttendees(),
+//           10000
+//         );
         // setInterval(
         //     () =>  {
         //         let currentDateTime = new Date()
@@ -91,7 +92,7 @@ class Submission extends Component {
         //   },
         //     5000
         //   );
-      }
+      //}
       logout() {
         localStorage.clear()
         console.log(localStorage.getItem("user"))
