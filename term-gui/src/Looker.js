@@ -58,6 +58,25 @@ const sendEndTime = (reqType, currUser, endTime) => {
             console.log(error);
         });
 }
+const queryRSVP = (currUser) => {
+    const toSend = {
+        user: currUser,
+    }
+    let config = {
+        headers: {
+            "Content-Type": "application/json",
+            'Access-Control-Allow-Origin': '*',
+        }
+    }
+    axios.post('http://localhost:4567/rsvp', toSend, config)
+        .then(response =>{ 
+            let newList = response.data
+            this.setState({attendeeList: newList})
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}
 
 class Looker extends Component {
     constructor() {
@@ -70,15 +89,13 @@ class Looker extends Component {
             redirect: false,
             address: "",
             user: localStorage.getItem("user"),
-            currentDateTime: new Date()
+            currentDateTime: new Date(),
+            attendeeList: []
         };
 
         this.handleActivityChange = this.handleActivityChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         let data = []
-    }
-
-    componentDidMount() {
     }
 
     handleActivityChange (e){
@@ -152,6 +169,12 @@ class Looker extends Component {
           5000
         );
         this.setState({currentDateTime: new Date()})
+      }
+      componentDidMount() {
+          setInterval(
+              () => {queryRSVP(localStorage.getItem("user"))}, 
+              5000
+          )
       }
       componentWillUnmount() {
         clearInterval(this.interval);

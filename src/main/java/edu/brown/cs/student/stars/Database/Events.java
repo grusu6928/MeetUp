@@ -103,6 +103,26 @@ public final class Events {
     }
     return names;
   }
+  public List<String> getLookerMatches(String looker) {
+    List<String> names= new ArrayList<>();
+    try {
+      PreparedStatement prep;
+      prep = conn.prepareStatement("SELECT starter from RSVP where username = ?;");
+      prep.setString(1, looker);
+      ResultSet rs = prep.executeQuery();
+      String starter;
+      if(rs.next()) {
+        starter = (rs.getString(1));
+        names = this.getMatches(starter);
+        names.add(starter);
+        names.remove(looker);
+        return names;
+      }
+    } catch(SQLException e) {
+      System.out.println(e);
+    }
+    return names;
+  }
   /**
    * Schema: (event type - activity type - startTime - endTime - location - username)
    */

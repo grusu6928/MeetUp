@@ -116,6 +116,7 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
     Spark.post("/friends", new friendsHandler());
     Spark.post("/signup", new signupHandler());
     Spark.post("/endtime", new endTimeHandler());
+    Spark.post("/rsvp", new rsvpQueryHandler());
     Spark.post("/logout", new Logout(), freeMarker);
   }
   private static class loginAuthHandler implements Route {
@@ -230,6 +231,31 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
     }
   }
   private static class endTimeHandler implements Route {
+    @Override
+    public Object handle(Request request, Response response) throws Exception {
+      JSONObject data = new JSONObject(request.body());
+      System.out.println("data " + data);
+      String requestType = data.getString("requestType");
+      System.out.println("requestType " + requestType);
+      String username = data.getString("user");
+      System.out.println("username " + username);
+      String endTime = data.getString("endTime");
+      System.out.println("endTime " + endTime);
+      if(requestType.equals("get")) {
+        System.out.println("inside");
+
+        System.out.println("RETURN: " + Events.getInstance().getEndTime(username));
+
+        return GSON.toJson(Events.getInstance().getEndTime(username));
+      }
+      if(requestType.equals("set")) {
+        Events.getInstance().setEndTime(endTime, username);
+        return GSON.toJson("sucess");
+      }
+      return GSON.toJson("Invalid request");
+    }
+  }
+  private static class rsvpQueryHandler implements Route {
     @Override
     public Object handle(Request request, Response response) throws Exception {
       JSONObject data = new JSONObject(request.body());
