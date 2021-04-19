@@ -33,32 +33,61 @@ const sendEvent = (selectedActivity, startTime, endTime, location, capacity) => 
           console.log(error);
         });
       }
-
-  const sendEndTime = (reqType, currUser, endTime) => {
-    const toSend = {
-        requestType: reqType,
-        user: currUser,
-        endTime: endTime
-    }
-    let config = {
-        headers: {
-          "Content-Type": "application/json",
-          'Access-Control-Allow-Origin': '*',
-          }
-        }
-        axios.post('http://localhost:4567/endtime', toSend, config)
-        .then(response => {
-          console.log("starter sendEndTime response " + response.data)
-            if (reqType === ("get")) {
-              return response.data;
-            } else if (reqType === "set") {
-              console.log(response.data)
-            }
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+      const sendEndTime = (reqType, currUser, endTime) => new Promise((resolve, reject)=>{
+        const toSend = {
+          requestType: reqType,
+          user: currUser,
+          endTime: endTime
       }
+      let config = {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'Access-Control-Allow-Origin': '*',
+            }
+          }
+          axios.post('http://localhost:4567/endtime', toSend, config)  
+        .then(response => {
+             resolve(response)
+        })
+        .catch(error => {
+             reject(error)
+        });
+   });
+
+  // const sendEndTime = async (reqType, currUser, endTime) => {
+  //   const toSend = {
+  //       requestType: reqType,
+  //       user: currUser,
+  //       endTime: endTime
+  //   }
+  //   let config = {
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         'Access-Control-Allow-Origin': '*',
+  //         }
+  //       }
+  //       await axios.post('http://localhost:4567/endtime', toSend, config)
+  //       .then(response => {
+  //         console.log("starter sendEndTime response " + response.data)
+  //           if (reqType === ("get")) {
+  //             return response.data
+  //           } else if (reqType === "set") {
+  //             return response.data
+  //           }
+  //       })
+  //       .catch(function (error) {
+  //         return error;
+  //       });
+  //     }
+  //     async function getEndTime(reqType, currUser, endTime) {
+  //       try{
+  //         const data = await sendEndTime(reqType, currUser, endTime)
+  //         return data;
+
+  //       } catch(error){
+  //         console.log(error);
+  //       }
+  //     }    
 
 class Starter extends Component {
     constructor(props) {
@@ -71,7 +100,9 @@ class Starter extends Component {
           numberOfAttendees: null,
           redirect: false,
           address: "", // name of location
-          currentDateTime: new Date()
+          currentDateTime: new Date(),
+          attendeeList: []
+          
         };
         this.handleActivityChange = this.handleActivityChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -129,7 +160,6 @@ class Starter extends Component {
             endTime: this.state.endTime,
             location: this.state.address,
             numOfAttendees: this.state.numberOfAttendees,
-            attendeeList: [], 
             userType: "starter"
             }
         ]
@@ -188,7 +218,20 @@ class Starter extends Component {
             }}
             />
             );
-    } else {
+    }
+      sendEndTime("get", localStorage.getItem("user"), null).then(response =>{
+        let splited= response.data.split(":");
+        console.log(splited)
+        if (this.state.currentDateTime.getHours() <= parseInt(splited[0]) && this.state.currentDateTime.getMinutes() <= parseInt(splited[1])) {
+          console.log("here")
+          this.setState({redirect: true});
+      }
+     })
+     .catch(error => {
+        console.log(error)
+     })
+ ;
+ if(localStorage.getItem("user") !== null) {
       // if(sendEndTime("get", localStorage.getItem("user"), null) !== null) {
       //   console.log(localStorage.getItem("data"))
       //   console.log("endtime redirect")
@@ -209,7 +252,7 @@ class Starter extends Component {
             <Redirect
             to={{
                 pathname: "/submission",
-                state: this.data
+                state: JSON.parse(localStorage.getItem("data"))
             }}
             />
             );

@@ -79,9 +79,8 @@ public final class Main {
   private void runSparkServer(int port) {
     // TODO
     MyDatabase.connect();
-
-
-
+    System.out.println("connected");
+    System.out.println("EndTime Test: " + Events.getInstance().getEndTime("new_person@brown.edu"));
     // TODO: Send updates from RSVP table to front-end.
     // TODO: When to clear the table. (maybe after each event finishes, delete all related data)
 
@@ -147,7 +146,6 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
       String endTime = data.getString("endTime");
       JSONArray location = data.getJSONArray("location");
 
-
       double latitude = location.getDouble(0);
       double longitude = location.getDouble(1);
 
@@ -163,7 +161,6 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
     @Override
     public Object handle(Request request, Response response) throws Exception {
       JSONObject data = new JSONObject(request.body());
-      System.out.println(data);
       String requestType = data.getString("requestType");
       String currUser = data.getString("userID");
       String newFriend = data.getString("userToAdd");
@@ -200,7 +197,6 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
     @Override
     public Object handle(Request request, Response response) throws Exception {
 
-      System.out.println("IN LOOKER HANDLER");
 
 
       JSONObject data = new JSONObject(request.body());
@@ -213,7 +209,6 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
       double latitude = location.getDouble(0);
       double longitude = location.getDouble(1);
 
-      System.out.println("RIGHT BEFORE ADDING LOOKER");
       System.out.println(username);
       System.out.println(activity);
       System.out.println(startTime);
@@ -222,7 +217,6 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
       System.out.println(longitude);
       Events.getInstance().addLooker(username, activity, startTime, endTime, latitude, longitude);
 
-      System.out.println("AFTER ADDING LOOKSER");
 
       return GSON.toJson("success");
     }
@@ -231,18 +225,12 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
     @Override
     public Object handle(Request request, Response response) throws Exception {
       JSONObject data = new JSONObject(request.body());
-      System.out.println("data " + data);
       String requestType = data.getString("requestType");
-      System.out.println("requestType " + requestType);
       String username = data.getString("user");
-      System.out.println("username " + username);
       String endTime = data.getString("endTime");
-      System.out.println("endTime " + endTime);
       if(requestType.equals("get")) {
-        System.out.println("inside");
-
-        System.out.println("RETURN: " + Events.getInstance().getEndTime(username));
-
+        System.out.println(username);
+        System.out.println(Events.getInstance().getEndTime(username));
         return GSON.toJson(Events.getInstance().getEndTime(username));
       }
       if(requestType.equals("set")) {
@@ -257,16 +245,11 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
   private static class attendeesHandler implements Route {
     @Override
     public Object handle(Request request, Response response) throws Exception {
-      System.out.println("reached handler");
       // request should be name of starter
       JSONObject data = new JSONObject(request.body());
-      System.out.println("hereeee1");
       String user = data.getString("user");
-      System.out.println("hereeee2");
       String typeOfUser = data.getString("userType");
-      System.out.println("hereeee3");
       Events database = Events.getInstance();
-      System.out.println("BEFORE CHECKING THRESHOLD");
       if (database.getNumEvents() >= STARTERS_THRESHOLD &&
               database.getNumLookers() >= LOOKERS_THRESHOLD) {
       List<Starter> events = database.getAllEvents();
@@ -278,28 +261,20 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
 //      for (Looker looker : lookers) {
 //        System.out.println(looker.getUsername());
 //      }
-      System.out.println("BEFORE Creating graph");
       Graph graph = new Graph(lookers, events);
-      System.out.println("before algoh");
       Map<Starter, List<Looker>> result = graph.runAlgorithm();
-      System.out.println("before adding to RSVP");
       result.forEach((k,v) -> {
         for(Looker l : v) {
           database.addMatch(l.getUsername(), k.getUsername());
         }
       });
-      System.out.println("after algo");
       List<String> matches;
       if (typeOfUser.equals("starter")) {
-        System.out.println("we should NOT see this");
         matches = database.getMatches(user);
       } else {
-        System.out.println("we should see this");
         matches = database.getLookerMatches(user);
       }
-      System.out.println("MATCHES IN ATTENDEES: " + matches);
       if (matches.size() == 0) {
-        System.out.println("we maybe should see this");
         return GSON.toJson(new ArrayList<>(Collections.singletonList("Sorry but we weren't able to find you any matches")));
       } else {
         return GSON.toJson(matches);

@@ -44,18 +44,20 @@ public final class Events {
   public String getEndTime(String user) {
     try {
       PreparedStatement prep;
-      prep = conn.prepareStatement("SELECT endTime FROM users where username = ?");
+      prep = conn.prepareStatement("SELECT endTime from users where username = ?;");
       prep.setString(1, user);
       ResultSet rs = prep.executeQuery();
       System.out.println("after Exectute update in get");
       if(rs.next())  {
-        if(!rs.wasNull()) { 
-          System.out.println("NOT HERE");
           return rs.getString(1);
         }
+        else{
+          return null;
+        }
       }
-        
-    } catch (SQLException throwables) {
+
+    catch (SQLException throwables) {
+      System.out.println("reached here");
       throwables.printStackTrace();
     }
     return null;
