@@ -23,9 +23,7 @@ import spark.Route;
 import com.google.gson.Gson;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * The Main class of our project. This is where execution begins.
@@ -116,7 +114,6 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
     Spark.post("/friends", new friendsHandler());
     Spark.post("/signup", new signupHandler());
     Spark.post("/endtime", new endTimeHandler());
-    Spark.post("/rsvp", new rsvpQueryHandler());
     Spark.post("/logout", new Logout(), freeMarker);
   }
   private static class loginAuthHandler implements Route {
@@ -255,39 +252,15 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
       return GSON.toJson("Invalid request");
     }
   }
-  private static class rsvpQueryHandler implements Route {
-    @Override
-    public Object handle(Request request, Response response) throws Exception {
-      JSONObject data = new JSONObject(request.body());
-      System.out.println("data " + data);
-      String requestType = data.getString("requestType");
-      System.out.println("requestType " + requestType);
-      String username = data.getString("user");
-      System.out.println("username " + username);
-      String endTime = data.getString("endTime");
-      System.out.println("endTime " + endTime);
-      if(requestType.equals("get")) {
-        System.out.println("inside");
 
-        System.out.println("RETURN: " + Events.getInstance().getEndTime(username));
-
-        return GSON.toJson(Events.getInstance().getEndTime(username));
-      }
-      if(requestType.equals("set")) {
-        Events.getInstance().setEndTime(endTime, username);
-        return GSON.toJson("sucess");
-      }
-      return GSON.toJson("Invalid request");
-    }
-  }
 
   private static class attendeesHandler implements Route {
     @Override
     public Object handle(Request request, Response response) throws Exception {
       // request should be name of starter
       JSONObject data = new JSONObject(request.body());
-      String starter = data.getString("user");
-
+      String user = data.getString("user");
+      String typeOfUser = data.getString("userType");
       Events database = Events.getInstance();
 
       System.out.println("BEFORE CHECKING THRESHOLD");
@@ -307,14 +280,21 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
         }
       });
 
-      System.out.println("before returning");
-//        database.clearTables();
-
-        System.out.println("MATCHES" + database.getMatches(starter));
-
-        return GSON.toJson(database.getMatches(starter));
+      List<String> matches;
+      if (typeOfUser.equals("starter")) {
+        matches = database.getMatches(user);
       } else {
-        return GSON.toJson(new ArrayList<>());
+        matches = database.getLookerMatches(user);
+      }
+
+      if (matches.size() == 0) {
+        return GSON.toJson(new ArrayList<>(Collections.singletonList("Sorry but we weren't able to find you any matches")));
+      } else {
+        return GSON.toJson(matches);
+      }
+
+      } else {
+        return GSON.toJson(new ArrayList<>(Collections.singletonList("We are working on matching you with other users!")));
       }
     }
   }
