@@ -49,19 +49,4 @@ public class Login {
   public void logout() {
     System.out.println("logged out");
   }
-  // @Override
-  // public ModelAndView handle(Request request, Response response) throws Exception {
-  //   System.out.println("Hi");
-  //   QueryParamsMap form = request.queryMap();
-  //   String username = form.value("username");
-  //   String password = form.value("password");
-  //   username = log(username, password);
-  //   if(username != null) {
-  //     response.redirect("/");
-  //     return null;
-  //   }
-  //   request.session().attribute("currentUser", username);
-  //   Map<String, String> variables = new HashMap<>();
-  //   return new ModelAndView(variables, "main.ftl");
-  // }
 }

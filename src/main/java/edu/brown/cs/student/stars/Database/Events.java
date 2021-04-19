@@ -28,15 +28,10 @@ public final class Events {
   public void setEndTime(String endtime, String user) {
       try {
         PreparedStatement prep;
-        System.out.println("set a");
         prep = conn.prepareStatement("UPDATE users SET endTime = ? WHERE username = ?");
-        System.out.println("set b");
         prep.setString(1, endtime);
-        System.out.println("set c");
         prep.setString(2, user);
-        System.out.println("set d");
         prep.executeUpdate();
-        System.out.println("after Exectute update in set");
       } catch (SQLException throwables) {
         throwables.printStackTrace();
       }
@@ -47,7 +42,6 @@ public final class Events {
       prep = conn.prepareStatement("SELECT endTime from users where username = ?;");
       prep.setString(1, user);
       ResultSet rs = prep.executeQuery();
-      System.out.println("after Exectute update in get");
       if(rs.next())  {
           return rs.getString(1);
         }
@@ -57,7 +51,6 @@ public final class Events {
       }
 
     catch (SQLException throwables) {
-      System.out.println("reached here");
       throwables.printStackTrace();
     }
     return null;
@@ -190,7 +183,6 @@ public final class Events {
                           double latitude, double longitude, int capacity) {
     try {
       PreparedStatement prep;
-      System.out.println("before event c=query");
       prep = conn.prepareStatement("CREATE TABLE IF NOT EXISTS events("
               + "number INTEGER,"
               + "username TEXT UNIQUE," // TODO: make starter username a foreign key (that's how it is in lookers table)
@@ -203,7 +195,6 @@ public final class Events {
               + "ranAlgo TEXT,"
               + "PRIMARY KEY (number));");
       prep.executeUpdate();
-      System.out.println("after event c=query");
       prep = conn.prepareStatement("INSERT INTO events VALUES(NULL, ?, ?, ?, ?, ?, ?, ?, ?);");
       prep.setString(1, username);
       prep.setString(2, activity);
@@ -213,9 +204,7 @@ public final class Events {
       prep.setDouble(6, longitude);
       prep.setInt(7, capacity);
       prep.setString(8, "no");
-      System.out.println("before insert");
       prep.executeUpdate();
-      System.out.println("after insert");
     } catch(SQLException e) {
       System.out.println(e);
   }
@@ -227,7 +216,6 @@ public final class Events {
     try {
       PreparedStatement prep;
       prep = conn.prepareStatement("SELECT * from events");
-//      prep.setString(1, "no");
       ResultSet rs = prep.executeQuery();
       while(rs.next()) {
 
@@ -245,16 +233,11 @@ public final class Events {
                 endTime, longitude, latitude, capacity);
         Events.add(starter);
       }
-//      prep = conn.prepareStatement("UPDATE events SET ranAlgo = ?");
-//      prep.setString(1, "yes");
-//      prep.executeQuery();
     } catch (SQLException e) {
       System.out.println(e);
     }
     return Events;
   }
-
-  // TODO: get rid of redundancies in genNumEvents and getNumLookers
   public int getNumEvents() {
     int numRows = 0;
     try {
@@ -293,7 +276,6 @@ public final class Events {
       prep1.executeUpdate();
       PreparedStatement prep2 = conn.prepareStatement("DROP TABLE RSVP");
       prep2.executeUpdate();
-
     } catch (SQLException e) {
       System.out.println(e);
     }

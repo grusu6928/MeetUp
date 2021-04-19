@@ -358,11 +358,8 @@ public class Graph {
     // TODO: HAVE an initial LOOP TO CALCULATE haversineDist, cache [row, col] -> dist
       // TODO: use this comp to get min & max so can normalize dist
     // THEN -> do the existing loops in these methods.
-    System.out.println(" graph M");
     this.setLookersToLookers();
-    System.out.println(" graph N");
     this.setStartersToLookers();
-    System.out.println(" graph O");
   }
 
   /**
@@ -397,7 +394,6 @@ public class Graph {
    */
   private void setStartersToLookers() {
     int rowOffset = this.numLookers;
-    System.out.println("rowOffset:" + rowOffset);
     for (int srow = rowOffset; srow < this.numNodes; srow++) {
       for (int lcol = 0; lcol < this.numLookers; lcol++) {
         Starter from = this.centroids.get(srow - rowOffset);

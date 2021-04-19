@@ -80,7 +80,7 @@ public final class Main {
     // TODO
     MyDatabase.connect();
     System.out.println("connected");
-    System.out.println("EndTime Test: " + Events.getInstance().getEndTime("new_person@brown.edu"));
+    // System.out.println("EndTime Test: " + Events.getInstance().getEndTime("new_person@brown.edu"));
     // TODO: Send updates from RSVP table to front-end.
     // TODO: When to clear the table. (maybe after each event finishes, delete all related data)
 
@@ -97,7 +97,6 @@ public final class Main {
       if (accessControlRequestMethod != null) {
         response.header("Access-Control-Allow-Methods", accessControlRequestMethod);
       }
-
       return "OK";
 });
 

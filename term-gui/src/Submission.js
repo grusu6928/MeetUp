@@ -109,7 +109,12 @@ getAttendees () {
         this.setState({user: null})
     }
     render() {
-        // console.log(this.props.location.state[0])
+        let listStr = "";
+        if (this.state.algoStr === "We are working on matching you with other users!" || this.state.algoStr === "Sorry but we weren't able to find you any matches") {
+            listStr = "";
+        } else {
+            listStr = this.props.location.state[0].numOfAttendees - this.state.attendeeList.length + " more open spot(s)"
+        }
         if(localStorage.getItem("user") == null) {
             return (
                 <Redirect
@@ -139,7 +144,7 @@ getAttendees () {
                             <p>
                                 {attendants}
                             </p>
-                        ))} and <span className="text"> {this.props.location.state[0].numOfAttendees - this.state.attendeeList.length} </span> more open spots </span></p> 
+                        ))} and <span className="text"> {listStr} </span></span></p> 
                     ) : (
                         <p className="text"></p>
                     )}
