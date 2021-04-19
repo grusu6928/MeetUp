@@ -33,23 +33,35 @@ public class Graph {
    */
   public Graph(List<Looker> lookers, List<Starter> starters) {
 
+    System.out.println("graph a");
     this.numNodes = lookers.size() + starters.size();
+    System.out.println("graph b");
     this.numLookers = lookers.size();
+    System.out.println("graph c");
 
     this.lookers = lookers;
+    System.out.println("graph d");
     this.centroids = starters;
+    System.out.println("graph e");
 
     this.capacityMap = new HashMap<>();
+    System.out.println("graph f");
     this.setCapacityMap();
+    System.out.println("graph g");
 
     this.centroidIdToRow = new HashMap<>();
+    System.out.println("graph h");
     this.lookerIdToCol = new HashMap<>();
+    System.out.println("graph i");
     this.setIdToIndInMatrixMaps(lookers, starters);
+    System.out.println("graph j");
 
     // n x L adjacency matrix: first L rows -> lookers; second S rows -> starters
     this.adjMatrix = new GraphEntry[this.numNodes][this.numLookers];
+    System.out.println("graph k");
 
     this.setEdgeWeights();
+    System.out.println("graph L");
   }
 
 
@@ -293,7 +305,6 @@ public class Graph {
 
   private double computeHeuristic(FormSubmission n1, FormSubmission n2) {
 
-
 //    int areFriends = Friends.getInstance().checkFriendShip(n1.getUsername(), n2.getUsername()) ? 1 : 0;
     int areFriends = 1;
     int sameActivityPref = (n1.getActivity().equals(n2.getActivity())) ? 1 : 0;
@@ -364,8 +375,11 @@ public class Graph {
     // TODO: HAVE an initial LOOP TO CALCULATE haversineDist, cache [row, col] -> dist
       // TODO: use this comp to get min & max so can normalize dist
     // THEN -> do the existing loops in these methods.
+    System.out.println(" graph M");
     this.setLookersToLookers();
+    System.out.println(" graph N");
     this.setStartersToLookers();
+    System.out.println(" graph O");
   }
 
   /**

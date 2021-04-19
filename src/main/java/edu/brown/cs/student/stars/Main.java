@@ -269,6 +269,13 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
       List<Starter> events = database.getAllEvents();
       List<Looker> lookers = database.getAllLookers();
 
+//      for (Starter event : events) {
+//        System.out.println(event.getUsername());
+//      }
+//      for (Looker looker : lookers) {
+//        System.out.println(looker.getUsername());
+//      }
+
       System.out.println("BEFORE Creating graph");
       Graph graph = new Graph(lookers, events);
       System.out.println("before algoh");
