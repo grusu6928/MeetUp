@@ -70,13 +70,13 @@ public final class Events {
       PreparedStatement prep;
       prep = conn.prepareStatement("CREATE TABLE IF NOT EXISTS RSVP("
               + "number INTEGER,"
-              + "username TEXT," // CHANGED: added UNIQUE
+              + "username TEXT UNIQUE," // CHANGED: added UNIQUE
               + "starter TEXT,"
               + "response TEXT,"
-              + "FOREIGN KEY (username) REFERENCES lookers(username)"
-              + "ON DELETE CASCADE ON UPDATE CASCADE,"
-              + "FOREIGN KEY (starter) REFERENCES events(starter)"
-              + "ON DELETE CASCADE ON UPDATE CASCADE,"
+//              + "FOREIGN KEY (username) REFERENCES lookers(username)"
+//              + "ON DELETE CASCADE ON UPDATE CASCADE,"
+//              + "FOREIGN KEY (starter) REFERENCES events(username)"
+//              + "ON DELETE CASCADE ON UPDATE CASCADE,"
               + "PRIMARY KEY (number));");
       prep.executeUpdate();
       prep = conn.prepareStatement("INSERT INTO RSVP VALUES(NULL, ?, ?, ?);");

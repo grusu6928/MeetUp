@@ -40,8 +40,8 @@ public final class Main {
 
   // every 1 minute -> check if these values are hit
       // if yes -> run the algorithm
-  public static final int LOOKERS_THRESHOLD = 25;
-  public static final int STARTERS_THRESHOLD = 3;
+  public static final int LOOKERS_THRESHOLD = 3;
+  public static final int STARTERS_THRESHOLD = 1;
 
 
   /**
@@ -264,22 +264,28 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
 
       Events database = Events.getInstance();
 
+      System.out.println("BEFORE CHECKING THRESHOLD");
       if (database.getNumEvents() >= STARTERS_THRESHOLD &&
               database.getNumLookers() >= LOOKERS_THRESHOLD) {
-
       List<Starter> events = database.getAllEvents();
       List<Looker> lookers = database.getAllLookers();
 
+      System.out.println("BEFORE Creating graph");
       Graph graph = new Graph(lookers, events);
+      System.out.println("before algoh");
       Map<Starter, List<Looker>> result = graph.runAlgorithm();
+      System.out.println("before adding to RSVP");
       result.forEach((k,v) -> {
         for(Looker l : v) {
           database.addMatch(l.getUsername(), k.getUsername());
         }
       });
 
-      // TODO: clear database tables
-        database.clearTables();
+      System.out.println("before returning");
+//        database.clearTables();
+
+        System.out.println("MATCHES" + database.getMatches(starter));
+
         return GSON.toJson(database.getMatches(starter));
       } else {
         return GSON.toJson(new ArrayList<>());

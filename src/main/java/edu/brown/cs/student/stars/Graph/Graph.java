@@ -294,7 +294,8 @@ public class Graph {
   private double computeHeuristic(FormSubmission n1, FormSubmission n2) {
 
 
-    int areFriends = Friends.getInstance().checkFriendShip(n1.getUsername(), n2.getUsername()) ? 1 : 0;
+//    int areFriends = Friends.getInstance().checkFriendShip(n1.getUsername(), n2.getUsername()) ? 1 : 0;
+    int areFriends = 1;
     int sameActivityPref = (n1.getActivity().equals(n2.getActivity())) ? 1 : 0;
     double timeCompat = this.timeOverlap(n1.getStartTime(), n1.getEndTime(),
             n2.getStartTime(), n2.getEndTime());
