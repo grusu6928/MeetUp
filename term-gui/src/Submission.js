@@ -76,8 +76,10 @@ getAttendees () {
 
     componentDidMount() {
          setInterval(
-          () => this.getAttendees(),
-          10000
+          () => {
+            console.log("called")  
+            this.getAttendees()},
+          5000
         );
         // setInterval(
         //     () =>  {

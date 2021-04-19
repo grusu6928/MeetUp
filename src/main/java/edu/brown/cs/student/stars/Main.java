@@ -257,12 +257,15 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
   private static class attendeesHandler implements Route {
     @Override
     public Object handle(Request request, Response response) throws Exception {
+      System.out.println("reached handler");
       // request should be name of starter
       JSONObject data = new JSONObject(request.body());
+      System.out.println("hereeee1");
       String user = data.getString("user");
+      System.out.println("hereeee2");
       String typeOfUser = data.getString("userType");
+      System.out.println("hereeee3");
       Events database = Events.getInstance();
-
       System.out.println("BEFORE CHECKING THRESHOLD");
       if (database.getNumEvents() >= STARTERS_THRESHOLD &&
               database.getNumLookers() >= LOOKERS_THRESHOLD) {
@@ -275,7 +278,6 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
 //      for (Looker looker : lookers) {
 //        System.out.println(looker.getUsername());
 //      }
-
       System.out.println("BEFORE Creating graph");
       Graph graph = new Graph(lookers, events);
       System.out.println("before algoh");

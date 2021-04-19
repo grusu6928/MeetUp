@@ -306,14 +306,23 @@ public class Graph {
   private double computeHeuristic(FormSubmission n1, FormSubmission n2) {
 
 //    int areFriends = Friends.getInstance().checkFriendShip(n1.getUsername(), n2.getUsername()) ? 1 : 0;
+    System.out.println("entered");
     int areFriends = 1;
     int sameActivityPref = (n1.getActivity().equals(n2.getActivity())) ? 1 : 0;
+    System.out.println("sameActivity");
+    System.out.println("ID: " + n1.getId());
+    System.out.println(n1.getUsername());
+    System.out.println("startTimes: " +n1.getStartTime() + " " + n2.getStartTime());
+    System.out.println("endTimes: " +n1.getEndTime() + " " + n2.getEndTime());
+    System.out.println("stuck");
     double timeCompat = this.timeOverlap(n1.getStartTime(), n1.getEndTime(),
             n2.getStartTime(), n2.getEndTime());
+    System.out.println("timeCompat");
     double locationDist = new HaversineDistanceCalculator().calcHaversineDistance(n1.getLocation(), n2.getLocation());
     // TODO: how to normalize location dist
 
     // Skip location for now
+    System.out.println("returned");
     return (1.0 / 3.0) * (areFriends + sameActivityPref + timeCompat);
   }
 
@@ -414,17 +423,23 @@ public class Graph {
    */
   private void setStartersToLookers() {
     int rowOffset = this.numLookers;
+    System.out.println("rowOffset:" + rowOffset);
+    System.out.println("before for loop");
     for (int srow = rowOffset; srow < this.numNodes; srow++) {
       for (int lcol = 0; lcol < this.numLookers; lcol++) {
-
+        System.out.println("from");
         Starter from = this.centroids.get(srow - rowOffset);
+        System.out.println("to");
         Looker to = this.lookers.get(lcol);
+        System.out.println("weight");
         double weight = this.computeHeuristic(from, to);
+        System.out.println("entry");
         GraphEntry<Starter> entry = new GraphEntry<>(from, to, weight);
-
+        System.out.println("adj");
         this.adjMatrix[srow][lcol] = entry;
       }
     }
+    System.out.println("after for loop");
   }
 
 

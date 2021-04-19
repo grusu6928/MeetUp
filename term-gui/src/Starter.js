@@ -129,8 +129,8 @@ class Starter extends Component {
             endTime: this.state.endTime,
             location: this.state.address,
             numOfAttendees: this.state.numberOfAttendees,
-            attendeeList: this.state.attendeeList, 
-            userType: this.state.userType
+            attendeeList: [], 
+            userType: "starter"
             }
         ]
         console.log("State activity" + this.state.selectedActivity)
