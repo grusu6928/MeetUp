@@ -119,7 +119,6 @@ class Submission extends Component {
                 </header>
                 <p className="event-deets"> Here are your event details: </p>
                 <div className="submission-div">
-                <p className="text"> Event Privacy: <span className="inner-text"> {this.props.location.state[0].typeOfEvent} </span> </p> 
                     <p className="text"> Type of Activity: <span className="inner-text"> {this.props.location.state[0].typeOfActivity} </span></p> 
                     <p className="text"> Start Time: <span className="inner-text">{this.props.location.state[0].startTime}</span>  </p> 
                     <p className="text"> End Time: <span className="inner-text"> {this.props.location.state[0].endTime} </span></p> 

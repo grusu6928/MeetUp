@@ -164,7 +164,7 @@ class Starter extends Component {
           .then(results => getLatLng(results[0]))
           .then(latLng => this.setState({location: [latLng["lat"], latLng["lng"]]}))
           .catch(error => console.error('Error', error));
-          
+          this.setState({address});
         console.log("location state", this.state.location)
       };
     
@@ -257,9 +257,9 @@ class Starter extends Component {
                         <div className="event">
                             <label for="location" className="text"> Location: </label>
                             <PlacesAutocomplete
-        value={this.state.address}
-        onChange={this.handleChange}
-        onSelect={this.handleSelect}
+                        value={this.state.address}
+                        onChange={this.handleChange}
+                        onSelect={this.handleSelect}
       >
         {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
           <div>
