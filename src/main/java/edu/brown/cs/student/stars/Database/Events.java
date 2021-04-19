@@ -48,11 +48,13 @@ public final class Events {
       prep.setString(1, user);
       ResultSet rs = prep.executeQuery();
       System.out.println("after Exectute update in get");
-
-      if(rs.next() && !rs.wasNull()) {
-        System.out.println("NOT HERE");
-        return rs.getString(1);
+      if(rs.next())  {
+        if(!rs.wasNull()) { 
+          System.out.println("NOT HERE");
+          return rs.getString(1);
+        }
       }
+        
     } catch (SQLException throwables) {
       throwables.printStackTrace();
     }
