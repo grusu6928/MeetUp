@@ -279,20 +279,22 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
           database.addMatch(l.getUsername(), k.getUsername());
         }
       });
-
+      System.out.println("after algo");
       List<String> matches;
       if (typeOfUser.equals("starter")) {
+        System.out.println("we should NOT see this");
         matches = database.getMatches(user);
       } else {
+        System.out.println("we should see this");
         matches = database.getLookerMatches(user);
       }
-
+      System.out.println("MATCHES IN ATTENDEES: " + matches);
       if (matches.size() == 0) {
+        System.out.println("we maybe should see this");
         return GSON.toJson(new ArrayList<>(Collections.singletonList("Sorry but we weren't able to find you any matches")));
       } else {
         return GSON.toJson(matches);
       }
-
       } else {
         return GSON.toJson(new ArrayList<>(Collections.singletonList("We are working on matching you with other users!")));
       }

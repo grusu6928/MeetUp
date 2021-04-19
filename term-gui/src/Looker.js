@@ -61,6 +61,7 @@ const sendEndTime = (reqType, currUser, endTime) => {
 const queryRSVP = (currUser) => {
     const toSend = {
         user: currUser,
+        userType: "looker"
     }
     let config = {
         headers: {
@@ -68,7 +69,7 @@ const queryRSVP = (currUser) => {
             'Access-Control-Allow-Origin': '*',
         }
     }
-    axios.post('http://localhost:4567/rsvp', toSend, config)
+    axios.post('http://localhost:4567/attendees', toSend, config)
         .then(response =>{ 
             let newList = response.data
             this.setState({attendeeList: newList})
