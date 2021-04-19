@@ -36,6 +36,32 @@ const sendEvent = (activity, startTime, endTime, location) => {
         });
 }
 
+const sendEndTime = (reqType, currUser, endTime) => {
+    const toSend = {
+        requestType: reqType,
+        user: currUser,
+        endTime: endTime
+    }
+    let config = {
+        headers: {
+            "Content-Type": "application/json",
+            'Access-Control-Allow-Origin': '*',
+        }
+    }
+    axios.post('http://localhost:4567/endtime', toSend, config)
+        .then(response => {
+            console.log("starter sendEndTime response " + response.data)
+            if (reqType === ("get")) {
+                return response.data;
+            } else if (reqType === "set") {
+                console.log(response.data)
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}
+
 class Looker extends Component {
     constructor() {
         super();
@@ -88,7 +114,7 @@ class Looker extends Component {
         }
         if (this.state.currentDateTime.getHours >= endTime.getHours && this.state.currentDateTime.getMinutes() >= endTime.getMinutes) {
             console.log("removed")
-          localStorage.removeItem("endTime");
+            sendEndTime("set", localStorage.getItem("user"), null);
         }
       }
 
@@ -110,7 +136,7 @@ class Looker extends Component {
     localStorage.setItem("data", JSON.stringify(this.data))        
     sendEvent(this.state.selectedActivity, this.state.startTime, this.state.endTime,
             this.state.location);
-        localStorage.setItem("endTime", this.state.endTime);
+        sendEndTime("set", localStorage.getItem("user"), this.state.endTime);
        
         //TODO: lookerForm?
         const starterForm = document.getElementById('starter-form')
@@ -163,7 +189,7 @@ class Looker extends Component {
                 />
                 );
         } else {
-            if(localStorage.getItem("endTime")) {
+            if(sendEndTime("get", localStorage.getItem("user"), null) !== null) {
                 console.log(localStorage.getItem("data"))
                 console.log("endtime redirect")
                 return (

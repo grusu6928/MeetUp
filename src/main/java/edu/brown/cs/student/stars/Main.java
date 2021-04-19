@@ -228,6 +228,9 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
       System.out.println("endTime " + endTime);
       if(requestType.equals("get")) {
         System.out.println("inside");
+
+        System.out.println("RETURN: " + Events.getInstance().getEndTime(username));
+
         return GSON.toJson(Events.getInstance().getEndTime(username));
       }
       if(requestType.equals("set")) {

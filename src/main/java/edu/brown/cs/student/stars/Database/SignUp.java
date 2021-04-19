@@ -60,11 +60,12 @@ public class SignUp {
       }
       else {
         System.out.println("i");
-        prep = conn.prepareStatement("INSERT INTO users VALUES(NULL, ?, ?, ?, ?, NULL);");
+        prep = conn.prepareStatement("INSERT INTO users VALUES(NULL, ?, ?, ?, ?, ?);");
         prep.setString(1, username);
         prep.setString(2, passwordString);
         prep.setString(3,email);
         prep.setString(4, saltString);
+        prep.setNull(5, Types.NULL);
         System.out.println("j");
         prep.executeUpdate();
         System.out.println("created account successfully");

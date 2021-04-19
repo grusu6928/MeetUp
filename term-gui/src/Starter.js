@@ -187,7 +187,7 @@ class Starter extends Component {
             />
             );
     } else {
-      if(sendEndTime("get", localStorage.getItem("user"), null) != null) {
+      if(sendEndTime("get", localStorage.getItem("user"), null) !== null) {
         console.log(localStorage.getItem("data"))
         console.log("endtime redirect")
         console.log("activity" + this.selectedActivity);
