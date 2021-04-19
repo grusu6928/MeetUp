@@ -37,7 +37,7 @@ public class SignUp {
       System.out.println("b");
       prep = conn.prepareStatement("CREATE TABLE IF NOT EXISTS users("
               + "number INTEGER,"
-              + "username TEXT,"
+              + "username TEXT UNIQUE,"
               + "password TEXT,"
               + "email TEXT,"
               + "salt TEXT,"

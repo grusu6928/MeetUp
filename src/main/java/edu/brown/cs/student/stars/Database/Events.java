@@ -106,7 +106,7 @@ public final class Events {
   /**
    * Schema: (event type - activity type - startTime - endTime - location - username)
    */
-  public void addLooker(String username, String eventType, String startTime,
+  public void addLooker(String username, String activity, String startTime,
                         String endTime, double latitude, double longitude) {
 
     try {
@@ -114,7 +114,7 @@ public final class Events {
       prep = conn.prepareStatement("CREATE TABLE IF NOT EXISTS lookers("
               + "number INTEGER,"
               + "username TEXT UNIQUE,"
-              + "eventT TEXT,"
+              + "activityType TEXT,"
               + "startT TEXT,"
               + "endT TEXT,"
               + "latitude DOUBLE,"
@@ -123,9 +123,10 @@ public final class Events {
               + "ON DELETE CASCADE ON UPDATE CASCADE,"
               + "PRIMARY KEY (number));");
       prep.executeUpdate();
+
       prep = conn.prepareStatement("INSERT INTO lookers VALUES(NULL, ?, ?, ?, ?, ?, ?);");
       prep.setString(1, username);
-      prep.setString(2, eventType);
+      prep.setString(2, activity);
       prep.setString(3, startTime);
       prep.setString(4, endTime);
       prep.setDouble(5, latitude);
@@ -236,7 +237,7 @@ public final class Events {
         numRows = rs.getInt(1);
       }
     } catch (SQLException e) {
-      System.out.println(e);
+      return 0;
     }
     return numRows;
   }
@@ -251,7 +252,7 @@ public final class Events {
         numRows = rs.getInt(1);
       }
     } catch (SQLException e) {
-      System.out.println(e);
+      return 0;
     }
     return numRows;
   }

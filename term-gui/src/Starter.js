@@ -147,7 +147,7 @@ class Starter extends Component {
       setInterval(
         () =>  {this.setState({currentDateTime: new Date()});
         if (this.state.endTime != null) {
-          this.checkEventTime();
+          // this.checkEventTime();
         }  
       },
         5000
@@ -187,19 +187,19 @@ class Starter extends Component {
             />
             );
     } else {
-      if(sendEndTime("get", localStorage.getItem("user"), null) !== null) {
-        console.log(localStorage.getItem("data"))
-        console.log("endtime redirect")
-        console.log("activity" + this.selectedActivity);
-        return (
-          <Redirect
-          to={{
-              pathname: "/submission",
-              state: JSON.parse(localStorage.getItem("data"))
-          }}
-          />
-          );
-      }
+      // if(sendEndTime("get", localStorage.getItem("user"), null) !== null) {
+      //   console.log(localStorage.getItem("data"))
+      //   console.log("endtime redirect")
+      //   console.log("activity" + this.selectedActivity);
+      //   return (
+      //     <Redirect
+      //     to={{
+      //         pathname: "/submission",
+      //         state: JSON.parse(localStorage.getItem("data"))
+      //     }}
+      //     />
+      //     );
+      // }
         if (this.state.redirect) {
             console.log(localStorage.getItem("data")[0])
             console.log("this redirected")

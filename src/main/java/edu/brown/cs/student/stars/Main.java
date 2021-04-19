@@ -201,6 +201,10 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
   private static class lookerHandler implements Route {
     @Override
     public Object handle(Request request, Response response) throws Exception {
+
+      System.out.println("IN LOOKER HANDLER");
+
+
       JSONObject data = new JSONObject(request.body());
       String username = data.getString("user");
       String activity = data.getString("activity");
@@ -211,7 +215,17 @@ Spark.before((request, response) -> response.header("Access-Control-Allow-Origin
       double latitude = location.getDouble(0);
       double longitude = location.getDouble(1);
 
+      System.out.println("RIGHT BEFORE ADDING LOOKER");
+      System.out.println(username);
+      System.out.println(activity);
+      System.out.println(startTime);
+      System.out.println(endTime);
+      System.out.println(latitude);
+      System.out.println(longitude);
       Events.getInstance().addLooker(username, activity, startTime, endTime, latitude, longitude);
+
+      System.out.println("AFTER ADDING LOOKSER");
+
       return GSON.toJson("success");
     }
   }

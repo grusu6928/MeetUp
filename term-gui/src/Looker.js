@@ -146,8 +146,8 @@ class Looker extends Component {
         setInterval(
           () =>  {this.setState({currentDateTime: new Date()});
           if (this.state.endTime != null) {
-            this.checkEventTime();
-          }  
+            // this.checkEventTime();
+          }
         },
           5000
         );
