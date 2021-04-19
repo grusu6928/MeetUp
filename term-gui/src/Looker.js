@@ -10,9 +10,6 @@ import PlacesAutocomplete, {
     getLatLng
   } from "react-places-autocomplete";  
 
-
-
-
 const sendEvent = (activity, startTime, endTime, location) => {
     const toSend = {
         user: localStorage.getItem("user"),
@@ -189,18 +186,18 @@ class Looker extends Component {
                 />
                 );
         } else {
-            if(sendEndTime("get", localStorage.getItem("user"), null) !== null) {
-                console.log(localStorage.getItem("data"))
-                console.log("endtime redirect")
-                return (
-                  <Redirect
-                  to={{
-                      pathname: "/submission",
-                      state: JSON.parse(localStorage.getItem("data"))
-                  }}
-                  />
-                  );
-              }
+            // if(sendEndTime("get", localStorage.getItem("user"), null) !== null) {
+            //     console.log(localStorage.getItem("data"))
+            //     console.log("endtime redirect")
+            //     return (
+            //       <Redirect
+            //       to={{
+            //           pathname: "/submission",
+            //           state: JSON.parse(localStorage.getItem("data"))
+            //       }}
+            //       />
+            //       );
+            //   }
         if (this.state.redirect) {
             return (
             <Redirect
