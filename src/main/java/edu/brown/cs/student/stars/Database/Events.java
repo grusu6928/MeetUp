@@ -7,7 +7,12 @@ package edu.brown.cs.student.stars.Database;
  import java.util.ArrayList;
  import java.util.List;
 
-// NOTE: CHANGED TO SINGLETON CLASS
+/**
+ * Holds functionality for 3 important tables:
+ * 1) event submissions (from starters)
+ * 2) looker submissions
+ * 3) matching between starters and lookers
+ */
 public final class Events {
 
     private static Events events = null;
@@ -56,9 +61,7 @@ public final class Events {
     return null;
   }
   /**
-   * Schema: (looker username - eventId matched to - response)
-   * @param username
-   * @param starter
+   * Schema: (looker username - starter username matched to)
    */
   public void addMatch(String username, String starter) {
     try {

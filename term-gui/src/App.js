@@ -5,16 +5,11 @@ import { BrowserRouter as Switch, Route, BrowserRouter } from "react-router-dom"
 import Starter from './Starter';
 import Submission from './Submission';
 import Looker from './Looker';
-import LookerSubmission from './LookerSubmission.js';
 import Login from './Login';
 import './index.css';
 import React, {useEffect, useState} from 'react';
-import Lookers from './Lookers';
-import FriendList from './FriendList';
-import ReactSession from 'react-client-session';
 import Signup from './Signup.js'
-import Friend from './Friend.js'
-import FriendForm from './FriendForm'
+
 
 import { AppContext } from './ContextUtil';
 

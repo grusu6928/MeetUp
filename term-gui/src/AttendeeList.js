@@ -10,7 +10,7 @@ import { AppContext } from './ContextUtil';
  * @param {*} props 
  * @returns 
  */
-function FriendsList(props) {
+function AttendeeList(props) {
     const [friendList, setFL] = useState([])
 
     const friendListUI = document.getElementById("FL");
@@ -75,4 +75,4 @@ function FriendsList(props) {
             </div>
           );
 }
-export default FriendsList
+export default AttendeeList
