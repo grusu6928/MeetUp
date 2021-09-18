@@ -113,7 +113,10 @@ getAttendees () {
         if (this.state.algoStr === "We are working on matching you with other users!" || this.state.algoStr === "Sorry but we weren't able to find you any matches") {
             listStr = "";
         } else {
-            listStr = "and " + this.props.location.state[0].numOfAttendees  - this.state.attendeeList.length + " more open spot(s)"
+            console.log("numAttendees " + this.props.location.state[0].numOfAttendees)
+            console.log("len " + this.state.attendeeList.length)
+            let spots = this.props.location.state[0].numOfAttendees  - this.state.attendeeList.length
+            listStr = "and " + spots + " more open spot(s)"
         }
         if(localStorage.getItem("user") == null) {
             return (
@@ -126,7 +129,7 @@ getAttendees () {
         } else {
         return (
             <div className="margins">
-                <FriendList />
+                {/*<FriendList />*/}
                 <header>
                     <h1 className="home">
                         <a href="/home"> Home </a>

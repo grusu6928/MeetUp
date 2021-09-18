@@ -36,7 +36,7 @@ class Home extends Component {
             console.log(localStorage.getItem("user"));
             return (
                 <div className="margins">
-                    <FriendList />
+                    {/*<FriendList />*/}
                     <header>
                         <h1 className="home">
                             <a href="/"> Home </a>
