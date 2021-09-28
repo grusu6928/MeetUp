@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
 import './App.css';
-import Button from './Button';
-import FriendList from './FriendList';
 import './index.css';
-import Login from './Login';
-import {Redirect} from 'react-router-dom'
 
 class Home extends Component {
     componentDidMount() {

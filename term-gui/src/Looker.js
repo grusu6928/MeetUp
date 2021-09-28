@@ -1,14 +1,12 @@
-import React, { Component, useEffect } from 'react';
+import axios from "axios";
+import React, { Component } from 'react';
+import PlacesAutocomplete, {
+  geocodeByAddress,
+  getLatLng
+} from "react-places-autocomplete";
+import { Redirect } from 'react-router-dom';
 import './App.css';
 import './index.css';
-import FriendList from './FriendList';
-import axios from "axios";
-import {Redirect} from 'react-router-dom'
-import Friend from './Friend';
-import PlacesAutocomplete, {
-    geocodeByAddress,
-    getLatLng
-  } from "react-places-autocomplete";  
 
 const sendEvent = (activity, startTime, endTime, location) => {
     const toSend = {

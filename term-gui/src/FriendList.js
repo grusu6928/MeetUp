@@ -1,11 +1,9 @@
-import './App.css';
-import { BrowserRouter as Switch, Route, BrowserRouter } from "react-router-dom";
-import './index.css';
-import React, {useEffect, useState} from 'react';
 import axios from "axios";
-import ReactSession from 'react-client-session';
-import Friend from './Friend.js'
-import FriendForm from './FriendForm'
+import React, { useState } from 'react';
+import './App.css';
+import Friend from './Friend.js';
+import FriendForm from './FriendForm';
+import './index.css';
 
 
 function FriendList({ friend, index }) {

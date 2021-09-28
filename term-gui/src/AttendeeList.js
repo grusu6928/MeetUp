@@ -1,9 +1,6 @@
-import React, {useState, useEffect} from 'react';
 import axios from 'axios';
+import React, { useState } from 'react';
 import './App.css';
-import Button from "./Button.js";
-import TextInput from './TextInput';
-import { AppContext } from './ContextUtil';
 /**
  * TODO: 
  * This needs to be renamed into AttendeesList

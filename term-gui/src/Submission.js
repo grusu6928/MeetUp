@@ -1,10 +1,9 @@
-import React, { Component } from 'react';
-import './App.css';
-import './index.css';
-import FriendList from './FriendList';
 // react context global state 
 import axios from 'axios';
+import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
+import './App.css';
+import './index.css';
 
 const sendEndTime = (reqType, currUser, endTime) => {
     const toSend = {
