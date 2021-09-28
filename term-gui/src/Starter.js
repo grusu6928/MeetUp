@@ -52,42 +52,6 @@ const sendEvent = (selectedActivity, startTime, endTime, location, capacity) => 
              reject(error)
         });
    });
-
-  // const sendEndTime = async (reqType, currUser, endTime) => {
-  //   const toSend = {
-  //       requestType: reqType,
-  //       user: currUser,
-  //       endTime: endTime
-  //   }
-  //   let config = {
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         'Access-Control-Allow-Origin': '*',
-  //         }
-  //       }
-  //       await axios.post('http://localhost:4567/endtime', toSend, config)
-  //       .then(response => {
-  //         console.log("starter sendEndTime response " + response.data)
-  //           if (reqType === ("get")) {
-  //             return response.data
-  //           } else if (reqType === "set") {
-  //             return response.data
-  //           }
-  //       })
-  //       .catch(function (error) {
-  //         return error;
-  //       });
-  //     }
-  //     async function getEndTime(reqType, currUser, endTime) {
-  //       try{
-  //         const data = await sendEndTime(reqType, currUser, endTime)
-  //         return data;
-
-  //       } catch(error){
-  //         console.log(error);
-  //       }
-  //     }    
-
 class Starter extends Component {
     constructor(props) {
         super(props);
@@ -178,7 +142,6 @@ class Starter extends Component {
       setInterval(
         () =>  {this.setState({currentDateTime: new Date()});
         if (this.state.endTime != null) {
-          // this.checkEventTime();
         }  
       },
         5000
@@ -231,19 +194,6 @@ class Starter extends Component {
      })
  ;
  if(localStorage.getItem("user") !== null) {
-      // if(sendEndTime("get", localStorage.getItem("user"), null) !== null) {
-      //   console.log(localStorage.getItem("data"))
-      //   console.log("endtime redirect")
-      //   console.log("activity" + this.selectedActivity);
-      //   return (
-      //     <Redirect
-      //     to={{
-      //         pathname: "/submission",
-      //         state: JSON.parse(localStorage.getItem("data"))
-      //     }}
-      //     />
-      //     );
-      // }
         if (this.state.redirect) {
             console.log(localStorage.getItem("data")[0])
             console.log("this redirected")

@@ -87,20 +87,6 @@ getAttendees () {
             },
           5000
         );
-        // setInterval(
-        //     () =>  {
-        //         let currentDateTime = new Date()
-        //         let endTime = sendEndTime("get", localStorage.getItem("user"), null)
-        //         console.log("endTime: " + endTime)
-        //         if(endTime !== null) {
-        //             let hoursMinutes = endTime.split(":")
-        //             if (currentDateTime.getHours() >= parseInt(hoursMinutes[0]) && currentDateTime.getMinutes() >= parseInt(hoursMinutes[1])) {
-        //                 sendEndTime("set", localStorage.getItem("user"), null)
-        //               }       
-        //         }   
-        //   },
-        //     5000
-        //   );
       }
       logout() {
         localStorage.clear()

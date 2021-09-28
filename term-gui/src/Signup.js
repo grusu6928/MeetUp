@@ -24,7 +24,7 @@ function Signup() {
   function handleSubmit(event) {
     event.preventDefault();
     requestAuthentication(email, password);
-      // if true, then we wanna redirect to another page (home) and save user in session 
+      // if true, then we want to redirect to another page (home) and save user in session 
   }
   const requestAuthentication = () => {
     console.log('reached')
@@ -44,11 +44,6 @@ function Signup() {
               localStorage.setItem("user", toSend.email);
               setEmail(toSend.email);
               window.location.reload(true);
-              // TODO 
-              // ReactSession.setStoreType("localStorage");
-              // ReactSession.set("username", email);
-              // setRedirect(true);
-              // window.location.href = "/";
             console.log("success");
               console.log(localStorage.getItem("user"))
             } else {

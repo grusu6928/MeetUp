@@ -29,7 +29,6 @@ function Login() {
       // if true, then we wanna redirect to another page (home) and save user in session 
   }
   const requestAuthentication = () => {
-    console.log('reached')
     const toSend = {
         email: email,
         pass: password,
@@ -46,13 +45,6 @@ function Login() {
               localStorage.setItem("user", toSend.email);
               setEmail(toSend.email);
               window.location.reload(true);
-
-              // TODO 
-              // ReactSession.setStoreType("localStorage");
-              // ReactSession.set("username", email);
-              // setRedirect(true);
-              // window.location.href = "/";
-              // console.log("success");
               console.log(localStorage.getItem("user"))
             } else {
                 // rerender page, with alert

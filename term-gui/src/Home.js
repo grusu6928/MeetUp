@@ -15,7 +15,7 @@ class Home extends Component {
     }
     logout() {
         localStorage.clear()
-        console.log(localStorage.getItem("user"))
+        // console.log(localStorage.getItem("user"))
         this.setState({user: null})
     }
     render() {
@@ -29,8 +29,7 @@ class Home extends Component {
                 );
         }
         else {
-            console.log("hi")
-            console.log(localStorage.getItem("user"));
+            // console.log(localStorage.getItem("user"));
             return (
                 <div className="margins">
                     {/*<FriendList />*/}

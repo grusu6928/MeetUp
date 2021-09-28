@@ -65,7 +65,6 @@ const queryRSVP = (currUser) => {
     axios.post('http://localhost:4567/attendees', toSend, config)
         .then(response =>{ 
             let newList = response.data
-            console.log("RESPONSE FOR ATTENDEES: " + newList)
             this.setState({attendeeList: newList})
         })
         .catch(function (error) {
@@ -113,13 +112,6 @@ class Looker extends Component {
               console.log(error);
             });
           }
-    
-        // componentDidMount() {
-        //      setInterval(
-        //       () => this.getAttendees(),
-        //       10000
-        //     );
-        // }
     handleAttendeeList(newList) {
         this.setState({
             attendeeList: newList
@@ -162,11 +154,6 @@ class Looker extends Component {
 
     handleSubmit (e){
         e.preventDefault();
-        console.log(this.state.selectedType);
-        console.log(this.state.selectedActivity);
-        console.log(this.state.startTime);
-        console.log(this.state.endTime);
-        console.log(this.state.location);
         queryRSVP(localStorage.getItem("user"));
         this.data = [
             {
@@ -182,32 +169,21 @@ class Looker extends Component {
     sendEvent(this.state.selectedActivity, this.state.startTime, this.state.endTime,
             this.state.location);
     sendEndTime("set", localStorage.getItem("user"), this.state.endTime);
-    
-       
-        //TODO: lookerForm?
         const starterForm = document.getElementById('starter-form')
         starterForm.reset();
         alert ("Thank you for submitting your preferences, we will now provide you with events that match your preferences!")
-        // window.location.href = "/starter-submission"
         this.setState({redirect: true});
     }
     componentDidMount() { 
         setInterval(
           () =>  {this.setState({currentDateTime: new Date()});
           if (this.state.endTime != null) {
-            // this.checkEventTime();
           }
         },
           5000
         );
         this.setState({currentDateTime: new Date()})
       }
-    //   componentDidMount() {
-    //       setInterval(
-    //           () => {queryRSVP(localStorage.getItem("user"))}, 
-    //           5000
-    //       )
-    //   }
       componentWillUnmount() {
         clearInterval(this.interval);
       }
@@ -253,18 +229,6 @@ class Looker extends Component {
             console.log(error)
          })
      ;
-            // if(sendEndTime("get", localStorage.getItem("user"), null) !== null) {
-            //     console.log(localStorage.getItem("data"))
-            //     console.log("endtime redirect")
-            //     return (
-            //       <Redirect
-            //       to={{
-            //           pathname: "/submission",
-            //           state: JSON.parse(localStorage.getItem("data"))
-            //       }}
-            //       />
-            //       );
-            //   }
         if (this.state.redirect) {
             return (
             <Redirect
